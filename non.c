@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 typedef struct
 {
     int u;
@@ -8,8 +9,10 @@ typedef struct
 sem semi(sem a, sem b)
 {
     sem n = {0};
-    n.u = (a.v * b.u) + a.u;
-    n.v = a.v + b.v;
+    n.u = ((a.v * b.u)%23 + a.u);
+    n.v = (a.v * b.v)%23;
+    n.u%=23;
+
     return n;
 }
 
@@ -39,8 +42,9 @@ int inv(int a, int n)
 sem invs(sem a)
 {
     sem s = {0};
-    s.u = -inv(a.v, 23) * (a.u) % 23;
-    s.v = -a.v ;
+    s.u = 23-((((inv(a.v, 23) * (a.u))))%23) ;
+    s.v = inv(a.v,23) ;
+    //s.u%=23;
 
 return s;
 }
@@ -75,28 +79,46 @@ sem aniky(int n)
 int main()
 {
 
-    int a[4] = {1, 2, 3, 4};
-    int b[4] = {5, 6, 7, 8};
-    int e[4] = {4, 3, 2, 1};
-    int f[4] = {8, 7, 6, 5};
+    sem a,b,c,d;
+    a.u=1;
+    a.v=2;
+    b.u=3;
+    b.v=4;
+    c.u=5;
+    c.v=6;
+    d.u=7;
+    d.v=8;
     int w1[3], w2[3], w3[3], w4[3];
     sem s[4] = {0};
     sem t[4] = {0};
     sem x, y;
     int p = 17;
     sem key[4];
+    sem tmp1;
+    tmp1.u=7;
+    tmp1.v=8;
 
-    for (int i = 0; i < 3; i++)
-    {
-        w1[i] = inv(a[i + 1],23);
-        w2[i] = inv(b[i + 1],23);
-        w3[i] = inv(e[i + 1],23);
-        w4[i] = inv(f[i + 1],23);
-    }
+    sem aa[4];
+    aa[0].u=1;
+    aa[0].v=2;
+    aa[1].u=3;
+    aa[1].v=4;
+    aa[2].u=5;
+    aa[2].v=6;
+    sem tt[3];
+    tt[0].u=23-18;
+    tt[0].v=23-4;
+    tt[1].u=23-20;
+    tt[1].v=23-6;
+    tt[2].u=23-21;
+    tt[2].v=23-8;
+    sem a1,a2,a3,b1,b2,b3;
+
     x.u = 9;
     x.v = 10;
     y.u = 11;
     y.v = 12;
+/*
     for (int i = 0; i < 4; i++)
     {
         s[i].u = a[i];
@@ -111,21 +133,28 @@ int main()
         d1[i] = semi(semi(t[i], x), invs(t[i + 1]));
         d2[i] = semi(semi(t[i], y), invs(t[i + 1]));
     }
-    int r1=0b10,r2=0b11;
+    */
+    int r1=0b00,r2=0b11;
+    a1=semi(semi(a,x),invs(b));
+    a2=semi(semi(b,x),invs(c));
+    a3=semi(semi(c,x),invs(d));
+    b1=semi(semi(aa[0],y),tt[0]);
+    b2=semi(semi(aa[1],y),tt[1]);
+    b3=semi(semi(aa[2],y),tt[2]);
     key[0]=aniki(r1);
-    key[1]=aniki(r2);
-    key[2]=aniky(r1);
-    key[3]=aniky(r2);
-    for(int i=0;i<4;i++)
-    printf("%d\n",w1[0]*key[i].u*a[3]%23);
-    for(int i=0;i<4;i++)
-    printf("%d\n",w2[0]*key[i].u*b[3]%23);
-    for(int i=0;i<4;i++)
-    printf("%d\n",w3[0]*key[i].u*e[3]%23);
-    for(int i=0;i<4;i++)
-    printf("%d\n",w4[0]*key[i].u*f[3]%23);
-
-    printf("%d %d\n",semi(s[0],invs(s[0])).u%23,semi(s[0],invs(s[0])).v);
-
+    key[1]=aniky(r1);
+    //for(int i=0;i<2;i++)
+    printf("%d %d\n",a1.u,a1.v);
+    printf("%d %d\n",a2.u,a2.v);
+    printf("%d %d\n",a3.u,a3.v);
+ 
+    sem tmp,tmp2,tmp3;
+    tmp=semi(semi(a1,a2),a3);
+    printf("a1a2a3=%d %d\n",tmp.u,tmp.v);
+    tmp2=semi(semi(x,x),x);
+    printf("x^3=%d %d\n",tmp2.u,tmp2.v);
+    tmp1=semi(semi(invs(a),tmp),d);
+    printf("ans=%d %d\n",tmp1.u,tmp1.v);
+ 
     return 0;
 }
