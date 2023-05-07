@@ -79,7 +79,7 @@ sem aniky(int n)
 int main()
 {
 
-	sem a, b, c, d, e, f, g.h;
+	sem a, b, c, d, e, f, g,h,a1, b1, c1, d1, e1, f1, g1,h1;
 	a.u = 1;
 	a.v = 2;
 	b.u = 3;
@@ -88,6 +88,30 @@ int main()
 	c.v = 6;
 	d.u = 7;
 	d.v = 8;
+	a1.u = 1;
+	a1.v = 2;
+	b1.u = 3;
+	b1.v = 4;
+	c1.u = 5;
+	c1.v = 6;
+	d1.u = 7;
+	d1.v = 8;
+	e.u=9;
+	e.v=10;
+	f.u=11;
+	f.v=12;
+	g.u=13;
+	g.v=14;
+	h.u=15;
+	h.v=16;
+	e1.u=17;
+	e1.v=18;
+	f1.u=19;
+	f1.v=20;
+	g1.u=21;
+	g1.v=22;
+	h1.u=1;
+	h1.v=6;
 
 	int w1[3], w2[3], w3[3], w4[3];
 	sem s[4] = {0};
@@ -107,7 +131,7 @@ int main()
 	aa[2].u = 5;
 	aa[2].v = 6;
 	sem tt[3];
-	sem a1, a2, a3, b1, b2, b3;
+	sem  a2, a3, b2, b3,c2,c3,d2,d3;
 
 	x.u = 9;
 	x.v = 10;
@@ -117,9 +141,15 @@ int main()
 	a1 = semi(semi(a, x), invs(b));
 	a2 = semi(semi(b, x), invs(c));
 	a3 = semi(semi(c, x), invs(d));
-	b1 = semi(semi(aa[0], y), tt[0]);
-	b2 = semi(semi(aa[1], y), tt[1]);
-	b3 = semi(semi(aa[2], y), tt[2]);
+	b1 = semi(semi(a, y), invs(b));
+	b2 = semi(semi(b, y), invs(c));
+	b3 = semi(semi(c, y), invs(d));
+	c1 = semi(semi(e, x), invs(f));
+	c2 = semi(semi(f, x), invs(g));
+	c3 = semi(semi(g, x), invs(h));
+	d1 = semi(semi(e, y), invs(f));
+	d2 = semi(semi(f, y), invs(g));
+	d3 = semi(semi(g, y), invs(h));
 	key[0] = aniki(r1);
 	key[1] = aniky(r1);
 	// for(int i=0;i<2;i++)
@@ -127,13 +157,18 @@ int main()
 	printf("%d %d\n", a2.u, a2.v);
 	printf("%d %d\n", a3.u, a3.v);
 
-	sem tmp, tmp2, tmp3;
-	tmp = semi(semi(a1, a2), a3);
-	printf("a1a2a3=%d %d\n", tmp.u, tmp.v);
-	tmp2 = semi(semi(x, x), x);
-	printf("x^3=%d %d\n", tmp2.u, tmp2.v);
-	tmp1 = semi(semi(invs(a), tmp), d);
-	printf("ans=%d %d\n", tmp1.u, tmp1.v);
+	sem tmp[16];
+	tmp[0] = semi(semi(a1, a2), a3);
+	tmp[1] = semi(semi(b1, b2), b3);
+	tmp[2] = semi(semi(c1, c2), c3);
+	tmp[3] = semi(semi(d1, d2), d3);
+	printf("a1a2a3=%d %d\n", tmp[0].u, tmp[0].v);
+	tmp[4] = semi(semi(x, x), x);
+	printf("x^3=%d %d\n", tmp[4].u, tmp[4].v);
+	tmp[5] = semi(semi(invs(a), tmp[0]), d);
+	printf("ans=%d %d\n", tmp[5].u, tmp[5].v);
+	tmp[6] = semi(semi(invs(e), tmp[2]), h);
+	printf("ans2=%d %d\n", tmp[6].u, tmp[6].v);
 
 	return 0;
 }
