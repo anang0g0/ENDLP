@@ -138,12 +138,14 @@ int main()
 	y.u = 11;
 	y.v = 12;
 	int r1 = 0b00, r2 = 0b11;
+	//alice's public key
 	a1 = semi(semi(a, x), invs(b));
 	a2 = semi(semi(b, x), invs(c));
 	a3 = semi(semi(c, x), invs(d));
 	b1 = semi(semi(a, y), invs(b));
 	b2 = semi(semi(b, y), invs(c));
 	b3 = semi(semi(c, y), invs(d));
+	// bob's public key	
 	c1 = semi(semi(e, x), invs(f));
 	c2 = semi(semi(f, x), invs(g));
 	c3 = semi(semi(g, x), invs(h));
@@ -152,7 +154,7 @@ int main()
 	d3 = semi(semi(g, y), invs(h));
 	key[0] = aniki(r1);
 	key[1] = aniky(r1);
-	// for(int i=0;i<2;i++)
+
 	printf("%d %d\n", a1.u, a1.v);
 	printf("%d %d\n", a2.u, a2.v);
 	printf("%d %d\n", a3.u, a3.v);
@@ -169,6 +171,7 @@ int main()
 	printf("ans=%d %d\n", tmp[5].u, tmp[5].v);
 	tmp[6] = semi(semi(invs(e), tmp[2]), h);
 	printf("ans2=%d %d\n", tmp[6].u, tmp[6].v);
-
+	tmp[7]=semi(a,invs(a));
+	printf("%d %d\n",tmp[7].u,tmp[7].v);
 	return 0;
 }
