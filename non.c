@@ -1,5 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "vc3000.c"
+
 typedef struct
 {
 	int u;
@@ -76,6 +78,8 @@ sem aniky(int n)
 	if (n == 3)
 		return semi(semi(d2[0], d2[1]), d2[2]);
 }
+
+
 int main()
 {
 
