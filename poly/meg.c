@@ -4,9 +4,10 @@
 #include "struct.h"
 #include "vc3000.c"
 
-typedef struct {
-int u;
-int v;
+typedef struct
+{
+	int u;
+	int v;
 } sem;
 
 typedef struct
@@ -18,9 +19,9 @@ typedef struct
 sem semi(sem a, sem b)
 {
 	sem n = {0};
-	n.u = ((a.v * b.u) % 23 + a.u);
-	n.v = (a.v * b.v) % 23;
-	n.u %= 23;
+	n.v = ((a.v * b.u) % 23 + b.v);
+	n.u = (a.u * b.u) % 23;
+	n.v %= 23;
 
 	return n;
 }
@@ -51,11 +52,16 @@ int inv(int a, int n)
 sem invs(sem a)
 {
 	sem s = {0};
-	s.u = 23 - ((((inv(a.v, 23) * (a.u)))) % 23);
-	s.v = inv(a.v, 23);
+	s.v = 23 - ((((inv(a.u, 23) * (a.v)))) % 23);
+	s.u = inv(a.u, 23);
 	// s.u%=23;
 
 	return s;
+}
+
+sem conj(sem a, sem b)
+{
+	return semi(semi(invs(a), b), a);
 }
 
 sem c1[3] = {0};
@@ -88,39 +94,44 @@ sem aniky(int n)
 int main()
 {
 
-	sem a, b, c, d, e, f, g,h,a1, b1, c1, d1, e1, f1, g1,h1;
-	a.u = 1;
-	a.v = 2;
-	b.u = 3;
-	b.v = 4;
-	c.u = 5;
-	c.v = 6;
-	d.u = 7;
-	d.v = 8;
-	a1.u = 1;
-	a1.v = 2;
-	b1.u = 3;
-	b1.v = 4;
-	c1.u = 5;
-	c1.v = 6;
-	d1.u = 7;
-	d1.v = 8;
-	e.u=9;
-	e.v=10;
-	f.u=11;
-	f.v=12;
-	g.u=13;
-	g.v=14;
-	h.u=15;
-	h.v=16;
-	e1.u=17;
-	e1.v=18;
-	f1.u=19;
-	f1.v=20;
-	g1.u=21;
-	g1.v=22;
-	h1.u=1;
-	h1.v=6;
+	sem a, b, c, d, e, f, g, h, a1, b1, c1, d1, e1, f1, g1, h1;
+	a.v = 1;
+	a.u = 2;
+	b.v = 3;
+	b.u = 4;
+	c.v = 5;
+	c.u = 6;
+	d.v = 7;
+	d.u = 8;
+	a1.v = 1;
+	a1.u = 2;
+	b1.v = 3;
+	b1.u = 4;
+	c1.v = 5;
+	c1.u = 6;
+	d1.v = 7;
+	d1.u = 8;
+	// b=invs(a);
+	// c=semi(a,b);
+	// printf("%d %d\n",c.u,c.v);
+	// exit(1);
+
+	e.v = 9;
+	e.u = 10;
+	f.v = 11;
+	f.u = 12;
+	g.v = 13;
+	g.u = 14;
+	h.v = 15;
+	h.u = 16;
+	e1.v = 17;
+	e1.u = 18;
+	f1.v = 19;
+	f1.u = 20;
+	g1.v = 21;
+	g1.u = 22;
+	h1.v = 1;
+	h1.u = 6;
 
 	int w1[3], w2[3], w3[3], w4[3];
 	sem s[4] = {0};
@@ -129,32 +140,32 @@ int main()
 	int p = 17;
 	sem key[4];
 	sem tmp1;
-	tmp1.u = 7;
-	tmp1.v = 8;
+	tmp1.v = 7;
+	tmp1.u = 8;
 
 	sem aa[4];
-	aa[0].u = 1;
-	aa[0].v = 2;
-	aa[1].u = 3;
-	aa[1].v = 4;
-	aa[2].u = 5;
-	aa[2].v = 6;
+	aa[0].v = 1;
+	aa[0].u = 2;
+	aa[1].v = 3;
+	aa[1].u = 4;
+	aa[2].v = 5;
+	aa[2].u = 6;
 	sem tt[3];
-	sem  a2, a3, b2, b3,c2,c3,d2,d3;
+	sem a2, a3, b2, b3, c2, c3, d2, d3;
 
-	x.u = 9;
-	x.v = 10;
-	y.u = 11;
-	y.v = 12;
+	x.v = 9;
+	x.u = 10;
+	y.v = 11;
+	y.u = 12;
 	int r1 = 0b00, r2 = 0b11;
-	//alice's public key
+	// alice's public key
 	a1 = semi(semi(a, x), invs(b));
 	a2 = semi(semi(b, x), invs(c));
 	a3 = semi(semi(c, x), invs(d));
 	b1 = semi(semi(a, y), invs(b));
 	b2 = semi(semi(b, y), invs(c));
 	b3 = semi(semi(c, y), invs(d));
-	// bob's public key	
+	// bob's public key
 	c1 = semi(semi(e, x), invs(f));
 	c2 = semi(semi(f, x), invs(g));
 	c3 = semi(semi(g, x), invs(h));

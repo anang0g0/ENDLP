@@ -28,8 +28,8 @@
 // #include "2048.h"
 //#include "4096.h"
 // #include "512.h"
-#include "global.h"
-#include "struct.h"
+//#include "global.h"
+//#include "struct.h"
  #include "debug.c"
  #include "chash.c"
 
