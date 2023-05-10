@@ -1,10 +1,19 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "global.h"
+#include "struct.h"
+#include "vc3000.c"
+
+typedef struct {
+int u;
+int v;
+} sem;
+
 typedef struct
 {
 	unsigned short u;
 	vec v;
-} sem;
+} ham;
 
 sem semi(sem a, sem b)
 {
