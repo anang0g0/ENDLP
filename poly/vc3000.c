@@ -21,17 +21,15 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <math.h>
-
 // #include "1024.h"
 //#include "8192.h"
 // #include "2048.h"
 //#include "4096.h"
 // #include "512.h"
 //#include "global.h"
-//#include "struct.h"
- #include "debug.c"
- #include "chash.c"
+// #include "struct.h"
+// #include "debug.c"
+// #include "chash.c"
 
 #include <pthread.h>
 #include <err.h>
@@ -419,7 +417,7 @@ void wait2(void)
 }
 
 // 多項式の次数(default)
-int deg(vec a)
+int deg2(vec a)
 {
   int n = 0, flg = 0;
 
@@ -499,7 +497,7 @@ bool op_verify(const OP f)
   return true;
 }
 
-vec vadd(vec a, vec b)
+vec vadd2(vec a, vec b)
 {
   vec c = {0};
 
@@ -535,7 +533,7 @@ vec vterml(vec f, oterm t)
 }
 
 // リーディグタームを抽出(default)
-oterm vLT(vec f)
+oterm vLT2(vec f)
 {
   oterm t = {0};
 
@@ -554,7 +552,7 @@ oterm vLT(vec f)
 }
 
 // 多項式を表示する(default)
-void printpol(vec a)
+void printpol2(vec a)
 {
   int  n = deg(a);
 
@@ -1090,31 +1088,6 @@ vec vinv(vec a)
   return v;
 }
 
-vec koe(vec f,int l){
-vec g={0};
-int d=deg(f)+1;
-
-for(int i=0;i<d;i++)
-g.x[i]=gf[mlt(fg[f.x[i]],fg[l])];
-
-return g;
-}
-
-vec newton(vec f,int l){
-  vec g={0},h={0};
-
-  h.x[1]=1;
-  l=log(l);
-  g.x[0]=1;
-  for(int i=0;i<K;i++){
-  g=vmod(vadd(koe(g,2),vmul_2(f,vmul_2(g,g))),h);
-  h=vmul_2(h,h);
-  }
-
-return g;
-}
-
-
 int chkinv(vec b, vec e, vec d)
 {
   e = deli(vmul_2(b, e), d);
@@ -1523,7 +1496,7 @@ ginit(unsigned short *g)
 OP ww[T] = {0};
 
 // 配列の値を係数として多項式に設定する
-vec setpol(unsigned short f[], int n)
+vec setpol2(unsigned short f[], int n)
 {
 
   vec v = {0};
@@ -1922,10 +1895,10 @@ void speed()
 // 言わずもがな
 int main2(void)
 {
-  vec g, w;
-  unsigned int i, j, count = 0;
-  vec e[10] = {0}, v = {0}, x = {0}, z = {0}, ee = {0}, y = {0}, tt = {0}, ww, xx, f={0};
-  int l = -1, m, n;
+
+
+  vec v = {0}, tt = {0};
+  int l = -1;
   int ii = 0;
   // irreducible goppa code (既役多項式が必要なら、ここのコメントを外すこと。)
   //vec q = {0}, r = {0};
@@ -1938,39 +1911,19 @@ int main2(void)
   // exit(1);
 
   vec pp = {0};
-/*
-//1x^4+1591x^3+285x^2+4031x^1+1x^0
-  pp.x[0]=1;
-  pp.x[1]=4031;
-  pp.x[2]=285;
-  pp.x[3]=1591;
-  pp.x[4]=1;
-  f.x[K]=1;
-  //pp=mkpol();
-  printpol(pp);
-  printf("\n");
-  vec q=vinv(pp);
-  printpol(q);
-  printf(" lulu\n");
-  vec r=deli(vmul_2(q,pp),f);
-  printpol(r);
-  printf(" aal\n");
-  exit(1);
-*/
-if(K==4 || K==8 || K==16 || K==32 || K==64 || K==128 || K==256){
+
+if(K==16 || K==32 || K==64 || K==128 || K==256){
   l = -1;
   while (l < 0)
   {
-    //pp.x[0]=1;
     for (int i = 0; i < K; i++)
       pp.x[i] = rand() % N;
     mykey(tt.x, pp);
     tt.x[K] = 1;
-    tt.x[0]=1;
     if (ben_or(tt) == 0)
     {
       printf("\n");
-      printpol(tt);
+      printsage(tt);
       printf(" ==irr\n");
       exit(1);
     }

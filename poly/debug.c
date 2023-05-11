@@ -1,4 +1,6 @@
 /* Obtain a backtrace and print it to stdout. */
+#include <stdio.h>
+#include <stdlib.h>
 void
 print_trace (void)
 {
