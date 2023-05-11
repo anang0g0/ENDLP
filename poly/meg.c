@@ -174,6 +174,11 @@ int main()
 	d3 = semi(semi(g, y), invs(h));
 	key[0] = aniki(r1);
 	key[1] = aniky(r1);
+	
+	sem ka1=semi(semi(a,x),invs(a));
+	sem ka2=semi(semi(a,y),invs(a));
+	sem kb1=semi(semi(b,x),invs(b));
+	sem kb2=semi(semi(b,y),invs(b));
 	// for(int i=0;i<2;i++)
 	printf("%d %d\n", a1.u, a1.v);
 	printf("%d %d\n", a2.u, a2.v);
