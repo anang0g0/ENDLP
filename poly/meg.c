@@ -1,8 +1,10 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "global.h"
-#include "struct.h"
+//#include "global.h"
+//#include "struct.h"
+#include "mkmf.c"
 #include "vc3000.c"
+
 
 typedef struct
 {
@@ -59,7 +61,7 @@ sem invs(sem a)
 	return s;
 }
 
-sem conj(sem a, sem b)
+sem conju(sem a, sem b)
 {
 	return semi(semi(invs(a), b), a);
 }
@@ -191,6 +193,9 @@ int main()
 	printf("ans=%d %d\n", tmp[5].u, tmp[5].v);
 	tmp[6] = semi(semi(invs(e), tmp[2]), h);
 	printf("ans2=%d %d\n", tmp[6].u, tmp[6].v);
+	mkmf();
+	makefg();
+	de();
 
 	return 0;
 }
