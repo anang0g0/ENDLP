@@ -10,60 +10,57 @@ typedef struct
 	int v;
 } sem;
 
-
 #define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
 #define SWAP(type, a, b) \
-    {                    \
-        type work = a;   \
-        a = b;           \
-        b = work;        \
-    }
-
+	{                    \
+		type work = a;   \
+		a = b;           \
+		b = work;        \
+	}
 
 /*
-    Fisher-Yates shuffle による方法
-    配列の要素をランダムシャッフルする
+	Fisher-Yates shuffle による方法
+	配列の要素をランダムシャッフルする
 */
 void random_shuffle(unsigned short *array, size_t size)
 {
-    for (size_t i = size; i > 1; --i)
-    {
-        size_t a = i - 1;
-        size_t b = rand() % i;
-        SWAP(int, array[a], array[b]);
-    }
+	for (size_t i = size; i > 1; --i)
+	{
+		size_t a = i - 1;
+		size_t b = rand() % i;
+		SWAP(int, array[a], array[b]);
+	}
 }
 
-typedef struct {
-short x[N];
-short y[N];
+typedef struct
+{
+	short x[N];
+	short y[N];
 } cem;
 
-cem cemi(cem pi,cem tau){
-cem tmp={0};
-for(int i=0;i<N;i++){
-    pi.x[i]=i;
-    tau.x[i]=i;
-}
-random_shuffle(pi.x,N);
-random_shuffle(tau.x,N);
-for(int i=0;i<N;i++){
-pi.y[i]=rand()%256;
-tau.y[i]=random()%256;
-}
-for(int i=0;i<N;i++){
-tmp.x[i]=tau.x[pi.y[i]];
-tmp.x[i]+=pi.x[i];
-tmp.y[i]=pi.y[tau.y[i]];
+cem cemi(cem pi, cem tau)
+{
+	cem tmp = {0};
+
+	for (int i = 0; i < N; i++)
+	{
+		tmp.y[i] = tau.y[pi.x[i]];
+	}
+	for (int i = 0; i < N; i++)
+	{
+		pi.y[i] += tmp.y[i];
+	}
+	for(int i=0;i<N;i++)
+	tmp.x[i]=pi.x[tau.x[i]];
+	for(int i=0;i<N;i++)
+	tmp.y[i] = pi.y[tau.x[i]];
+
+	return tmp;
 }
 
-return tmp;
-}
-
-
-vec kess(){
-vec x,v;
-
+vec kess()
+{
+	vec x, v;
 }
 
 sem semi(sem a, sem b)
@@ -109,6 +106,19 @@ sem invs(sem a)
 	return s;
 }
 
+cem invc(cem a)
+{
+	cem s = {0};
+	
+	for(int i=0;i<N;i++)
+	s.x[a.x[i]] =i; 
+	for(int i=0;i<N;i++)
+	s.y[i] = -(a.y[s.x[i]]);
+	
+
+	return s;
+}
+
 sem c1[3] = {0};
 sem c2[3] = {0};
 sem d1[3] = {0};
@@ -142,7 +152,7 @@ sem conju(sem a, sem b)
 	return semi(semi(invs(a), b), a);
 }
 
-int main2()
+int kpk()
 {
 
 	sem a, b, c, d, e, f, g, h, a1, b1, c1, d1, e1, f1, g1, h1;
@@ -164,7 +174,6 @@ int main2()
 	h.u = 15;
 	h.v = 16;
 
-
 	sem x, y;
 	int p = 17;
 	sem key[4];
@@ -172,18 +181,17 @@ int main2()
 	tmp1.u = 7;
 	tmp1.v = 8;
 
-
 	x.u = 19;
 	x.v = 20;
 	y.u = 21;
 	y.v = 22;
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
-	a1 = conju(a,x);
-	b1 = conju(a,y);
+	a1 = conju(a, x);
+	b1 = conju(a, y);
 	// bob's public key
-	c1 = conju(b,x);
-	d1 = conju(b,y);
+	c1 = conju(b, x);
+	d1 = conju(b, y);
 
 	printf("Alice's Pubkey1 = %d %d\n", a1.u, a1.v);
 	printf("Alice's Pubkey2 = %d %d\n", b1.u, b1.v);
@@ -204,15 +212,51 @@ int main2()
 	return 0;
 }
 
-
-void main(){
-	vec a,b;
-	sem x,y;
-
+cem con(cem pi){
+	cem m;
 	for(int i=0;i<N;i++)
-	a.x[i]=b.x[i]=i;
-	random_shuffle(a.x,SIZE_OF_ARRAY(a.x));
-	random_shuffle(b.x,SIZE_OF_ARRAY(b.x));
+	m.y[i]= -pi.y[i];
+	for(int i=0;i<N;i++)
+	m.x[pi.x[i]]=i;
 
-return;
+return m;
+}
+
+void main()
+{
+	cem a, b,c,d,e,f,g,h;
+	cem x, y;
+
+	for (int i = 0; i < N; i++)
+	{
+		b.y[i]=i+1;
+		a.y[i] = i;
+		x.y[i]=rand()%N;
+		y.y[i]=random()%N;;
+	}
+	for (int i = 0; i < N; i++){
+		a.x[i] = i;
+		b.x[i] = i;
+		x.x[i]=i;
+		y.x[i]=i;
+	}
+	random_shuffle(a.x, SIZE_OF_ARRAY(a.x));
+	random_shuffle(b.x, SIZE_OF_ARRAY(b.x));
+	random_shuffle(x.x, SIZE_OF_ARRAY(x.x));
+	random_shuffle(y.x, SIZE_OF_ARRAY(y.x));
+	
+	c=cemi(cemi(invc(a),x),a);
+	d=cemi(cemi(invc(a),y),a);
+	//c=invc(y);
+	c=cemi(c,y);
+	e=cemi(cemi(invc(b),x),b);
+	f=cemi(cemi(invc(b),y),b);
+	
+	g=cemi(cemi(c,d),cemi(c,d));
+	h=cemi(cemi(e,f),cemi(e,f));
+	for (int i = 0; i < N; i++)
+		printf("%d, %d\n", c.x[i],c.y[i]);
+	printf("\n");
+
+	return;
 }
