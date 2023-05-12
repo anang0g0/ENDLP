@@ -948,6 +948,99 @@ oterm vLTdiv(vec f, oterm t)
   return s;
 }
 
+// モニック多項式にする
+vec coeff(vec f)
+{
+  unsigned short d = vLT(f).a;
+  int  k;
+
+  k = deg((f)) + 1;
+
+  for (int i = 0; i < k; i++)
+    f.x[i] = gf[mlt(fg[f.x[i]], oinv(d))];
+
+  return f;
+}
+
+//項の数
+int terms(vec f)
+{
+    int i, count = 0;
+
+    for (i = 0; i < DEG; i++)
+        if (f.x[i] > 0)
+            count++;
+
+    return count;
+}
+
+//多項式の商を取る
+vec vdiv(vec f, vec g)
+{
+    int i = 0, j, n, k;
+    vec h = {0}, e = {0}, tt = {0};
+    oterm a, b = {0}, c = {0};
+
+    if (vLT(f).n == 0 && vLT(g).a == 0)
+    {
+        printf("baka^\n");
+        // return f;
+        exit(1);
+    }
+    if (vLT(g).a == 0)
+    {
+        print_trace();
+        exit(1);
+    }
+    if (vLT(g).n == 0 && vLT(g).a > 1)
+        return coeff(f);
+
+    k = deg(g);
+    b = vLT(g);
+    if (b.a == 1 && b.n == 0)
+        return f;
+    if (b.a == 0 && b.n == 0)
+    {
+        printf("baka in odiv\n");
+        exit(1);
+    }
+    if (deg((f)) < deg((g)))
+    {
+        return f;
+        //  a=LT(f);
+    }
+
+    i = 0;
+    while (vLT(f).n > 0 && vLT(g).n > 0)
+    {
+        c = vLTdiv(f, b);
+        //assert(c.n < DEG);
+        tt.x[i] = c.a;
+        i++;
+
+        h = oterml(g, c);
+
+        f = vadd(f, h);
+        if (deg((f)) == 0 || deg((g)) == 0)
+        {
+            // printf ("blake2\n");
+            break;
+        }
+
+        if (c.n == 0)
+            break;
+    }
+
+    // tt は逆順に入ってるので入れ替える
+    vec ret = {0};
+    int tt_terms = terms(tt);
+    for (i = 0; i < tt_terms; i++)
+    {
+        ret.x[i] = tt.x[tt_terms - i - 1];
+    }
+    return ret;
+}
+
 int vm = 0;
 // 多項式の剰余を取る
 vec vmod(vec f, vec g)
@@ -1039,20 +1132,6 @@ vec deli(vec a, vec b)
   return v;
 }
 
-// モニック多項式にする
-vec coeff(vec f)
-{
-  unsigned short d = vLT(f).a;
-  int  k;
-
-  k = deg((f)) + 1;
-
-  for (int i = 0; i < k; i++)
-    f.x[i] = gf[mlt(fg[f.x[i]], oinv(d))];
-
-  return f;
-}
-
 // fg=1
 vec kof(vec a, vec b)
 {
@@ -1086,6 +1165,137 @@ vec vinv(vec a)
   }
 
   return v;
+}
+
+// invert of polynomial
+vec Inv(vec a, vec n)
+{
+    vec d = {0}, x = {0}, s = {0}, q = {0}, r = {0}, t = {0}, u = {0}, v = {0}, w = {0}, tt = {0}, gcd = {0}, tmp = {0};
+    oterm b = {0};
+    vec vv = {0}, xx = {
+                      0};
+
+    if (deg((a)) > deg((n)))
+    {
+        tmp = a;
+        a = n;
+        n = tmp;
+        printf("baka_i\n");
+        // exit (1);
+    }
+    if (vLT(a).a == 0)
+    {
+        printf(" a ga 0\n");
+        exit(1);
+    }
+
+    tt = n;
+
+    d = n;
+    x.x[0] = 0;
+    s.x[0] = 1;
+    
+    while (deg((a)) > 0)
+    {
+        if (deg((a)) > 0)
+            r = vmod(d, a);
+        if (vLT(a).a == 0)
+            break;
+        if (vLT(a).a > 0)
+            q = vdiv(d, a);
+
+        d = a;
+        a = r;
+        t = vadd(x, vmul(q, s));
+        ////printpol (o2v (a));
+        // printf ("\nin roop a==================%d\n", deg ((a)));
+        // printf ("\n");
+
+        x = s;
+        s = t;
+    }
+    // exit(1);
+    //  if(LT(a).a>0){
+    d = a;
+    a = r;
+    ////printpol (o2v (a));
+    // printf ("\nin roop a|==================%d\n", deg ((a)));
+    // printf ("\n");
+
+    x = s;
+    s = t;
+
+    ////printpol (o2v (d));
+    // printf ("\nout1================\n");
+    gcd = d; // $\gcd(a, n)$
+    printpol((gcd));
+    printf(" =========gcd\n");
+    // exit(1);
+    // printf ("\n");
+    ////printpol (o2v (n));
+    // printf ("\n");
+    // printf ("out2===============\n");
+
+    printf("before odiv\n");
+    // w=tt;
+
+    b = vLT(w);
+    ////printpol (o2v (w));
+    // printf ("\nw=======%d %d\n", b.a, b.n);
+    // w=tt;
+    v = vadd(x, n);
+    ////printpol (o2v (v));
+    // printf ("\n");
+    /*
+     if (LT (v).a == 0)
+     {
+     printf ("v=============0\n");
+     }
+     printf ("d==============\n");
+   */
+    //  } //end of a>0
+    w = tt;
+    ////printpol (o2v (v));
+    // printf ("\n");
+    // printf ("ss==============\n");
+    //        exit(1);
+    //  if(deg((w))>0)
+    if (vLT(v).n > 0 && vLT(w).n > 0)
+    {
+        u = vmod(v, w);
+    }
+    else
+    {
+        // printpol (o2v (v));
+        printf(" v===========\n");
+        // printpol (o2v (x));
+        printf(" x==0?\n");
+        // printpol (o2v (n));
+        printf(" n==0?\n");
+
+        exit(1);
+    }
+    // caution !!
+    if (vLT(u).a > 0 && vLT(d).a > 0)
+    {
+        u = vdiv(u, d);
+    }
+
+    if (vLT(u).a == 0 || vLT(d).a == 0)
+    {
+        printf("inv div u or d==0\n");
+        // exit(1);
+    }
+    // u=coeff(u,d.t[0].a);
+    ////printpol (o2v (u));
+    // printf ("\nu==================\n");
+    if (vLT(u).a == 0)
+    {
+        printf("no return at u==0\n");
+        exit(1);
+    }
+
+    return u;
 }
 
 int chkinv(vec b, vec e, vec d)
