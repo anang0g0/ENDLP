@@ -31,7 +31,7 @@ ham hami(ham a, ham b)
 {
 	ham n = {0};
 	n.v = (xtrace(b.u, a.v) + b.v) % 23;
-	n.u = vmul_2(a.u, b.u);
+	n.u = vadd(a.u,b.u); //vmul_2(a.u, b.u);
 	n.v %= 23;
 
 	return n;
