@@ -22,7 +22,7 @@ typedef struct
 	Fisher-Yates shuffle による方法
 	配列の要素をランダムシャッフルする
 */
-void random_shuffle(unsigned short *array, size_t size)
+void random_shuffle(short *array, size_t size)
 {
 	for (size_t i = size; i > 1; --i)
 	{
@@ -58,10 +58,6 @@ cem cemi(cem pi, cem tau)
 	return tmp;
 }
 
-vec kess()
-{
-	vec x, v;
-}
 
 sem semi(sem a, sem b)
 {
@@ -119,32 +115,32 @@ cem invc(cem a)
 	return s;
 }
 
-sem c1[3] = {0};
-sem c2[3] = {0};
-sem d1[3] = {0};
-sem d2[3] = {0};
+cem c1[3] = {0};
+cem c2[3] = {0};
+cem d1[3] = {0};
+cem d2[3] = {0};
 
-sem aniki(int n)
+cem aniki(int n)
 {
 	if (n == 0)
-		return semi(semi(c1[0], c1[1]), c1[2]);
+		return cemi(cemi(c1[0], c1[1]), c1[2]);
 	if (n == 1)
-		return semi(semi(c1[0], c2[1]), c1[2]);
+		return cemi(cemi(c1[0], c2[1]), c1[2]);
 	if (n == 2)
-		return semi(semi(c2[0], c1[1]), c2[2]);
+		return cemi(cemi(c2[0], c1[1]), c2[2]);
 	if (n == 3)
-		return semi(semi(c2[0], c2[1]), c2[2]);
+		return cemi(cemi(c2[0], c2[1]), c2[2]);
 }
-sem aniky(int n)
+cem aniky(int n)
 {
 	if (n == 0)
-		return semi(semi(d1[0], d1[1]), d1[2]);
+		return cemi(cemi(d1[0], d1[1]), d1[2]);
 	if (n == 1)
-		return semi(semi(d1[0], d2[1]), d1[2]);
+		return cemi(cemi(d1[0], d2[1]), d1[2]);
 	if (n == 2)
-		return semi(semi(d2[0], d1[1]), d2[2]);
+		return cemi(cemi(d2[0], d1[1]), d2[2]);
 	if (n == 3)
-		return semi(semi(d2[0], d2[1]), d2[2]);
+		return cemi(cemi(d2[0], d2[1]), d2[2]);
 }
 
 sem conju(sem a, sem b)
@@ -212,25 +208,20 @@ int kpk()
 	return 0;
 }
 
-cem con(cem pi){
-	cem m;
-	for(int i=0;i<N;i++)
-	m.y[i]= -pi.y[i];
-	for(int i=0;i<N;i++)
-	m.x[pi.x[i]]=i;
+cem con(cem a,cem b){
 
-return m;
+	return cemi(cemi(invc(a), b), a);
 }
 
 void main()
 {
-	cem a, b,c,d,e,f,g,h;
+	cem a, b,c,d,e,f;
 	cem x, y;
 
 	for (int i = 0; i < N; i++)
 	{
 		b.y[i]=i+1;
-		a.y[i] = i;
+		a.y[i] = N-1-i;
 		x.y[i]=rand()%N;
 		y.y[i]=random()%N;;
 	}
@@ -247,13 +238,11 @@ void main()
 	
 	c=cemi(cemi(invc(a),x),a);
 	d=cemi(cemi(invc(a),y),a);
-	//c=invc(y);
-	c=cemi(c,y);
+	//c=invc(x);
+	//c=cemi(c,x);
 	e=cemi(cemi(invc(b),x),b);
 	f=cemi(cemi(invc(b),y),b);
 	
-	g=cemi(cemi(c,d),cemi(c,d));
-	h=cemi(cemi(e,f),cemi(e,f));
 	for (int i = 0; i < N; i++)
 		printf("%d, %d\n", c.x[i],c.y[i]);
 	printf("\n");
