@@ -2,11 +2,69 @@
 #include <stdlib.h>
 // #include "vc3000.c"
 
+#include "global-p.h"
+#include "struct-p.h"
 typedef struct
 {
 	int u;
 	int v;
 } sem;
+
+
+#define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
+#define SWAP(type, a, b) \
+    {                    \
+        type work = a;   \
+        a = b;           \
+        b = work;        \
+    }
+
+
+/*
+    Fisher-Yates shuffle による方法
+    配列の要素をランダムシャッフルする
+*/
+void random_shuffle(unsigned short *array, size_t size)
+{
+    for (size_t i = size; i > 1; --i)
+    {
+        size_t a = i - 1;
+        size_t b = rand() % i;
+        SWAP(int, array[a], array[b]);
+    }
+}
+
+typedef struct {
+short x[N];
+short y[N];
+} cem;
+
+cem cemi(cem pi,cem tau){
+cem tmp={0};
+for(int i=0;i<N;i++){
+    pi.x[i]=i;
+    tau.x[i]=i;
+}
+random_shuffle(pi.x,N);
+random_shuffle(tau.x,N);
+for(int i=0;i<N;i++){
+pi.y[i]=rand()%256;
+tau.y[i]=random()%256;
+}
+for(int i=0;i<N;i++){
+tmp.x[i]=tau.x[pi.y[i]];
+tmp.x[i]+=pi.x[i];
+tmp.y[i]=pi.y[tau.y[i]];
+}
+
+return tmp;
+}
+
+
+vec kess(){
+vec x,v;
+
+}
 
 sem semi(sem a, sem b)
 {
@@ -84,7 +142,7 @@ sem conju(sem a, sem b)
 	return semi(semi(invs(a), b), a);
 }
 
-int main()
+int main2()
 {
 
 	sem a, b, c, d, e, f, g, h, a1, b1, c1, d1, e1, f1, g1, h1;
@@ -144,4 +202,17 @@ int main()
 	printf("decrypted key-B = (%d,%d)\n", tmp[1].u, tmp[1].v);
 
 	return 0;
+}
+
+
+void main(){
+	vec a,b;
+	sem x,y;
+
+	for(int i=0;i<N;i++)
+	a.x[i]=b.x[i]=i;
+	random_shuffle(a.x,SIZE_OF_ARRAY(a.x));
+	random_shuffle(b.x,SIZE_OF_ARRAY(b.x));
+
+return;
 }
