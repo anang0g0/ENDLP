@@ -52,7 +52,7 @@ cem cemi(cem pi, cem tau)
 		//pi.y[i]%=N;
 	}
 	for(int i=0;i<N;i++)
-	tmp.x[i]=pi.x[tau.x[i]];
+	tmp.x[i]=pi.x[i];
 	for(int i=0;i<N;i++)
 	tmp.y[i] = pi.y[i];
 
@@ -64,19 +64,15 @@ cem kemi(cem pi, cem tau)
 	cem tmp = {0};
 
 	for(int i=0;i<N;i++)
-	tmp.x[pi.x[i]]=i;
+	tmp.x[tau.x[i]]=i;
 	for (int i = 0; i < N; i++)
 	{
 		printf("tau=%d %d %d %d %d %d\n",pi.y[i],pi.y[pi.x[i]],pi.y[tau.x[i]],tau.y[i],tau.y[tau.x[i]],tau.y[pi.x[i]]);
-		pi.y[i] -= tau.y[i];
-		//pi.y[i]%=23;
-
+		pi.y[i] -= tau.y[pi.x[i]];
 	}
+
 	for (int i = 0; i < N; i++)
 	{
-		//if(pi.y[i]<0)
-		//pi.y[i]+=23;
-
 		printf("pi=%d %d %d %d\n",pi.y[i],tau.y[i],pi.x[i],tau.x[i]);
 		tmp.y[i] = pi.y[i];
 	}
@@ -252,7 +248,7 @@ void main()
 	for (int i = 0; i < N; i++)
 	{
 		b.y[i]=(i+2)%N;
-		a.y[i] =i;
+		a.y[i] =i+1;
 		x.y[i]=rand()%N;
 		y.y[i]=random()%N;
 	}
@@ -269,14 +265,14 @@ void main()
 	
 	c=konju(a,x);
 	d=konju(a,y);
-	g=cemi(x,x);
+	g=cemi(y,x);
 	h=cemi(b,invc(b));
 	h=kemi(g,(x));
 	e=konju(b,x);
 	f=konju(b,y);
 	
 	for (int i = 0; i < N; i++)
-		printf("%d, %d %d %d %d\n", g.y[i]-h.y[i],x.x[i],x.y[i],h.x[i],h.y[i]);
+		printf("%d, %d %d %d\n", g.y[i],y.y[i],x.y[i],h.y[i]);
 	printf("\n");
 	exit(1);
 	g=cemi(cemi(a,c),invc(a));
