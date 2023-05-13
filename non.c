@@ -49,11 +49,41 @@ cem cemi(cem pi, cem tau)
 	for (int i = 0; i < N; i++)
 	{
 		pi.y[i] += tmp.y[i];
+		//pi.y[i]%=N;
 	}
 	for(int i=0;i<N;i++)
 	tmp.x[i]=pi.x[tau.x[i]];
 	for(int i=0;i<N;i++)
-	tmp.y[i] = pi.y[tau.x[i]];
+	tmp.y[i] = pi.y[i];
+
+	return tmp;
+}
+
+cem kemi(cem pi, cem tau)
+{
+	cem tmp = {0};
+
+	for(int i=0;i<N;i++)
+	tmp.x[pi.x[i]]=i;
+	for (int i = 0; i < N; i++)
+	{
+		printf("tau=%d %d %d %d %d %d\n",pi.y[i],pi.y[pi.x[i]],pi.y[tau.x[i]],tau.y[i],tau.y[tau.x[i]],tau.y[pi.x[i]]);
+		pi.y[i] -= tau.y[i];
+		//pi.y[i]%=23;
+
+	}
+	for (int i = 0; i < N; i++)
+	{
+		//if(pi.y[i]<0)
+		//pi.y[i]+=23;
+
+		printf("pi=%d %d %d %d\n",pi.y[i],tau.y[i],pi.x[i],tau.x[i]);
+		tmp.y[i] = pi.y[i];
+	}
+	for(int i=0;i<N;i++)
+	tmp.x[i]=pi.x[tau.x[i]];
+	//for(int i=0;i<N;i++)
+	//tmp.y[i] = pi.y[i]; //[pi.x[i]];
 
 	return tmp;
 }
@@ -208,22 +238,23 @@ int kpk()
 	return 0;
 }
 
-cem con(cem a,cem b){
+cem konju(cem a,cem b){
 
 	return cemi(cemi(invc(a), b), a);
 }
 
 void main()
 {
-	cem a, b,c,d,e,f;
+	cem a, b,c,d,e,f,g,h;
 	cem x, y;
 
+	srand(clock());
 	for (int i = 0; i < N; i++)
 	{
-		b.y[i]=i+1;
-		a.y[i] = N-1-i;
+		b.y[i]=(i+2)%N;
+		a.y[i] =i;
 		x.y[i]=rand()%N;
-		y.y[i]=random()%N;;
+		y.y[i]=random()%N;
 	}
 	for (int i = 0; i < N; i++){
 		a.x[i] = i;
@@ -236,15 +267,21 @@ void main()
 	random_shuffle(x.x, SIZE_OF_ARRAY(x.x));
 	random_shuffle(y.x, SIZE_OF_ARRAY(y.x));
 	
-	c=cemi(cemi(invc(a),x),a);
-	d=cemi(cemi(invc(a),y),a);
-	//c=invc(x);
-	//c=cemi(c,x);
-	e=cemi(cemi(invc(b),x),b);
-	f=cemi(cemi(invc(b),y),b);
+	c=konju(a,x);
+	d=konju(a,y);
+	g=cemi(x,x);
+	h=cemi(b,invc(b));
+	h=kemi(g,(x));
+	e=konju(b,x);
+	f=konju(b,y);
 	
 	for (int i = 0; i < N; i++)
-		printf("%d, %d\n", c.x[i],c.y[i]);
+		printf("%d, %d %d %d %d\n", g.y[i]-h.y[i],x.x[i],x.y[i],h.x[i],h.y[i]);
+	printf("\n");
+	exit(1);
+	g=cemi(cemi(a,c),invc(a));
+	for (int i = 0; i < N; i++)
+		printf("%d, %d %d %d\n", g.x[i],g.y[i],h.x[i],h.y[i]);
 	printf("\n");
 
 	return;
