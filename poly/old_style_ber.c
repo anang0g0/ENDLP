@@ -53,16 +53,15 @@ unsigned short sy[K] = {0};
 
 // Goppa多項式
 static unsigned short g[K + 1] = {0};
+static unsigned char aes[9]={1,0,0,0,1,1,0,1,1};
 //{1,0,0,0,0};
-//{1,0,1,0,5};
-//{1};
-//{1, 0, 0, 0, 1, 0, 1};
 //
 
 MTX BB = {0};
 MTX H = {0};
 
 unsigned int AA = 0, B = 0; //, C = 0, A2 = 0;
+
 
 unsigned short oinv2(unsigned short a)
 {
