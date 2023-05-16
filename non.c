@@ -282,17 +282,6 @@ static const unsigned char inv_s_box[256] = {
 	0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,	 // e
 	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
-void lll(void)
-{
-	unsigned short lfsr = 0xACE1u;
-	unsigned int period = 0;
-	do
-	{
-		lfsr = (lfsr >> 1) ^ (-(short)(lfsr & 1u) & 0xB400u);
-		++period;
-	} while (lfsr != 0xACE1u);
-}
-
 void f()
 {
 	unsigned char c[8] = {1, 1, 0, 0, 0, 1, 1, 0};
@@ -326,6 +315,43 @@ unsigned char be(unsigned char b)
 unsigned char it(unsigned char s)
 {
 	return ROTL8(s, 1) ^ ROTL8(s, 3) ^ ROTL8(s, 6) ^ 5;
+}
+
+unsigned char loo(unsigned char c)
+{
+	return be(be(c));
+}
+
+unsigned char let(unsigned char c)
+{
+	return it(it(c));
+}
+
+unsigned int period = 0, count = 0;
+unsigned char lll(unsigned char l)
+{
+	unsigned short lfsr = l; //0xACE1u;
+
+	int flg = 1, m,c2=0;
+	//do
+	while(1)
+	{
+		lfsr = (lfsr >> 1) ^ (-(short)(lfsr & 1u) & 0xB400u);
+		++period;
+		printf("%d %d\n", lfsr, period);
+		if(lfsr==7495)
+		count++;
+		 if(count == 1 && lfsr==7495)
+		 m=period;
+
+		 if(count==2 && lfsr==7495){
+			printf("%d\n",period-m);
+			exit(1);
+		 }
+	}
+	// while (lfsr != 63050);
+	lfsr ^= loo((lfsr * lfsr) % (256));
+	return (unsigned char)(lfsr);
 }
 
 void initialize_aes_sbox(uint8_t sbox[256])
@@ -375,6 +401,22 @@ void main()
 
 	// lfsr();
 	printf("%d\n", it(be(15)));
+	unsigned char l = 15, m;
+	int count = 0, flg = 1;
+	while (1)
+	{
+		if (flg)
+		{
+			m = l;
+			flg = 0;
+		}
+		l = lll(l);
+		// l=s_box[((l % 16) + (l >> 4) * 16)];
+		printf("l=%d\n", l);
+		count++;
+		if (count > 100)
+			break;
+	}
 	exit(1);
 	srand(clock());
 	for (int i = 0; i < N; i++)
