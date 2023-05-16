@@ -293,47 +293,48 @@ void lll(void)
 	} while (lfsr != 0xACE1u);
 }
 
-void f(){
-	unsigned char c[8]={1,1,0,0,0,1,1,0};
-	unsigned char v[8]={1,0,1,0,0,0,0,0};
-	unsigned char a[8][8]={
-	{1,0,0,0,1,1,1,1},
-	{1,1,0,0,0,1,1,1},
-	{1,1,1,0,0,0,1,1},
-	{1,1,1,1,0,0,0,1},
-	{1,1,1,1,1,0,0,0},
-	{0,1,1,1,1,1,0,0},
-	{0,0,1,1,1,1,1,1},
-	{0,0,0,1,1,1,1,1}
-	};
-	unsigned char b[8][8]={
-		{0,0,1,0,0,1,0,1},
-		{1,0,0,1,0,0,1,0},
-		{0,1,0,0,1,0,0,1},
-		{1,0,1,0,0,1,0,0},
-		{0,1,0,1,0,0,1,0},
-		{0,0,1,0,1,0,0,1},
-		{1,0,0,1,0,1,0,0},
-		{0,1,0,0,1,0,1,0}
-	};
-
+void f()
+{
+	unsigned char c[8] = {1, 1, 0, 0, 0, 1, 1, 0};
+	unsigned char v[8] = {1, 0, 1, 0, 0, 0, 0, 0};
+	unsigned char a[8] = {
+		0b10001111,
+		0b11000111,
+		0b11100011,
+		0b11110001,
+		0b11111000,
+		0b01111100,
+		0b00111111,
+		0b00011111};
+	unsigned char b[8] = {
+		0b00100101,
+		0b10010010,
+		0b01001001,
+		0b10100100,
+		0b01010010,
+		0b00101001,
+		0b10010100,
+		0b01001010};
 }
 
-#define ROTL8(x,shift) ((uint8_t) ((x) << (shift)) | ((x) >> (8 - (shift))))
-unsigned char be(unsigned char b){
-    return b^ROTL8(b,1)^ROTL8(b,2)^ROTL8(b,3)^ROTL8(b,4)^0x63;
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
+unsigned char be(unsigned char b)
+{
+	return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
 }
 
-
-unsigned char be_inv(unsigned char s){
-	return ROTL8(s,1)^ROTL8(s,3)^ROTL8(s,6)^5;
+unsigned char it(unsigned char s)
+{
+	return ROTL8(s, 1) ^ ROTL8(s, 3) ^ ROTL8(s, 6) ^ 5;
 }
 
-void initialize_aes_sbox(uint8_t sbox[256]) {
+void initialize_aes_sbox(uint8_t sbox[256])
+{
 	uint8_t p = 1, q = 1;
-	
+
 	/* loop invariant: p * q == 1 in the Galois field */
-	do {
+	do
+	{
 		/* multiply p by 3 */
 		p = p ^ (p << 1) ^ (p & 0x80 ? 0x1B : 0);
 
@@ -366,14 +367,14 @@ void lfsr(void)
 	return;
 }
 
-#define ROTL8(x,shift) ((uint8_t) ((x) << (shift)) | ((x) >> (8 - (shift))))
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
 void main()
 {
 	cem a, b, c, d, e, f, g, h;
 	cem x, y;
 
-	//lfsr();
-	printf("%d\n",be_inv(be(15)));
+	// lfsr();
+	printf("%d\n", it(be(15)));
 	exit(1);
 	srand(clock());
 	for (int i = 0; i < N; i++)
