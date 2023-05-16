@@ -321,7 +321,7 @@ void f(){
 
 #define ROTL8(x,shift) ((uint8_t) ((x) << (shift)) | ((x) >> (8 - (shift))))
 unsigned char be(unsigned char b){
-    return b^ROTL8(b,1)^ROTL8(b,2)^ROTL8(b,3)^ROTL8(b,4)^0x63; //(b*31%257)^99;
+    return b^ROTL8(b,1)^ROTL8(b,2)^ROTL8(b,3)^ROTL8(b,4)^0x63;
 }
 
 
@@ -373,7 +373,7 @@ void main()
 	cem x, y;
 
 	//lfsr();
-	printf("%d\n",be_inv(be(53)));
+	printf("%d\n",be_inv(be(15)));
 	exit(1);
 	srand(clock());
 	for (int i = 0; i < N; i++)
