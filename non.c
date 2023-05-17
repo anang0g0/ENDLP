@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-// #include "vc3000.c"
+#include <time.h>
 
 #include "global-p.h"
 #include "struct-p.h"
@@ -362,36 +362,39 @@ unsigned char ml(unsigned char c, int u)
 }
 
 unsigned int period = 0, count = 0;
-unsigned char lll(unsigned char l)
+unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // 0xACE1u;
 
-	int flg = 1, m=lfs, c2 = 0;
+	int flg = 1, m = lfs, c2 = 0;
 	// do
-	int i=3;
-	int mm =0;
+	int i = 3;
+	int mm = 0;
 	while (1)
 	{
 		lfs = lfsr(lfs);
 		lfs = ml(lfs, period + 1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
 		++period;
-		printf("%0x %d\n", lfs, period);
-		if (lfs == l){
+		printf("%d %d\n", lfs, period);
+		if (lfs == l)
+		{
 			count++;
-			if(count==1)
-			mm=period;
+			if (count == 1)
+				mm = period;
 		}
-		if (count == i-1 && lfs == l)
-		{	
-			mm = period-mm;
+		if (count == i - 1 && lfs == l)
+		{
+			mm = period - mm;
 			printf("m=%d\n", mm);
 			i++;
-			mm=period;
-			if(i>100)
-			 exit(1);
+			mm = period;
+			if (i > 20)
+			{
+				printf("l=%d\n", l);
+				exit(1);
+			}
 		}
-		
 	}
 
 	return (unsigned char)(lfs);
@@ -432,7 +435,7 @@ void lf(void)
 	unsigned char m;
 	int count = 0, flg = 1;
 	m = l;
-	l = lll(l);
+	l = slf(l);
 
 	return;
 }
