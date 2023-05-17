@@ -328,36 +328,37 @@ unsigned char let(unsigned char c)
 	return it(it(c));
 }
 
-    int Shift(int e)
-    {
-        int shifted = (e << 1) ^ (((e & 0x80) != 0) ? 0x1B : 0x00);
-        return shifted;
-    }
+int Shift(int e)
+{
+	int shifted = (e << 1) ^ (((e & 0x80) != 0) ? 0x1B : 0x00);
+	return shifted;
+}
 
 static unsigned char Dot(int a, int b)
 {
 
-    int mask = 0x1;
-    int product = 0;
+	int mask = 0x1;
+	int product = 0;
 
-    while (mask != 0)
-    {
-        if ((b & mask) != 0)
-        {
-            product ^= a;
-        }
+	while (mask != 0)
+	{
+		if ((b & mask) != 0)
+		{
+			product ^= a;
+		}
 
-        a = Shift(a);
-        mask <<= 1;
-    }
+		a = Shift(a);
+		mask <<= 1;
+	}
 
-    return (unsigned char)product;
+	return (unsigned char)product;
 }
 
-unsigned char ml(unsigned char c,int u){
-for(int i=0;i<u;i++)
-c=loo(Dot(c,c));
-return c;
+unsigned char ml(unsigned char c, int u)
+{
+	for (int i = 0; i < u; i++)
+		c = loo(Dot(c, c));
+	return c;
 }
 
 unsigned int period = 0, count = 0;
@@ -368,11 +369,11 @@ unsigned char lll(unsigned char l)
 	int flg = 1, m, c2 = 0;
 	// do
 
-	 while(1)
+	while (1)
 	{
-		m=lfsr(lfs);
-		lfs=ml(m,period+1); //loo(Dot(m,m));
-		lfs^=Dot(lfs,(loo(m)^be(m)));
+		m = lfsr(lfs);
+		lfs = ml(m, period + 1);
+		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
 		++period;
 		printf("%d %d\n", lfs, period);
 		if (lfs == 9)
@@ -382,13 +383,17 @@ unsigned char lll(unsigned char l)
 
 		if (count == 2 && lfs == 9)
 		{
-			printf("%d\n", period - m);
+			int n = period - m;
+			printf("%d\n", n);
+			// exit(1);
+		}
+		if (count == 3 && lfs == 9)
+		{
+			int n = period - m;
+			printf("%d\n", n);
 			exit(1);
 		}
-
-		//
 	}
-	// while (lfsr != 63050);
 
 	return (unsigned char)(lfs);
 }
@@ -419,30 +424,18 @@ void initialize_aes_sbox(uint8_t sbox[256])
 	sbox[0] = 0x63;
 }
 
-void lf(void){
-		// lfsr();
-	//srand(clock());
+void lf(void)
+{
+	// lfsr();
+	// srand(clock());
 	printf("%d\n", it(be(15)));
-	unsigned char l = rand()%256;
+	unsigned char l = rand() % 256;
 	unsigned char m;
 	int count = 0, flg = 1;
-	while (1)
-	{
-		if (flg)
-		{
-			m = l;
-			flg = 0;
-		}
-		l = lll(l);
-		//l ^= loo(l);
-		// l=s_box[((l % 16) + (l >> 4) * 16)];
-		printf("l=%d\n", l);
-		count++;
-		if (count > 100)
-			break;
-	}
+	m = l;
+	l = lll(l);
 
-return;
+	return;
 }
 
 #define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
@@ -453,7 +446,7 @@ void main()
 
 	lf();
 	exit(1);
-		
+
 	for (int i = 0; i < N; i++)
 	{
 		b.y[i] = (i + 2) % N;
