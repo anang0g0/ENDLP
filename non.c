@@ -4,6 +4,7 @@
 
 #include "global-p.h"
 #include "struct-p.h"
+#include "lfsr.c"
 typedef struct
 {
 	int u;
@@ -327,31 +328,69 @@ unsigned char let(unsigned char c)
 	return it(it(c));
 }
 
+    int Shift(int e)
+    {
+        int shifted = (e << 1) ^ (((e & 0x80) != 0) ? 0x1B : 0x00);
+        return shifted;
+    }
+
+static unsigned char Dot(int a, int b)
+{
+
+    int mask = 0x1;
+    int product = 0;
+
+    while (mask != 0)
+    {
+        if ((b & mask) != 0)
+        {
+            product ^= a;
+        }
+
+        a = Shift(a);
+        mask <<= 1;
+    }
+
+    return (unsigned char)product;
+}
+
+unsigned char ml(unsigned char c,int u){
+for(int i=0;i<u;i++)
+c=loo(Dot(c,c));
+return c;
+}
+
 unsigned int period = 0, count = 0;
 unsigned char lll(unsigned char l)
 {
-	unsigned short lfsr = l; //0xACE1u;
+	unsigned char lfs = l; // 0xACE1u;
 
-	int flg = 1, m,c2=0;
-	//do
-	while(1)
+	int flg = 1, m, c2 = 0;
+	// do
+
+	 while(1)
 	{
-		lfsr = (lfsr >> 1) ^ (-(short)(lfsr & 1u) & 0xB400u);
+		m=lfsr(lfs);
+		lfs=ml(m,period+1); //loo(Dot(m,m));
+		lfs^=Dot(lfs,(loo(m)^be(m)));
 		++period;
-		printf("%d %d\n", lfsr, period);
-		if(lfsr==7495)
-		count++;
-		 if(count == 1 && lfsr==7495)
-		 m=period;
+		printf("%d %d\n", lfs, period);
+		if (lfs == 9)
+			count++;
+		if (count == 1 && lfs == 9)
+			m = period;
 
-		 if(count==2 && lfsr==7495){
-			printf("%d\n",period-m);
+		if (count == 2 && lfs == 9)
+		{
+			printf("%d\n", period - m);
 			exit(1);
-		 }
+		}
+
+		//
 	}
 	// while (lfsr != 63050);
-	lfsr ^= loo((lfsr * lfsr) % (256));
-	return (unsigned char)(lfsr);
+
+	return (unsigned char)(lfs);
 }
 
 void initialize_aes_sbox(uint8_t sbox[256])
@@ -380,28 +419,12 @@ void initialize_aes_sbox(uint8_t sbox[256])
 	sbox[0] = 0x63;
 }
 
-void lfsr(void)
-{
-	unsigned char lfsr = 0x11;
-	unsigned int period = 0;
-	do
-	{
-		lfsr = s_box[((lfsr % 16) + (lfsr >> 4) * 16)];
-		printf("%d %d\n", lfsr, period);
-		++period;
-	} while (lfsr != 0xAC);
-	return;
-}
-
-#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
-void main()
-{
-	cem a, b, c, d, e, f, g, h;
-	cem x, y;
-
-	// lfsr();
+void lf(void){
+		// lfsr();
+	//srand(clock());
 	printf("%d\n", it(be(15)));
-	unsigned char l = 15, m;
+	unsigned char l = rand()%256;
+	unsigned char m;
 	int count = 0, flg = 1;
 	while (1)
 	{
@@ -411,14 +434,26 @@ void main()
 			flg = 0;
 		}
 		l = lll(l);
+		//l ^= loo(l);
 		// l=s_box[((l % 16) + (l >> 4) * 16)];
 		printf("l=%d\n", l);
 		count++;
 		if (count > 100)
 			break;
 	}
+
+return;
+}
+
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
+void main()
+{
+	cem a, b, c, d, e, f, g, h;
+	cem x, y;
+
+	lf();
 	exit(1);
-	srand(clock());
+		
 	for (int i = 0; i < N; i++)
 	{
 		b.y[i] = (i + 2) % N;
