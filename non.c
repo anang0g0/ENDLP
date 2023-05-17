@@ -368,7 +368,7 @@ unsigned char lll(unsigned char l)
 
 	int flg = 1, m, c2 = 0;
 	// do
-
+	int mm =0;
 	while (1)
 	{
 		m = lfsr(lfs);
@@ -379,18 +379,30 @@ unsigned char lll(unsigned char l)
 		if (lfs == 9)
 			count++;
 		if (count == 1 && lfs == 9)
-			m = period;
+			mm = period;
 
 		if (count == 2 && lfs == 9)
 		{
-			int n = period - m;
-			printf("%d\n", n);
+			mm = period - mm;
+			printf("m=%d\n", mm);
 			// exit(1);
 		}
 		if (count == 3 && lfs == 9)
 		{
-			int n = period - m;
-			printf("%d\n", n);
+			mm = period - mm;
+			printf("m=%d\n", mm);
+			//exit(1);
+		}
+		if (count == 4 && lfs == 9)
+		{
+			mm = period - mm;
+			printf("m=%d\n", mm);
+			//exit(1);
+		}
+		if (count == 5 && lfs == 9)
+		{
+			int n = period - mm;
+			printf("m=%d\n", n);
 			exit(1);
 		}
 	}
