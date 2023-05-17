@@ -371,9 +371,9 @@ unsigned char slf(unsigned char l)
 	int i = 3;
 	int mm = 0;
 	while (1)
-	{
+	{	
 		lfs = lfsr(lfs);
-		lfs = ml(lfs, period + 1);
+		lfs = ml(lfs, period+1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
 		++period;
 		printf("%d %d\n", lfs, period);
