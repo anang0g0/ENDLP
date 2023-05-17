@@ -366,45 +366,32 @@ unsigned char lll(unsigned char l)
 {
 	unsigned char lfs = l; // 0xACE1u;
 
-	int flg = 1, m, c2 = 0;
+	int flg = 1, m=lfs, c2 = 0;
 	// do
+	int i=3;
 	int mm =0;
 	while (1)
 	{
-		m = lfsr(lfs);
-		lfs = ml(m, period + 1);
+		lfs = lfsr(lfs);
+		lfs = ml(lfs, period + 1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
 		++period;
-		printf("%d %d\n", lfs, period);
-		if (lfs == 9)
+		printf("%0x %d\n", lfs, period);
+		if (lfs == l){
 			count++;
-		if (count == 1 && lfs == 9)
-			mm = period;
-
-		if (count == 2 && lfs == 9)
-		{
-			mm = period - mm;
+			if(count==1)
+			mm=period;
+		}
+		if (count == i-1 && lfs == l)
+		{	
+			mm = period-mm;
 			printf("m=%d\n", mm);
-			// exit(1);
+			i++;
+			mm=period;
+			if(i>100)
+			 exit(1);
 		}
-		if (count == 3 && lfs == 9)
-		{
-			mm = period - mm;
-			printf("m=%d\n", mm);
-			//exit(1);
-		}
-		if (count == 4 && lfs == 9)
-		{
-			mm = period - mm;
-			printf("m=%d\n", mm);
-			//exit(1);
-		}
-		if (count == 5 && lfs == 9)
-		{
-			int n = period - mm;
-			printf("m=%d\n", n);
-			exit(1);
-		}
+		
 	}
 
 	return (unsigned char)(lfs);
@@ -456,6 +443,7 @@ void main()
 	cem a, b, c, d, e, f, g, h;
 	cem x, y;
 
+	srand(clock());
 	lf();
 	exit(1);
 
