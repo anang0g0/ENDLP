@@ -367,7 +367,7 @@ unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-	unsigned char test[100]={0};
+	unsigned char test[10000]={0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
 	int i = 3,ii=0;
@@ -377,8 +377,8 @@ unsigned char slf(unsigned char l)
 	while (1)
 	{
 		int lfs2=lfsr(lfs2);
-		//lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-		lfs = ml(lfs, period+1); //s=A^2g^2
+		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
+		//lfs = ml(lfs, period+1); //s=A^2g^2
 		//ff=Dot(ff,l);
 		//lfs=loo(ff);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
