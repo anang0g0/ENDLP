@@ -283,10 +283,11 @@ static const unsigned char inv_s_box[256] = {
 	0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,	 // e
 	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
+
+	unsigned char c = 0b11000110;
+	unsigned char v = 0b10100000;
 void f()
 {
-	unsigned char c[8] = {1, 1, 0, 0, 0, 1, 1, 0};
-	unsigned char v[8] = {1, 0, 1, 0, 0, 0, 0, 0};
 	unsigned char a[8] = {
 		0b10001111,
 		0b11000111,
@@ -374,7 +375,7 @@ unsigned char slf(unsigned char l)
 	{
 		//int lfs2 = lfsr(lfs2);
 		lfs = ml(lfs, period+1);
-		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
+		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c));
 		++period;
 		printf("%d %d\n", lfs, period);
 		if (lfs == l)
