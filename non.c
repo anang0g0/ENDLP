@@ -365,7 +365,7 @@ unsigned char ml(unsigned char c, int u)
 unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
-	unsigned char lfs = l; // 0xACE1u;
+	unsigned char lfs = l; // t=g(a)
 
 	int flg = 1, m = lfs, c2 = 0;
 	// do
@@ -373,9 +373,9 @@ unsigned char slf(unsigned char l)
 	int mm = 0;
 	while (1)
 	{
-		//int lfs2 = lfsr(lfs2);
-		lfs = ml(lfs, period+1);
-		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c));
+		int lfs2 = lfsr(lfs2);
+		lfs = ml(lfs, lfs2); //s=A^2g^2
+		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
 		++period;
 		printf("%d %d\n", lfs, period);
 		if (lfs == l)
@@ -390,7 +390,7 @@ unsigned char slf(unsigned char l)
 			printf("m=%d\n", mm);
 			i++;
 			mm = period;
-			if (i > 20)
+			if (i > 2000)
 			{
 				printf("l=%d\n", l);
 				exit(1);
