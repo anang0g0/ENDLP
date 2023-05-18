@@ -367,19 +367,18 @@ unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-
+	unsigned char test[100]={0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
-	int i = 3;
+	int i = 3,ii=0;
 	int mm = 0;
 	//int lfs2=l; // = lfs; //lfsr(lfs2);
-	int ff=1;
+	int ff;
 	while (1)
-	{	
-
+	{
 		int lfs2=lfsr(lfs2);
-		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-		//lfs = ml(lfs, period+1); //s=A^2g^2
+		//lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
+		lfs = ml(lfs, period+1); //s=A^2g^2
 		//ff=Dot(ff,l);
 		//lfs=loo(ff);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
@@ -392,9 +391,23 @@ unsigned char slf(unsigned char l)
 				mm = period;
 		}
 		if (count == i - 1 && lfs == l)
-		{
+		{	
+
+			if(flg){
+			ff=mm;
+			flg=0;
+			}
+			int k=0;
 			mm = period - mm;
 			printf("m=%d\n", mm);
+			test[ii++]=mm;
+			if(ff==mm){
+			printf("ff=%d\n",mm);
+			for(int i=0;i<ii;i++)
+			k+=test[i];
+			printf("bike=%d\n",k);
+			exit(1);
+			}
 			i++;
 			mm = period;
 			if (i > 2000)
