@@ -415,6 +415,7 @@ unsigned char slf(unsigned char l)
 				int k = 0, kk = 0;
 				mm = period - mm;
 				printf("m=%d\n", mm);
+				
 				test[ii++] = mm;
 				if (ff == mm)
 				{
