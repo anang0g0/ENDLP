@@ -366,14 +366,13 @@ unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // 0xACE1u;
 
-	int flg = 1, m = lfs, c2 = 0, lfs2=l;
+	int flg = 1, m = lfs, c2 = 0;
 	// do
 	int i = 3;
 	int mm = 0;
 	while (1)
 	{	
-		lfs2 = lfsr(lfs2);
-		lfs=lfs2;
+		//int lfs2 = lfsr(lfs2);
 		lfs = ml(lfs, period+1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
 		++period;
