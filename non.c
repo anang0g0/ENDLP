@@ -371,7 +371,7 @@ unsigned char slf(unsigned char l)
 	int i = 3;
 	int mm = 0;
 	while (1)
-	{	
+	{
 		//int lfs2 = lfsr(lfs2);
 		lfs = ml(lfs, period+1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)));
