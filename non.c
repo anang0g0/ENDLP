@@ -367,21 +367,23 @@ unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-	unsigned char test[10000]={0};
+	unsigned char test[10000]={0},t2[1000]={0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
-	int i = 3,ii=0;
+	int i = 3,ii=0,jj=0;;
 	int mm = 0;
 	//int lfs2=l; // = lfs; //lfsr(lfs2);
-	int ff;
+	int ff=1,flg2=1,ff2;
 	while (1)
 	{
-		int lfs2=lfsr(lfs2);
-		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-		//lfs = ml(lfs, period+1); //s=A^2g^2
+		int lfs2=lfsr(lfs2+1);
+		lfs=lfs2;
+		//lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
+		lfs = ml(lfs, period+1); //s=A^2g^2
 		//ff=Dot(ff,l);
 		//lfs=loo(ff);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
+		//lfs2=lfs;
 		++period;
 		printf("%d %d %d\n", lfs,lfs2, period);
 		if (lfs == l)
@@ -392,12 +394,15 @@ unsigned char slf(unsigned char l)
 		}
 		if (count == i - 1 && lfs == l)
 		{	
-
+			if(flg==0 && flg2==1){
+			ff2=mm;
+			flg2=0;
+			}
 			if(flg){
 			ff=mm;
 			flg=0;
 			}
-			int k=0;
+			int k=0,kk=0;
 			mm = period - mm;
 			printf("m=%d\n", mm);
 			test[ii++]=mm;
@@ -405,8 +410,20 @@ unsigned char slf(unsigned char l)
 			printf("ff=%d\n",mm);
 			for(int i=0;i<ii;i++)
 			k+=test[i];
-			printf("bike=%d\n",k);
+			printf("mbike=%d\n",k);
+			//exit(1);
+			}
+			if(flg==0)
+			t2[jj++]=mm;
+			if(ff2==mm && flg==0){
+			printf("ff=%d\n",mm);
+			for(int j=0;j<jj;j++)
+			kk+=t2[j];
+			printf("mbike2=%d\n",kk);
+			if(k==kk){
+			printf("k=%d\n",kk);
 			exit(1);
+			}
 			}
 			i++;
 			mm = period;
@@ -467,7 +484,7 @@ void main()
 	cem a, b, c, d, e, f, g, h;
 	cem x, y;
 
-	srand(clock());
+	//srand(clock());
 	lf();
 	exit(1);
 
