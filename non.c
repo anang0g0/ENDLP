@@ -283,8 +283,9 @@ static const unsigned char inv_s_box[256] = {
 	0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,	 // e
 	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
-unsigned char c = 0b11000110;
-unsigned char v = 0b10100000;
+
+	unsigned char c = 0b11000110;
+	unsigned char v = 0b10100000;
 void f()
 {
 	unsigned char a[8] = {
@@ -355,188 +356,167 @@ static unsigned char Dot(int a, int b)
 }
 
 unsigned char ml(unsigned char c, int u)
-{
-	unsigned char d = 1;
+{	
+	unsigned char d=1;
 	for (int i = 0; i < u; i++)
 		d = loo(Dot(d, c));
 	return d;
 }
 
-unsigned long long int period = 0, count = 0;
+unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-	unsigned char test[10000] = {0}, t2[1000] = {0};
+	unsigned char test[10000]={0},t2[1000]={0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
-	int i = 3, ii = 0, jj = 0;
-	;
+	int i = 3,ii=0;
 	int mm = 0;
-	// int lfs2=l; // = lfs; //lfsr(lfs2);
-	int ff;
+	//int lfs2=l; // = lfs; //lfsr(lfs2);
+	int ff=1,flg2=1,ff2;
 	while (1)
 	{
-		int lfs2 = lfsr(lfs2);
-		lfs = lfs2;
-		// lfs = loo(Dot(lfs2,lfs2));  //A^2(gr)
-		lfs = ml(lfs, period + 1); // s=A^2g^2
-		// int lfs2=l; // = lfs; //lfsr(lfs2);
-		int ff = 1, flg2 = 1, ff2;
-		while (1)
+		int lfs2=lfsr(lfs2+1);
+		//lfs=lfs2;
+		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
+		//lfs = ml(lfs, period+1); //s=A^2g^2
+		//ff=Dot(ff,l);
+		//lfs=loo(ff);
+		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
+		//lfs2=lfs;
+		++period;
+		printf("%d %d %d\n", lfs,lfs2, period);
+		if (lfs == l)
 		{
-			int lfs2 = lfsr(lfs2 + 1);
-			//lfs = lfs2;
-			lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-			//lfs = ml(lfs, period + 1); // s=A^2g^2
-			// ff=Dot(ff,l);
-			// lfs=loo(ff);
-			lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-			// lfs2=lfs;
-			++period;
-			printf("%d %d %d\n", lfs, lfs2, period);
-			if (lfs == l)
-			{
-				count++;
-				if (count == 1)
-					mm = period;
-			}
-			if (count == i - 1 && lfs == l)
-			{
-				if (flg == 0 && flg2 == 1)
-				{
-					ff2 = mm;
-					flg2 = 0;
-				}
-				if (flg)
-				{
-					ff = mm;
-					flg = 0;
-				}
-				int k = 0, kk = 0;
-				mm = period - mm;
-				printf("m=%d\n", mm);
-				
-				test[ii++] = mm;
-				if (ff == mm)
-				{
-					printf("mff=%d\n", mm);
-					for (int i = 0; i < ii; i++)
-						k += test[i];
-					printf("mbike=%d\n", k);
-					// exit(1);
-				}
-				if (flg == 0)
-					t2[jj++] = mm;
-				if (ff2 == mm && flg == 0)
-				{
-					printf("ff=%d\n", mm);
-					for (int j = 0; j < jj; j++)
-						kk += t2[j];
-					printf("mbike2=%d %d\n", kk,k);
-					if (k == kk)
-					{
-						printf("k=%d\n", kk);
-						exit(1);
-					}
-				}
-				i++;
+			count++;
+			if (count == 1)
 				mm = period;
-				if (i > 2000)
-				{
-					printf("ml=%d\n", l);
-					exit(1);
-				}
+		}
+		if (count == i - 1 && lfs == l)
+		{	
+			if(flg==0 && flg2==1){
+			ff2=mm;
+			flg2=0;
+			}
+			if(flg){
+			ff=mm;
+			flg=0;
+			}
+			int k=0,kk=0;
+			mm = period - mm;
+			printf("m=%d\n", mm);
+			test[ii++]=mm;
+			if(ff==mm){
+			printf("ff=%d\n",mm);
+			for(int i=0;i<ii;i++)
+			k+=test[i];
+			printf("mbike=%d\n",k);
+			//exit(1);
+			}
+			if(ff2==mm && flg==0){
+			printf("ff=%d\n",mm);
+			for(int i=0;i<ii;i++)
+			kk+=t2[i];
+			printf("mbike2=%d\n",kk);				
+			}
+			i++;
+			mm = period;
+			if (i > 2000)
+			{
+				printf("l=%d\n", l);
+				exit(1);
 			}
 		}
 	}
-		return (unsigned char)(lfs);
-	}
 
-	void initialize_aes_sbox(uint8_t sbox[256])
+	return (unsigned char)(lfs);
+}
+
+void initialize_aes_sbox(uint8_t sbox[256])
+{
+	uint8_t p = 1, q = 1;
+
+	/* loop invariant: p * q == 1 in the Galois field */
+	do
 	{
-		uint8_t p = 1, q = 1;
+		/* multiply p by 3 */
+		p = p ^ (p << 1) ^ (p & 0x80 ? 0x1B : 0);
 
-		/* loop invariant: p * q == 1 in the Galois field */
-		do
-		{
-			/* multiply p by 3 */
-			p = p ^ (p << 1) ^ (p & 0x80 ? 0x1B : 0);
+		/* divide q by 3 (equals multiplication by 0xf6) */
+		q ^= q << 1;
+		q ^= q << 2;
+		q ^= q << 4;
+		q ^= q & 0x80 ? 0x09 : 0;
 
-			/* divide q by 3 (equals multiplication by 0xf6) */
-			q ^= q << 1;
-			q ^= q << 2;
-			q ^= q << 4;
-			q ^= q & 0x80 ? 0x09 : 0;
+		/* compute the affine transformation */
+		uint8_t xformed = q ^ ROTL8(q, 1) ^ ROTL8(q, 2) ^ ROTL8(q, 3) ^ ROTL8(q, 4);
 
-			/* compute the affine transformation */
-			uint8_t xformed = q ^ ROTL8(q, 1) ^ ROTL8(q, 2) ^ ROTL8(q, 3) ^ ROTL8(q, 4);
+		sbox[p] = xformed ^ 0x63;
+	} while (p != 1);
 
-			sbox[p] = xformed ^ 0x63;
-		} while (p != 1);
+	/* 0 is a special case since it has no inverse */
+	sbox[0] = 0x63;
+}
 
-		/* 0 is a special case since it has no inverse */
-		sbox[0] = 0x63;
-	}
+void lf(void)
+{
+	// lfsr();
+	// srand(clock());
+	printf("%d\n", it(be(15)));
+	unsigned char l = rand() % 256;
+	unsigned char m;
+	int count = 0, flg = 1;
+	m = l;
+	l = slf(l);
 
-	void lf(void)
-	{
-		// lfsr();
-		// srand(clock());
-		printf("%d\n", it(be(15)));
-		unsigned char l = rand() % 256;
-		unsigned char m;
-		int count = 0, flg = 1;
-		m = l;
-		l = slf(l);
-
-		return;
-	}
+	return;
+}
 
 #define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
-	void main()
+void main()
+{
+	cem a, b, c, d, e, f, g, h;
+	cem x, y;
+
+	//srand(clock());
+	lf();
+	exit(1);
+
+	for (int i = 0; i < N; i++)
 	{
-		cem a, b, c, d, e, f, g, h;
-		cem x, y;
-
-		// srand(clock());
-		lf();
-		exit(1);
-
-		for (int i = 0; i < N; i++)
-		{
-			b.y[i] = (i + 2) % N;
-			a.y[i] = i + 1;
-			x.y[i] = rand() % N;
-			y.y[i] = random() % N;
-		}
-		for (int i = 0; i < N; i++)
-		{
-			a.x[i] = i;
-			b.x[i] = i;
-			x.x[i] = i;
-			y.x[i] = i;
-		}
-		random_shuffle(a.x, SIZE_OF_ARRAY(a.x));
-		random_shuffle(b.x, SIZE_OF_ARRAY(b.x));
-		random_shuffle(x.x, SIZE_OF_ARRAY(x.x));
-		random_shuffle(y.x, SIZE_OF_ARRAY(y.x));
-
-		c = konju(a, x);
-		d = konju(a, y);
-		g = cemi(y, x);
-		h = cemi(b, invc(b));
-		h = kemi(g, (x));
-		e = konju(b, x);
-		f = konju(b, y);
-
-		for (int i = 0; i < N; i++)
-			printf("%d, %d %d %d\n", g.y[i], y.y[i], x.y[i], h.y[i]);
-		printf("\n");
-		exit(1);
-		g = cemi(cemi(a, c), invc(a));
-		for (int i = 0; i < N; i++)
-			printf("%d, %d %d %d\n", g.x[i], g.y[i], h.x[i], h.y[i]);
-		printf("\n");
-
-		return;
+		b.y[i] = (i + 2) % N;
+		a.y[i] = i + 1;
+		x.y[i] = rand() % N;
+		y.y[i] = random() % N;
 	}
+	for (int i = 0; i < N; i++)
+	{
+		a.x[i] = i;
+		b.x[i] = i;
+		x.x[i] = i;
+		y.x[i] = i;
+	}
+	random_shuffle(a.x, SIZE_OF_ARRAY(a.x));
+	random_shuffle(b.x, SIZE_OF_ARRAY(b.x));
+	random_shuffle(x.x, SIZE_OF_ARRAY(x.x));
+	random_shuffle(y.x, SIZE_OF_ARRAY(y.x));
+
+	c = konju(a, x);
+	d = konju(a, y);
+	g = cemi(y, x);
+	h = cemi(b, invc(b));
+	h = kemi(g, (x));
+	e = konju(b, x);
+	f = konju(b, y);
+
+	for (int i = 0; i < N; i++)
+		printf("%d, %d %d %d\n", g.y[i], y.y[i], x.y[i], h.y[i]);
+	printf("\n");
+	exit(1);
+	g = cemi(cemi(a, c), invc(a));
+	for (int i = 0; i < N; i++)
+		printf("%d, %d %d %d\n", g.x[i], g.y[i], h.x[i], h.y[i]);
+	printf("\n");
+
+	return;
+}
