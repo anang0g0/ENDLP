@@ -372,13 +372,13 @@ unsigned char slf(unsigned char l)
 	// do
 	int i = 3,ii=0;
 	int mm = 0;
-	//int lfs2=l; // = lfs; //lfsr(lfs2);
+	int lfs2=l; // = lfs; //lfsr(lfs2);
 	int ff;
 	while (1)
 	{
-		int lfs2=lfsr(lfs2);
-		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-		//lfs = ml(lfs, period+1); //s=A^2g^2
+		lfs2=lfsr(lfs2+1);
+		//lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
+		lfs = ml(lfs2, period+1); //s=A^2g^2
 		//ff=Dot(ff,l);
 		//lfs=loo(ff);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
