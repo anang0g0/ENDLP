@@ -33,14 +33,14 @@ lfsr(unsigned char c) {
                         s[k] = cs & 0x01;
                         cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
                 }
-                
+                return cs;
                 printf(" %02x ",cs);
                 if (cs == in_s) {
                          printf("\nreached duplicate at %d.\n", k);
                 }
         
         }
-        return cs;
+        
         
 /* print the stream and put it back together */
         /*
