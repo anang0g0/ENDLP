@@ -3,6 +3,8 @@
 #include <time.h>
 #include <stdint.h>
 
+#include "lfsr.c"
+
 unsigned char c = 0b11000110;
 unsigned char v = 0b10100000;
 
@@ -76,7 +78,6 @@ unsigned char slf(unsigned char l)
 
 	while (1)
 	{
-		// int lfs2 = lfsr(lfs2 + l);
 		lfs = p0w(lfs, (period) + 1); // s=(A^2r^2)^n
 		// exit(1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
@@ -91,7 +92,7 @@ void main(void)
 {
 	// srand(clock());
 	printf("%d\n", it(be(15)));
-	unsigned char l = 1; // rand() % 256;
+	unsigned char l = lfsr(v);
 
 	l = slf(l);
 
