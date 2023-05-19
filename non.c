@@ -354,24 +354,6 @@ static unsigned char Dot(int a, int b)
 	return (unsigned char)product;
 }
 
-unsigned char ml(unsigned char c, int u)
-{
-	unsigned char d = 1;
-	for (int i = 0; i < u; i++)
-		d = loo(Dot(d, c));
-	return d;
-}
-
-int Pow(int x,int n){
-    int ans = 1;
-    while(n>0){
-        if (n % 2)
-            ans *= x;
-        x *= x;
-        n >>= 1;
-	}
-    return ans;
-}
 
 int p0w(int c,int n){
     int d = 1;
@@ -390,7 +372,7 @@ unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-	unsigned char test[10000] = {0}, t2[1000] = {0};
+	unsigned char test[1000000] = {0}, t2[1000] = {0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
 	int i = 3, ii = 0;
@@ -401,12 +383,9 @@ unsigned char slf(unsigned char l)
 	while (1)
 	{
 		int lfs2=lfsr(lfs2+l);
-		//lfs = loo(Dot(lfs, lfs2)); // A^2(gr)
-		//lfs = ml(lfs2, (period)+1); //s=A^2r^2
-		lfs = p0w(lfs2, (period)+1); //s=A^2r^2
+		lfs = p0w(lfs2, (period)+1); //s=(A^2r^2)^n
 		//exit(1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		// lfs2=lfs;
 		++period;
 		printf("%d %d\n", lfs, period);
 		if (lfs == l)
@@ -464,7 +443,7 @@ unsigned char slf(unsigned char l)
 			if (i > 20000)
 			{
 				printf("l=%d\n", l);
-				// exit(1);
+				//exit(1);
 			}
 		}
 	}
