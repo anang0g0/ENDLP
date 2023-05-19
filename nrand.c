@@ -125,15 +125,15 @@ unsigned char slf(unsigned char l)
 	int ff = 1, flg2 = 1, ff2;
 	while (1)
 	{
-		int lfs2 = lfsr(lfs2 + l);
-		lfs = p0w(lfs2, (period) + 1); // s=(A^2r^2)^n
+		//int lfs2 = lfsr(lfs2 + l);
+		lfs = p0w(lfs, (period) + 1); // s=(A^2r^2)^n
 		// exit(1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
 		++period;
 		printf("%d %d\n", lfs, period);
 		
 		//return lfs;
-
+		/*
 		if (lfs == l)
 		{
 			count++;
@@ -170,12 +170,6 @@ unsigned char slf(unsigned char l)
 				ii = 0;
 				// flg=-1;
 			}
-			/*
-			if (ff2 == mm)
-			{
-				printf("ff2==mm\n");
-				exit(1);
-			}*/
 			if (ff2 == mm && flg2 == 0 && ff2 == ff)
 			{
 				printf("ff=%d\n", mm);
@@ -192,6 +186,7 @@ unsigned char slf(unsigned char l)
 				// exit(1);
 			}
 		}
+		*/
 	}
 
 	return (unsigned char)(lfs);
