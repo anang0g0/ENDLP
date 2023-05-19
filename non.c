@@ -283,9 +283,8 @@ static const unsigned char inv_s_box[256] = {
 	0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,	 // e
 	0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
-
-	unsigned char c = 0b11000110;
-	unsigned char v = 0b10100000;
+unsigned char c = 0b11000110;
+unsigned char v = 0b10100000;
 void f()
 {
 	unsigned char a[8] = {
@@ -356,36 +355,60 @@ static unsigned char Dot(int a, int b)
 }
 
 unsigned char ml(unsigned char c, int u)
-{	
-	unsigned char d=1;
+{
+	unsigned char d = 1;
 	for (int i = 0; i < u; i++)
 		d = loo(Dot(d, c));
 	return d;
+}
+
+int Pow(int x,int n){
+    int ans = 1;
+    while(n>0){
+        if (n % 2)
+            ans *= x;
+        x *= x;
+        n >>= 1;
+	}
+    return ans;
+}
+
+int p0w(int c,int n){
+    int d = 1;
+    while(n>0){
+        if (n % 2)
+			d=loo(Dot(d, c));
+            //d *= c;
+		c=loo(Dot(c, c));
+        //c *= c;
+        n >>= 1;
+	}
+    return d;
 }
 
 unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
 	unsigned char lfs = l; // t=g(a)
-	unsigned char test[10000]={0},t2[1000]={0};
+	unsigned char test[10000] = {0}, t2[1000] = {0};
 	int flg = 1, m = lfs, c2 = 0;
 	// do
-	int i = 3,ii=0;
+	int i = 3, ii = 0;
 	int mm = 0;
-	//int lfs2=l; // = lfs; //lfsr(lfs2);
-	int ff=1,flg2=1,ff2;
+	int dd=l;
+	// int lfs2=l; // = lfs; //lfsr(lfs2);
+	int ff = 1, flg2 = 1, ff2;
 	while (1)
 	{
-		int lfs2=lfsr(lfs2+1);
-		//lfs=lfs2;
-		lfs = loo(Dot(lfs,lfs2));  //A^2(gr)
-		//lfs = ml(lfs, period+1); //s=A^2g^2
-		//ff=Dot(ff,l);
-		//lfs=loo(ff);
-		lfs ^= Dot(lfs, (loo(m) ^ be(m)^c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		//lfs2=lfs;
+		int lfs2=lfsr(lfs2+l);
+		//lfs = loo(Dot(lfs, lfs2)); // A^2(gr)
+		//lfs = ml(lfs2, (period)+1); //s=A^2r^2
+		lfs = p0w(lfs2, (period)+1); //s=A^2r^2
+		//exit(1);
+		lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
+		// lfs2=lfs;
 		++period;
-		printf("%d %d %d\n", lfs,lfs2, period);
+		printf("%d %d\n", lfs, period);
 		if (lfs == l)
 		{
 			count++;
@@ -393,38 +416,55 @@ unsigned char slf(unsigned char l)
 				mm = period;
 		}
 		if (count == i - 1 && lfs == l)
-		{	
-			if(flg==0 && flg2==1){
-			ff2=mm;
-			flg2=0;
+		{
+			if (flg == 0 && flg2 == 1)
+			{
+				ff2 = mm;
+				flg2 = 0;
 			}
-			if(flg){
-			ff=mm;
-			flg=0;
+			if (flg)
+			{
+				ff = mm;
+				flg = 0;
 			}
-			int k=0,kk=0;
+			int k = 0, kk = 0;
 			mm = period - mm;
-			printf("m=%d\n", mm);
-			test[ii++]=mm;
-			if(ff==mm){
-			printf("ff=%d\n",mm);
-			for(int i=0;i<ii;i++)
-			k+=test[i];
-			printf("mbike=%d\n",k);
-			//exit(1);
+			printf("m=%d %d\n", mm,ii);
+			test[ii++] = mm;
+			//if(ii>10000){
+			//	printf("mbgame over\n");
+			//	exit(1);
+			//}
+			if (ff == mm && flg == 0)
+			{
+				printf("ff=%d\n", mm);
+				for (int i = 0; i < ii; i++)
+					k += test[i];
+				printf("mbike=%d\n", k);
+				k = 0;
+				ii = 0;
+				// flg=-1;
 			}
-			if(ff2==mm && flg==0){
-			printf("ff=%d\n",mm);
-			for(int i=0;i<ii;i++)
-			kk+=t2[i];
-			printf("mbike2=%d\n",kk);				
+			/*
+			if (ff2 == mm)
+			{
+				printf("ff2==mm\n");
+				exit(1);
+			}*/
+			if (ff2 == mm && flg2 == 0 && ff2 == ff)
+			{
+				printf("ff=%d\n", mm);
+				for (int i = 0; i < ii; i++)
+					kk += t2[i];
+				printf("mbike2=%d\n", kk);
+				exit(1);
 			}
 			i++;
 			mm = period;
-			if (i > 2000)
+			if (i > 20000)
 			{
 				printf("l=%d\n", l);
-				exit(1);
+				// exit(1);
 			}
 		}
 	}
@@ -478,7 +518,7 @@ void main()
 	cem a, b, c, d, e, f, g, h;
 	cem x, y;
 
-	//srand(clock());
+	// srand(clock());
 	lf();
 	exit(1);
 
