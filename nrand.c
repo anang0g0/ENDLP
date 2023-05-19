@@ -33,13 +33,12 @@ unsigned char let(unsigned char c)
  * and its use in stream ciphers.
  */
 
-int k = 0;
 unsigned char
 lfsr(unsigned char c)
 {
 
 	unsigned char in_s, cs, cp, p, nbit, s[STREAM];
-	int i, j; 
+	int i, j, k = 0;
 
 	in_s = c; /* this can be any 8 bit value */
 	p = 0x71; /* max length polynomial x^8+x^4+x^3+x^2+1 = 0b01110001 */
@@ -62,13 +61,12 @@ lfsr(unsigned char c)
 			s[k] = cs & 0x01;
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
-		printf(" %02x ", cs);
 		return cs;
+		printf(" %02x ", cs);
 		if (cs == in_s)
 		{
 			printf("\nreached duplicate at %d.\n", k);
 		}
-		
 	}
 }
 
@@ -134,7 +132,7 @@ unsigned char slf(unsigned char l)
 		++period;
 		printf("%d %d\n", lfs, period);
 		
-		return lfs;
+		//return lfs;
 
 		if (lfs == l)
 		{
@@ -154,10 +152,9 @@ unsigned char slf(unsigned char l)
 				ff = mm;
 				flg = 0;
 			}
-			//int k = 0, kk = 0;
+			int k = 0, kk = 0;
 			mm = period - mm;
 			printf("m=%d %d\n", mm, ii);
-			/*
 			test[ii++] = mm;
 			// if(ii>10000){
 			//	printf("mbgame over\n");
@@ -173,6 +170,12 @@ unsigned char slf(unsigned char l)
 				ii = 0;
 				// flg=-1;
 			}
+			/*
+			if (ff2 == mm)
+			{
+				printf("ff2==mm\n");
+				exit(1);
+			}*/
 			if (ff2 == mm && flg2 == 0 && ff2 == ff)
 			{
 				printf("ff=%d\n", mm);
@@ -188,7 +191,6 @@ unsigned char slf(unsigned char l)
 				printf("l=%d\n", l);
 				// exit(1);
 			}
-			*/
 		}
 	}
 
@@ -197,14 +199,14 @@ unsigned char slf(unsigned char l)
 
 void main(void)
 {
+	// lfsr();
 	// srand(clock());
 	printf("%d\n", it(be(15)));
-	unsigned char l = rand() % 256;
-	l=1;
-	while(1){
-	//l=lfsr(l);
+	unsigned char l = 1; //rand() % 256;
+	unsigned char m;
+	int count = 0, flg = 1;
+	
 	l = slf(l);
-	k=0;
-	}
+
 	return;
 }
