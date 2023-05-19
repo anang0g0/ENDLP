@@ -4,7 +4,7 @@
 
 #include "global-p.h"
 #include "struct-p.h"
-#include "lfsr.c"
+#include "lfsr2.c"
 typedef struct
 {
 	int u;
