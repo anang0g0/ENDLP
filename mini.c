@@ -125,12 +125,10 @@ unsigned char slf(unsigned char l)
 	fp=fopen("test.bin","wb");
 	while (i<200000000)
 	{
-		unsigned char lfs2 = lfsr(lfs2^l);
-		//lfs = p0w(lfs^lfs2, (period) + 1); // s=(A^2r^2)^n
-		//lfs ^= (Dot(lfs, (loo(m) ^ be(m) ^ c))); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		lfs ^= (p0w((lfs^lfs2), (period) + 1)); // s=(A^2r^2)^n
-		lfs ^= (Dot((lfs), (loo(m) ^ be(m) ^ c))); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		++period;
+		unsigned char lfs2 = lfsr(lfs2^lfs);
+		lfs ^= (p0w(lfs2, (random()) + 1)); // s=(A^2r^2)^n
+		lfs ^= (Dot(lfs, (loo(m) ^ be(m) ^ c))); // s^n(A^2t+u) = s^n(A^2t+(At+c))
+		//++period;
 		//printf("%d %d\n", lfs, period);
 		fwrite(&lfs,sizeof(lfs),1,fp);
 		i++;

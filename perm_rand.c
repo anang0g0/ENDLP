@@ -11,14 +11,6 @@ unsigned char x0[N] = {0};
 unsigned char x1[N] = {0};
 unsigned char x2[N] = {0};
 
-typedef union
-{
-  __uint128_t z[N/16];
-  unsigned long long int u[N/8];
-  unsigned int t[N/4];
-  unsigned short x[N/2];
-  unsigned char d[N];
-} arrayul;
 
 #define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
 #define SWAP(type, a, b) \
