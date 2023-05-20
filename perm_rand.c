@@ -137,17 +137,13 @@ void mk_perm()
 }
 int main()
 {
-  FILE *fp;
   time_t t;
-  int i, n, flg = 0, count = 0;
-  unsigned char w[N] = {0};
 
   srand(clock() + time(&t));
-  // 初期化しないとひどいことになる謎
 
-  i = 0;
+//mk_perm();
 
-  n = data();
+  int n = data();
   printf("count=%d\n", n);
 
   return 0;
