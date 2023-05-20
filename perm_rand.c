@@ -7,9 +7,12 @@
 #define N 32
 #define NN 4
 
-unsigned char x0[N] = {0};
-unsigned char x1[N] = {0};
-unsigned char x2[N] = {0};
+
+
+
+unsigned char x0[N] = {21,0,14,28,22,23,7,4,13,19,30,31,2,10,5,9,3,27,29,12,18,20,11,25,17,8,15,24,26,16,6,1};
+unsigned char x1[N] = {23,3,20,18,27,24,6,12,21,9,13,1,4,0,29,19,10,25,22,28,2,7,17,11,31,8,5,30,14,26,15,16};
+unsigned char x2[N] = {1,31,12,16,7,14,30,6,25,15,13,22,19,8,2,26,29,24,20,9,21,0,4,5,27,23,28,17,3,18,10,11};
 
 
 #define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
@@ -34,11 +37,6 @@ void random_shuffle(unsigned char *array, size_t size)
   }
 }
 
-#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
-unsigned char be(unsigned char b)
-{
-	return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
-}
 
 /*
  * S-box transformation table
@@ -150,10 +148,9 @@ int main()
 
   srand(clock() + time(&t));
   //初期化しないとひどいことになる謎
-  //srand(2);
 
 i=0;
-
+/*
   for(int i=0;i<N;i++)
   x1[i]=x0[i]=i;
   random_shuffle(x0,SIZE_OF_ARRAY(x0));
@@ -162,9 +159,17 @@ i=0;
   for(i=0;i<N;i++)
   x2[x0[i]]=i;
   for(i=0;i<N;i++)
+  printf("%d,",x0[i]);
+  printf("\n");
+  for(i=0;i<N;i++)
+  printf("%d,",x1[i]);
+  printf("\n");
+  for(i=0;i<N;i++)
   printf("%d,",x2[i]);
   printf("\n");
+  exit(1);
   //
+  */
   n=data();
   printf("count=%d\n",n);
   //  fclose(fp);
