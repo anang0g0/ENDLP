@@ -7,13 +7,13 @@
  * and its use in stream ciphers.
  */
 
-int lfsr(unsigned char a)
+int main(int argc,char **argv)
 {
 
 	unsigned char in_s, cs, cp, p, nbit, s[STREAM];
 	int i, j, k = 0;
 
-	in_s = a; //0xb4; /* this can be any 8 bit value */
+	in_s = 0xb4; //0xb4; /* this can be any 8 bit value */
 	p = 0x71;	 /* max length polynomial x^8+x^4+x^3+x^2+1 = 0b01110001 */
 
 	cs = in_s; /* copy initial state */
@@ -34,7 +34,7 @@ int lfsr(unsigned char a)
 			s[k] = cs & 0x01;
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
-		//printf(" %02x ", cs);
+		printf(" %02x ", cs);
 		return cs;
 		if (cs == in_s)
 		{
@@ -42,7 +42,7 @@ int lfsr(unsigned char a)
 		}
 	}
 	/* print the stream and put it back together */
-	/*
+	
 	printf("\n** stream cipher **\n");
 	unsigned char out = 0;
 	k = 7;
@@ -58,5 +58,5 @@ int lfsr(unsigned char a)
 			out = 0;
 		}
 	}
-	*/
+	
 }
