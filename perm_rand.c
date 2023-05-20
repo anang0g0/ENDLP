@@ -8,12 +8,9 @@
 #define NN 4
 
 
-
-
-unsigned char x0[N] = {21,0,14,28,22,23,7,4,13,19,30,31,2,10,5,9,3,27,29,12,18,20,11,25,17,8,15,24,26,16,6,1};
-unsigned char x1[N] = {23,3,20,18,27,24,6,12,21,9,13,1,4,0,29,19,10,25,22,28,2,7,17,11,31,8,5,30,14,26,15,16};
-unsigned char x2[N] = {1,31,12,16,7,14,30,6,25,15,13,22,19,8,2,26,29,24,20,9,21,0,4,5,27,23,28,17,3,18,10,11};
-
+unsigned char x0[N] = {21,8,19,12,2,11,28,20,7,5,9,1,22,27,16,31,18,3,26,29,17,15,25,14,30,13,6,4,10,24,23,0};
+unsigned char x1[N] = {10,7,15,11,14,30,8,18,20,21,4,0,31,28,16,13,24,23,27,9,12,22,6,3,1,5,19,29,26,25,17,2};
+unsigned char x2[N] = {31,11,4,17,27,9,26,8,1,10,28,5,3,25,23,21,14,20,16,2,7,0,12,30,29,22,18,13,6,19,24,15};
 
 #define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
 #define SWAP(type, a, b) \
@@ -37,6 +34,29 @@ void random_shuffle(unsigned char *array, size_t size)
   }
 }
 
+void rp(unsigned char *a)
+{
+  int i, j, x;
+  for (i = 0; i < N; i++)
+  {
+    a[i] = i;
+  }
+  for (i = 0; i < N - 2; i++)
+  {
+    // rand from i+1 to N-1
+    j = (rand() % (N - 1 - i)) + i + 1;
+
+    // swap a[i] and a[j]
+    x = a[j];
+    a[j] = a[i];
+    a[i] = x;
+  }
+  if (a[N - 1] == N - 1)
+  {
+    a[N - 1] = a[N - 2];
+    a[N - 2] = N - 1;
+  }
+}
 
 /*
  * S-box transformation table
@@ -82,24 +102,27 @@ static const unsigned char inv_s_box[256] = {
     0xa0, 0xe0, 0x3b, 0x4d, 0xae, 0x2a, 0xf5, 0xb0, 0xc8, 0xeb, 0xbb, 0x3c, 0x83, 0x53, 0x99, 0x61,  // e
     0x17, 0x2b, 0x04, 0x7e, 0xba, 0x77, 0xd6, 0x26, 0xe1, 0x69, 0x14, 0x63, 0x55, 0x21, 0x0c, 0x7d}; // f
 
-unsigned int
-xor (void)
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
+unsigned char be(unsigned char b)
 {
+	return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
+}
+
+
+unsigned int xor (void) {
   static unsigned int y = 2463534242;
   y = y ^ (y << 13);
   y = y ^ (y >> 17);
   return y = y ^ (y << 15);
 }
 
-unsigned long long int
-xor64 (void)
+    unsigned long long int xor64(void)
 {
   static unsigned long long int x = 88172645463325252ULL;
   x = x ^ (x << 13);
   x = x ^ (x >> 7);
   return x = x ^ (x << 17);
 }
-
 
 static inline uint32_t rotl32(uint32_t x, int n)
 {
@@ -110,68 +133,67 @@ static inline uint32_t rotl32(uint32_t x, int n)
 int data()
 {
   unsigned long long int i, j = 0, k = 0;
-  unsigned char salt[N]={0, 166, 108, 148, 136, 242, 113, 68, 172, 152, 19, 72, 49, 199, 89, 13, 23, 210, 214, 187, 77, 68, 204, 4, 150, 239, 243, 60, 165, 236, 121, 206}; //, 226, 180, 26, 143, 162, 169, 124, 58, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252}; //{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+  unsigned char salt[N] = { 226, 180, 26, 143, 162, 169, 124, 58, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252}; 
+  //{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
   unsigned short aa = 0;
   FILE *fp;
   unsigned char w[N] = {0};
-  unsigned int cnt = 0,flg=0;
+  unsigned int cnt = 0, flg = 0;
 
-fp=fopen("1.bin","wb");
+  fp = fopen("1.bin", "wb");
 
-
-//memcpy(a.d,salt,sizeof(salt));
+  // memcpy(a.d,salt,sizeof(salt));
   while (j < 100000000)
   {
 
-      for (i = 0; i < N; i++)
+    for (i = 0; i < N; i++)
       w[i] = x0[x1[x2[i]]];
 
-    for (i = 0; i < N; i++){
-      salt[i] ^= s_box[salt[w[i]]];  //normal
+    for (i = 0; i < N; i++)
+    {
+      salt[i] ^= be(salt[w[i]]); // normal
     }
 
-    memcpy(x1,w,sizeof(x1));
-    fwrite(salt,1,N,fp);
+    memcpy(x1, w, sizeof(x1));
+    fwrite(salt, 1, N, fp);
 
     j++;
   }
 
-return j;
+  return j;
 }
 
 int main()
 {
   FILE *fp;
   time_t t;
-  int i,n,flg=0,count=0;
-  unsigned char w[N]={0};
+  int i, n, flg = 0, count = 0;
+  unsigned char w[N] = {0};
 
   srand(clock() + time(&t));
-  //初期化しないとひどいことになる謎
+  // 初期化しないとひどいことになる謎
 
-i=0;
+  i = 0;
+  
 /*
-  for(int i=0;i<N;i++)
-  x1[i]=x0[i]=i;
-  random_shuffle(x0,SIZE_OF_ARRAY(x0));
-  random_shuffle(x1,SIZE_OF_ARRAY(x1));
-
-  for(i=0;i<N;i++)
-  x2[x0[i]]=i;
-  for(i=0;i<N;i++)
-  printf("%d,",x0[i]);
-  printf("\n");
-  for(i=0;i<N;i++)
-  printf("%d,",x1[i]);
-  printf("\n");
-  for(i=0;i<N;i++)
-  printf("%d,",x2[i]);
-  printf("\n");
-  exit(1);
-  //
-  */
-  n=data();
-  printf("count=%d\n",n);
+  rp(x0);
+  rp(x1);
+    for(i=0;i<N;i++)
+    x2[x0[i]]=i;
+    for(i=0;i<N;i++)
+    printf("%d,",x0[i]);
+    printf("\n");
+    for(i=0;i<N;i++)
+    printf("%d,",x1[i]);
+    printf("\n");
+    for(i=0;i<N;i++)
+    printf("%d,",x2[i]);
+    printf("\n");
+    //exit(1);
+    //
+  */  
+  n = data();
+  printf("count=%d\n", n);
   //  fclose(fp);
 
   return 0;
