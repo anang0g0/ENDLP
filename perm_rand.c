@@ -42,6 +42,12 @@ void random_shuffle(unsigned char *array, size_t size)
   }
 }
 
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
+unsigned char be(unsigned char b)
+{
+	return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
+}
+
 /*
  * S-box transformation table
  */
@@ -104,29 +110,6 @@ xor64 (void)
   return x = x ^ (x << 17);
 }
 
-void rp(unsigned char *a)
-{
-  int i, j, x;
-  for (i = 0; i < N; i++)
-  {
-    a[i] = i;
-  }
-  for (i = 0; i < N - 2; i++)
-  {
-    // rand from i+1 to N-1
-    j = (rand() % (N - 1 - i)) + i + 1;
-
-    // swap a[i] and a[j]
-    x = a[j];
-    a[j] = a[i];
-    a[i] = x;
-  }
-  if (a[N - 1] == N - 1)
-  {
-    a[N - 1] = a[N - 2];
-    a[N - 2] = N - 1;
-  }
-}
 
 static inline uint32_t rotl32(uint32_t x, int n)
 {
@@ -137,12 +120,9 @@ static inline uint32_t rotl32(uint32_t x, int n)
 int data()
 {
   unsigned long long int i, j = 0, k = 0;
-
-  arrayul a ={0},ww={0}; 
   unsigned char salt[N]={0, 166, 108, 148, 136, 242, 113, 68, 172, 152, 19, 72, 49, 199, 89, 13, 23, 210, 214, 187, 77, 68, 204, 4, 150, 239, 243, 60, 165, 236, 121, 206}; //, 226, 180, 26, 143, 162, 169, 124, 58, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252}; //{1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
   unsigned short aa = 0;
   FILE *fp;
-  unsigned char z[N];
   unsigned char w[N] = {0};
   unsigned int cnt = 0,flg=0;
 

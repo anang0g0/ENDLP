@@ -34,7 +34,7 @@ int lfsr(unsigned char a)
 			s[k] = cs & 0x01;
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
-		printf(" %02x ", cs);
+		//printf(" %02x ", cs);
 		return cs;
 		if (cs == in_s)
 		{
