@@ -134,7 +134,7 @@ unsigned long long u;
 unsigned int period = 0, counti = 0;
 unsigned long long slf(unsigned l)
 {
-	unsigned char lfs = l; // t=g(a)
+	unsigned char lfs = l%256; // t=g(a)
 	unsigned char m = lfs;
 	unsigned int kount = 0;
 	UI u;
