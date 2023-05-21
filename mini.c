@@ -156,12 +156,11 @@ unsigned char slf(unsigned char l)
 
 void main(void)
 {
-	srand(clock());
 	int n;
-	//scanf("%d",&n);
-	//srand(n);
+	printf("初期値を入れてください = ");
+	scanf("%d",&n);
 	printf("%d\n", it(be(15)));
-	unsigned char l = lfsr(v);
+	unsigned char l = lfsr(n);
 
 	l = slf(l);
 
