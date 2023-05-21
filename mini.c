@@ -21,7 +21,6 @@ unsigned char loo(unsigned char c)
 	return be(be(c));
 }
 
-#define STREAM (256 * 8)
 
 static inline uint32_t rotl32(uint32_t x, int n)
 {
@@ -88,12 +87,10 @@ unsigned long long slf(unsigned long long l)
 
 	FILE *fp;
 	int i = 1;
-	counti = be(lfs) ^ l;
-	fp = fopen("test.bin", "wb");
+	counti = be(lfs) ^ l&0xffffffff;
+	unsigned char lfs2 = (l+lfs) % 256 + 1; // fsr(lfs2 ^ lfs);
 	while (i < 64)
 	{
-		unsigned char lfs2 = l % 256 + 1; // fsr(lfs2 ^ lfs);
-
 		counti = rotl32(counti ^ it(lfs2), counti % 32);
 		// printf("%d\n",counti>>1);
 		lfs ^= (p0w(loo(Dot(lfs, lfs2)), (counti >> 1) + 1)); // s=(A^2r^2)^n
