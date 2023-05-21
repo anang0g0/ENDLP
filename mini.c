@@ -164,11 +164,10 @@ unsigned long long slf(unsigned l)
 void main(void)
 {
 	int n;
+	unsigned long long l;
+
 	printf("初期値を入れてください = ");
 	scanf("%d", &n);
-	printf("%d\n", it(be(15)));
-	unsigned long long l;
-	//unsigned char c= lfsr(n);
 
 	//while(1)
 	{
