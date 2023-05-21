@@ -141,7 +141,7 @@ unsigned long long slf(unsigned l)
 
 	FILE *fp;
 	int i = 1;
-	counti = be(lfs);
+	counti = be(lfs)^l;
 	fp = fopen("test.bin", "wb");
 	while (i < 64)
 	{
