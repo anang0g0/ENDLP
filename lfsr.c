@@ -7,7 +7,7 @@
  * and its use in stream ciphers.
  */
 
-int main(int argc,char **argv)
+int main(int argc ,char **argv)
 {
 
 	unsigned char in_s, cs, cp, p, nbit, s[STREAM];
@@ -35,7 +35,7 @@ int main(int argc,char **argv)
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
 		printf(" %02x ", cs);
-		return cs;
+		//return cs;
 		if (cs == in_s)
 		{
 			printf("\nreached duplicate at %d.\n", k);
