@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <stdint.h>
+#include <omp.h>
 
 unsigned char c = 0b11000110;
 unsigned char v = 0b10100000;
@@ -27,6 +28,11 @@ unsigned char let(unsigned char c)
 	return it(it(c));
 }
 
+typedef union {
+unsigned char a[256];
+unsigned long long u[32];
+} AU;
+
 #define STREAM (256 * 8)
 
 /* short program to understand linear feed shift register
@@ -43,7 +49,7 @@ int lfsr(unsigned char a)
 	p = 0x71; /* max length polynomial x^8+x^4+x^3+x^2+1 = 0b01110001 */
 
 	cs = in_s; /* copy initial state */
-
+	AU u={0};
 	// printf("\nByte values for lfsr with initial value of 0xb4, and bit mask 0x71.\n");
 	// printf("Should correspond to primitive polynomial x^8+x^4+x^3+x^2+1.\n");
 
@@ -61,7 +67,7 @@ int lfsr(unsigned char a)
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
 		// printf(" %02x ", cs);
-
+		
 		return cs;
 		if (cs == in_s)
 		{
@@ -132,50 +138,53 @@ unsigned long long u;
 } UI;
 
 unsigned int period = 0, counti = 0;
-unsigned long long slf(unsigned  long long l)
+AU slf(UI seed)
 {
-	unsigned char lfs = l%256; // t=g(a)
+	unsigned char lfs = be(seed.c[0]); // t=g(a)
 	unsigned char m = lfs;
 	unsigned int kount = 0;
-	UI u;
+	AU u;
 
 	FILE *fp;
 	int i = 1;
-	counti = be(lfs)^((l&0xffffffff)+(l>>32));
+	counti = seed.x[0]+seed.x[1]^0x12345678;
 	//fp = fopen("test.bin", "wb");
-	while (i < 16)
+	#pragma omp pallarel 
+	while (i < 32)
 	{
 		unsigned char lfs2 = lfsr(lfs2 ^ lfs);
 
 		counti = rotl32(counti ^ it(lfs2), counti % 32);
+		//kount ^= rotl32(counti ^ be(lfs2), counti % 32);
 		// printf("%d\n",counti>>1);
-		lfs ^= (p0w(loo(Dot(lfs, lfs2)), (counti >> 1) + 1)); // s=(A^2r^2)^n
+		lfs ^= (p0w(loo(Dot(lfs, lfs)), (counti >> 1) + 1)); // s=(A^2r^2)^n
 		lfs ^= (Dot(lfs, (loo(m) ^ be(m) ^ c)));			  // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		//++period;
-		u.c[i%8]^=lfs;
-		// printf("%d %d\n", lfs, period);
-		//fwrite(&lfs, sizeof(lfs), 1, fp);
+		u.a[i%16]^=lfs;
 		i++;
 	}
-
-	return u.u;
+	//u.x[0]=counti;
+	//u.x[1]=kount;
+	return u;
 }
+
+
 
 void main(void)
 {
-	unsigned long long int n;
+	UI n;
+	AU m;
 	FILE *fp=fopen("test.bin","wb");
 	printf("初期値を入れてください = ");
-	scanf("%llu", &n);
+	scanf("%llu", &n.u);
 	printf("%d\n", it(be(15)));
 	unsigned long long l;
 
-	for(int i=0;i<10000000;i++)
+	for(int i=0;i<2000000;i++)
 	{
-	l = slf(n);
+	m = slf(n);
 	//printf("%llu\n",l);
-	fwrite(&l,sizeof(l),1,fp);
-	n=l;
+	fwrite(&m.u,sizeof(n.u),2,fp);
+	n.u=m.u[0];
 	}
 	fclose(fp);
 
