@@ -30,6 +30,7 @@ unsigned char let(unsigned char c)
 
 typedef union {
 unsigned char a[128];
+unsigned d[32];
 unsigned long long u[16];
 } AU;
 
@@ -157,8 +158,8 @@ UI serial(UI seed)
 	AU lfs2 = lfsr(lfs2.a[0] ^ lfs);
 	while (i < 8)
 	{
-		counti = rotl32(counti ^ it(lfs2.a[i]), counti % 32);
-		kount ^= rotl32(counti ^ be(lfs2.a[i]), counti % 32);
+		counti = rotl32(counti ^ (lfs2.d[i]), counti % 32);
+		kount ^= rotl32(counti ^ (lfs2.d[i+8]), counti % 32);
 		i++;
 	}
 	u.x[0]=counti;
@@ -210,12 +211,13 @@ void main(void)
 
 	for(int i=0;i<20000000;i++)
 	{
+	//part 1
 	//m = slf(n);
-
 	//printf("%llu\n",m.u[i%16]);
 	//fwrite(m.u,8,16,fp);
 	//n.u=m.u[0];
 
+	// part 2
 	n=serial(n);
 	fwrite(&n.u,8,1,fp);
 
