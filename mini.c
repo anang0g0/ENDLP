@@ -142,7 +142,7 @@ unsigned long long u;
 } UI;
 
 
-
+// 思いつきで作った乱数
 unsigned int period = 0, counti = 0;
 UI serial(UI seed)
 {
@@ -167,7 +167,7 @@ UI serial(UI seed)
 	return u;
 }
 
-
+// 半直積乱数高速版
 AU slf(UI seed)
 {
 	unsigned char lfs = be(seed.c[0]); // t=g(a)
