@@ -70,6 +70,11 @@ void sbox(unsigned long long x[5]) {
    x[1] ^= x[0]; x[0] ^= x[4]; x[3] ^= x[2]; x[2] =~ x[2];
 }
 
+typedef union {
+unsigned char c[8];
+unsigned long long u;
+} UI ;
+
 int data(UI L)
 {
   unsigned long long i, j = 0, k = 0;
