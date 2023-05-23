@@ -52,10 +52,28 @@ static inline uint64_t rotl64(uint64_t x, int8_t r)
 {
   return (x << r) | (x >> (64 - r));
 }
-int data()
+
+
+unsigned long long state[5] = { 0 }, t[5] = { 0 };
+void sbox(unsigned long long x[5]) {
+   // Mensubtitusikan angka menjadi angka baru pada state sesuai dengan sbox
+   // Biasanya sbox dilakukan dengan menggunakan tabel lookup
+   // tapi juga bisa menggunakan bitslice implementation sesuai dengan spec ascon
+   // justru bitwise operation lebih bagus karena lebih ringan
+   // dan juga menghindari penggunaan side channel attack.
+
+   x[0] ^= x[4]; x[4] ^= x[3]; x[2] ^= x[1];
+   t[0] = x[0]; t[1] = x[1]; t[2] = x[2]; t[3] = x[3]; t[4] = x[4];
+   t[0] =~ t[0]; t[1] =~ t[1]; t[2] =~ t[2]; t[3] =~ t[3]; t[4] =~ t[4];
+   t[0] &= x[1]; t[1] &= x[2]; t[2] &= x[3]; t[3] &= x[4]; t[4] &= x[0];
+   x[0] ^= t[1]; x[1] ^= t[2]; x[2] ^= t[3]; x[3] ^= t[4]; x[4] ^= t[0];
+   x[1] ^= x[0]; x[0] ^= x[4]; x[3] ^= x[2]; x[2] =~ x[2];
+}
+
+int data(UI L)
 {
-  unsigned long long int i, j = 0, k = 0;
-  unsigned long long salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+  unsigned long long i, j = 0, k = 0;
+  unsigned char salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
   //{226, 180, 26, 143, 162, 169, 124, 1158, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252};
   //
   //
@@ -66,20 +84,11 @@ int data()
   unsigned int cnt = 0, flg = 0;
 
   fp = fopen("1.bin", "wb");
+  for(int i=0;i<8;i++)
+  salt[i]^=L.c[i];
 
-  // booster
-  for (j = 0; j < 256; j++)
-  {
-      for (i = 0; i < N; i++)
-      w[i] = x0[x1[x2[i]]];
-
-    for (i = 0; i < N; i++)
-    {
-      salt[i] += rotl64(salt[w[i]], salt[i] % 64); // normal
-    }
-  }
   // memcpy(a.d,salt,sizeof(salt));
-  while (j < 400000)
+  while (j < 4000000)
   {
 
     for (i = 0; i < N; i++)
@@ -87,11 +96,11 @@ int data()
 
     for (i = 0; i < N; i++)
     {
-      salt[i] += rotl64(salt[w[i]], salt[i] % 64); // normal
+      salt[i] ^= salt[w[i]]; // normal
     }
 
     memcpy(x1, w, sizeof(x1));
-    fwrite(salt, 8, N, fp);
+    fwrite(salt, 1, N, fp);
 
     j++;
   }
@@ -122,12 +131,13 @@ void mk_perm()
 int main()
 {
   time_t t;
+  UI nn;
 
   srand(clock() + time(&t));
-
+  scanf("%llu",&nn.u);
   // mk_perm();
 
-  int n = data();
+  int n = data(nn);
   printf("count=%d\n", n);
 
   return 0;
