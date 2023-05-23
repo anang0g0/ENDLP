@@ -80,17 +80,14 @@ int data(UI L)
   unsigned long long i, j = 0, k = 0;
   unsigned char salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
   //{226, 180, 26, 143, 162, 169, 124, 1158, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252};
-  //
-  //
-
-  unsigned short aa = 0;
+  
   FILE *fp;
   unsigned char w[N] = {0};
-  unsigned int cnt = 0, flg = 0;
 
+for(int i=0;i<8;i++)
+  salt[i]+=L.c;
+  
   fp = fopen("1.bin", "wb");
-  for(int i=0;i<8;i++)
-  salt[i]^=L.c[i];
 
   // memcpy(a.d,salt,sizeof(salt));
   while (j < 4000000)
@@ -101,7 +98,7 @@ int data(UI L)
 
     for (i = 0; i < N; i++)
     {
-      salt[i] ^= salt[w[i]]; // normal
+      salt[i] ^= ROTL8(be(salt[x0[i]]), salt[i] % 8); // normal
     }
 
     memcpy(x1, w, sizeof(x1));
@@ -140,6 +137,7 @@ int main()
 
   srand(clock() + time(&t));
   scanf("%llu",&nn.u);
+
   // mk_perm();
 
   int n = data(nn);
