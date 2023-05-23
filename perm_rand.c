@@ -6,31 +6,11 @@
 
 #define N 32
 
+#define ROTL64(x, y) _rotl64(x, y)
+
 unsigned char x0[N] = {21, 8, 19, 12, 2, 11, 28, 20, 7, 5, 9, 1, 22, 27, 16, 31, 18, 3, 26, 29, 17, 15, 25, 14, 30, 13, 6, 4, 10, 24, 23, 0};
 unsigned char x1[N] = {10, 7, 15, 11, 14, 30, 8, 18, 20, 21, 4, 0, 31, 28, 16, 13, 24, 23, 27, 9, 12, 22, 6, 3, 1, 5, 19, 29, 26, 25, 17, 2};
 unsigned char x2[N] = {31, 11, 4, 17, 27, 9, 26, 8, 1, 10, 28, 5, 3, 25, 23, 21, 14, 20, 16, 2, 7, 0, 12, 30, 29, 22, 18, 13, 6, 19, 24, 15};
-
-#define SIZE_OF_ARRAY(array) (sizeof(array) / sizeof(array[0]))
-#define SWAP(type, a, b) \
-  {                      \
-    type work = a;       \
-    a = b;               \
-    b = work;            \
-  }
-
-/*
-    Fisher-Yates shuffle による方法
-    配列の要素をランダムシャッフルする
-*/
-void random_shuffle(unsigned char *array, size_t size)
-{
-  for (size_t i = size; i > 1; --i)
-  {
-    size_t a = i - 1;
-    size_t b = rand() % i;
-    SWAP(int, array[a], array[b]);
-  }
-}
 
 void rp(unsigned char *a)
 {
@@ -62,32 +42,22 @@ unsigned char be(unsigned char b)
   return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
 }
 
-unsigned int xor (void) {
-  static unsigned int y = 2463534242;
-  y = y ^ (y << 13);
-  y = y ^ (y >> 17);
-  return y = y ^ (y << 15);
-}
-
-    unsigned long long int xor64(void)
-{
-  static unsigned long long int x = 88172645463325252ULL;
-  x = x ^ (x << 13);
-  x = x ^ (x >> 7);
-  return x = x ^ (x << 17);
-}
-
 static inline uint32_t rotl32(uint32_t x, int n)
 {
   // http://blog.regehr.org/archives/1063
   return x << n | (x >> (-n & 31));
 }
 
+static inline uint64_t rotl64(uint64_t x, int8_t r)
+{
+  return (x << r) | (x >> (64 - r));
+}
 int data()
 {
   unsigned long long int i, j = 0, k = 0;
-  unsigned char salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
-  //{226, 180, 26, 143, 162, 169, 124, 58, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252};
+  unsigned long long salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
+  //{226, 180, 26, 143, 162, 169, 124, 1158, 94, 148, 232, 95, 227, 204, 18, 170, 34, 249, 221, 20, 138, 84, 147, 71, 131, 190, 225, 166, 114, 133, 31, 252};
+  //
   //
 
   unsigned short aa = 0;
@@ -97,8 +67,19 @@ int data()
 
   fp = fopen("1.bin", "wb");
 
+  // booster
+  for (j = 0; j < 256; j++)
+  {
+      for (i = 0; i < N; i++)
+      w[i] = x0[x1[x2[i]]];
+
+    for (i = 0; i < N; i++)
+    {
+      salt[i] += rotl64(salt[w[i]], salt[i] % 64); // normal
+    }
+  }
   // memcpy(a.d,salt,sizeof(salt));
-  while (j < 10000000)
+  while (j < 400000)
   {
 
     for (i = 0; i < N; i++)
@@ -106,11 +87,11 @@ int data()
 
     for (i = 0; i < N; i++)
     {
-      salt[i] += be(salt[w[i]]); // normal
+      salt[i] += rotl64(salt[w[i]], salt[i] % 64); // normal
     }
 
     memcpy(x1, w, sizeof(x1));
-    fwrite(salt, 1, N, fp);
+    fwrite(salt, 8, N, fp);
 
     j++;
   }
