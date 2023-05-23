@@ -29,8 +29,8 @@ unsigned char let(unsigned char c)
 }
 
 typedef union {
-unsigned char a[256];
-unsigned long long u[32];
+unsigned char a[128];
+unsigned long long u[16];
 } AU;
 
 #define STREAM (256 * 8)
@@ -39,7 +39,7 @@ unsigned long long u[32];
  * and its use in stream ciphers.
  */
 
-int lfsr(unsigned char a)
+AU lfsr(unsigned char a)
 {
 
 	unsigned char in_s, cs, cp, p, nbit, s[STREAM];
@@ -53,6 +53,7 @@ int lfsr(unsigned char a)
 	// printf("\nByte values for lfsr with initial value of 0xb4, and bit mask 0x71.\n");
 	// printf("Should correspond to primitive polynomial x^8+x^4+x^3+x^2+1.\n");
 
+	int kk=0;
 	while (k < STREAM)
 	{
 		for (j = 0; j < 8; j++, k++)
@@ -66,14 +67,16 @@ int lfsr(unsigned char a)
 			s[k] = cs & 0x01;
 			cs = (cs >> 1) | (nbit << 7); /*  rotate in new bit */
 		}
-		// printf(" %02x ", cs);
-		
-		return cs;
+		//printf(" %02x %d\n", cs,kk);
+		u.a[kk%128]^=be(cs);
+		kk++;
+		//return cs;
 		if (cs == in_s)
 		{
-			printf("\nreached duplicate at %d.\n", k);
+			//printf("\nreached duplicate at %d.\n", k);
 		}
 	}
+return u;
 }
 
 static inline uint32_t rotl32(uint32_t x, int n)
@@ -137,7 +140,33 @@ unsigned int x[2];
 unsigned long long u;
 } UI;
 
+
+
 unsigned int period = 0, counti = 0;
+UI serial(UI seed)
+{
+	unsigned char lfs = be(seed.c[0]); // t=g(a)
+	unsigned char m = lfs;
+	unsigned int kount = 0;
+	UI u;
+
+	FILE *fp;
+	int i = 1;
+	counti = seed.x[0]+seed.x[1]^0x12345678;
+	//fp = fopen("test.bin", "wb");
+	AU lfs2 = lfsr(lfs2.a[0] ^ lfs);
+	while (i < 8)
+	{
+		counti = rotl32(counti ^ it(lfs2.a[i]), counti % 32);
+		kount ^= rotl32(counti ^ be(lfs2.a[i]), counti % 32);
+		i++;
+	}
+	u.x[0]=counti;
+	u.x[1]=kount;
+	return u;
+}
+
+
 AU slf(UI seed)
 {
 	unsigned char lfs = be(seed.c[0]); // t=g(a)
@@ -146,24 +175,24 @@ AU slf(UI seed)
 	AU u;
 
 	FILE *fp;
-	int i = 1;
+	int i = 0;
 	counti = seed.x[0]+seed.x[1]^0x12345678;
 	//fp = fopen("test.bin", "wb");
-	#pragma omp pallarel 
-	while (i < 32)
-	{
-		unsigned char lfs2 = lfsr(lfs2 ^ lfs);
 
-		counti = rotl32(counti ^ it(lfs2), counti % 32);
-		//kount ^= rotl32(counti ^ be(lfs2), counti % 32);
-		// printf("%d\n",counti>>1);
+	//for(int i=0;i<256;i++)
+	//printf("%d,",lfs2.a[i]);
+	//exit(1);
+	AU lfs2 = lfsr(it(lfs2.a[0]) ^ lfs);
+	#pragma omp pallarel 
+	while (i < 256)
+	{
+		lfs=be(lfs2.a[i%128]);
+		counti = rotl32(counti ^ (lfs), counti % 32);
 		lfs ^= (p0w(loo(Dot(lfs, lfs)), (counti >> 1) + 1)); // s=(A^2r^2)^n
 		lfs ^= (Dot(lfs, (loo(m) ^ be(m) ^ c)));			  // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		u.a[i%16]^=lfs;
+		u.a[i%128]^=lfs;
 		i++;
 	}
-	//u.x[0]=counti;
-	//u.x[1]=kount;
 	return u;
 }
 
@@ -172,19 +201,25 @@ AU slf(UI seed)
 void main(void)
 {
 	UI n;
-	AU m;
+	AU m={0};
 	FILE *fp=fopen("test.bin","wb");
 	printf("初期値を入れてください = ");
 	scanf("%llu", &n.u);
 	printf("%d\n", it(be(15)));
 	unsigned long long l;
 
-	for(int i=0;i<2000000;i++)
+	for(int i=0;i<20000000;i++)
 	{
-	m = slf(n);
-	//printf("%llu\n",l);
-	fwrite(&m.u,sizeof(n.u),2,fp);
-	n.u=m.u[0];
+	//m = slf(n);
+
+	//printf("%llu\n",m.u[i%16]);
+	//fwrite(m.u,8,16,fp);
+	//n.u=m.u[0];
+
+	n=serial(n);
+	fwrite(&n.u,8,1,fp);
+
+	
 	}
 	fclose(fp);
 
