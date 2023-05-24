@@ -231,7 +231,7 @@ int kpk()
 	phi.v=6;
 	pi=semi(d,phi);
 	printf("e=%d %d\n",pi.u,pi.v);
-	exit(1);
+	//exit(1);
 	
 	/*
 	pi=semi(invs(d),a);
@@ -287,7 +287,7 @@ int kpk()
 	tmp[4]=semi(semi((a),key[5]),invs(d));
 	key[1] = semi(semi(c1, c2), c3);
 	printf("x^3=%d %d\n",tmp[5].u,tmp[5].v);
-	exit(1);
+	//exit(1);
 	return 0;
 }
 
