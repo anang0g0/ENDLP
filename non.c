@@ -4,7 +4,7 @@
 
 #include "global-p.h"
 #include "struct-p.h"
-#include "lfsr2.c"
+// #include "lfsr2.c"
 typedef struct
 {
 	int u;
@@ -173,10 +173,15 @@ sem conju(sem a, sem b)
 	return semi(semi(invs(a), b), a);
 }
 
+sem tdp(sem a, sem b, sem c)
+{
+	return semi(a, semi(b, invs(c)));
+}
+
 int kpk()
 {
 
-	sem a, b, c, d, e, f, g, h, a1, b1, c1, d1, e1, f1, g1, h1;
+	sem a, b, c, d, e, f, g, h, a1,a2,a3, b1,b2,b3, c1,c2,c3, d1,d2,d3, e1, f1, g1, h1;
 	a.u = 11;
 	a.v = 2;
 	b.u = 13;
@@ -186,8 +191,8 @@ int kpk()
 	d.u = 7;
 	d.v = 8;
 
-	e.u = 21;
-	e.v = 13;
+	e.u = 0;
+	e.v = 4;
 	f.u = 11;
 	f.v = 12;
 	g.u = 13;
@@ -208,28 +213,77 @@ int kpk()
 	y.v = 22;
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
-	a1 = conju(a, x);
-	b1 = conju(a, y);
-	// bob's public key
-	c1 = conju(b, x);
-	d1 = conju(b, y);
+	a1 = tdp(a, x,(b));
+	a2 = tdp(b, x,(c));
+	a3 = tdp(c,x,(d));
+	b1 = tdp(a, y,(b));
+	b2 = tdp(b, y,(c));
+	b3 = tdp(c, y,(d));
 
+	// bob's public key
+	c1 = tdp(e, x,(f));
+	c2 = tdp(f, x,(g));
+	c3 = tdp(g, x,(h));
+	d1 = tdp(e, y,(f));
+	d2 = tdp(f, y,(g));
+	d3 = tdp(g, y,(h));
+	sem pi,phi;
+
+	/*
+	pi=semi(invs(d),a);
+	phi=semi(invs(h),e);
+	printf("p1=%d %d\n",pi.u,pi.v);
+	printf("p2=%d %d\n",phi.u,phi.v);
+	for(int i=0;i<23;i++){
+	for(int j=0;j<23;j++){
+	e.u=i;
+	e.v=j;
+	phi=semi(invs(h),e);
+	if(phi.u==12 && phi.v==6){
+	printf("e=%d %d\n",e.u,e.v);
+	phi=semi(invs(h),e);
+	printf("phi=%d %d\n",phi.u,phi.v);
+	exit(1);
+	}
+	}
+	}
+	exit(1);
+	*/
 	printf("Alice's Pubkey1 = %d %d\n", a1.u, a1.v);
+	printf("Alice's Pubkey1 = %d %d\n", a2.u, a2.v);
+	printf("Alice's Pubkey1 = %d %d\n", a3.u, a3.v);
 	printf("Alice's Pubkey2 = %d %d\n", b1.u, b1.v);
+	printf("Alice's Pubkey2 = %d %d\n", b2.u, b2.v);
+	printf("Alice's Pubkey2 = %d %d\n", b3.u, b3.v);
 	printf("Bob's Pubkey1 = %d %d\n", c1.u, c1.v);
+	printf("Bob's Pubkey1 = %d %d\n", c2.u, c2.v);
+	printf("Bob's Pubkey1 = %d %d\n", c3.u, c3.v);
 	printf("Bob's Pubkey2 = %d %d\n", d1.u, d1.v);
+	printf("Bob's Pubkey2 = %d %d\n", d2.u, d2.v);
+	printf("Bob's Pubkey2 = %d %d\n", d3.u, d3.v);
 
 	sem tmp[16];
+	tmp[3].u=12;
+	tmp[3].v=6;
+	pi=semi(invs(d),a);
+	phi=semi(invs(h),e);
+	printf("%d %d\n",pi.u,pi.v);
+	printf("%d %d\n",phi.u,phi.v);
+	//exit(1);
 
-	key[0] = semi(semi(a1, a1), semi(b1, b1));
-	key[1] = semi(semi(c1, c1), semi(d1, d1));
+	key[0] = semi(semi(a1, a2), a3);
+	key[1] = semi(semi(c1, c2), c3);
 	printf("Alice's encrypted key = (%d,%d)\n", key[0].u, key[0].v);
 	printf("Bob's encrypted key = (%d,%d)\n", key[1].u, key[1].v);
-	tmp[0] = semi(semi((a), key[0]), invs(a));
-	tmp[1] = semi(semi((b), key[1]), invs(b));
+	tmp[0] = semi(semi(invs(a), key[0]), (d));
+	tmp[1] = semi(semi(invs(e), key[1]), (h));
 	printf("decrypted key-A = (%d,%d)\n", tmp[0].u, tmp[0].v);
 	printf("decrypted key-B = (%d,%d)\n", tmp[1].u, tmp[1].v);
-
+	tmp[5] = semi(semi(x, x), x);
+	tmp[4]=semi(semi((a),key[5]),invs(d));
+	key[1] = semi(semi(c1, c2), c3);
+	printf("x^3=%d %d\n",tmp[5].u,tmp[5].v);
+	exit(1);
 	return 0;
 }
 
@@ -354,20 +408,22 @@ static unsigned char Dot(int a, int b)
 	return (unsigned char)product;
 }
 
-
-int p0w(int c,int n){
-    int d = 1;
-    while(n>0){
-        if (n % 2)
-			d=loo(Dot(d, c));
-            //d *= c;
-		c=loo(Dot(c, c));
-        //c *= c;
-        n >>= 1;
+int p0w(int c, int n)
+{
+	int d = 1;
+	while (n > 0)
+	{
+		if (n % 2)
+			d = loo(Dot(d, c));
+		// d *= c;
+		c = loo(Dot(c, c));
+		// c *= c;
+		n >>= 1;
 	}
-    return d;
+	return d;
 }
 
+/*
 unsigned int period = 0, count = 0;
 unsigned char slf(unsigned char l)
 {
@@ -424,12 +480,6 @@ unsigned char slf(unsigned char l)
 				ii = 0;
 				// flg=-1;
 			}
-			/*
-			if (ff2 == mm)
-			{
-				printf("ff2==mm\n");
-				exit(1);
-			}*/
 			if (ff2 == mm && flg2 == 0 && ff2 == ff)
 			{
 				printf("ff=%d\n", mm);
@@ -450,6 +500,7 @@ unsigned char slf(unsigned char l)
 
 	return (unsigned char)(lfs);
 }
+*/
 
 void initialize_aes_sbox(uint8_t sbox[256])
 {
@@ -477,6 +528,7 @@ void initialize_aes_sbox(uint8_t sbox[256])
 	sbox[0] = 0x63;
 }
 
+/*
 void lf(void)
 {
 	// lfsr();
@@ -490,6 +542,7 @@ void lf(void)
 
 	return;
 }
+*/
 
 #define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
 void main()
@@ -498,8 +551,9 @@ void main()
 	cem x, y;
 
 	// srand(clock());
-	lf();
-	exit(1);
+	// lf();
+	kpk();
+	 exit(1);
 
 	for (int i = 0; i < N; i++)
 	{
@@ -531,11 +585,12 @@ void main()
 	for (int i = 0; i < N; i++)
 		printf("%d, %d %d %d\n", g.y[i], y.y[i], x.y[i], h.y[i]);
 	printf("\n");
-	exit(1);
+	// exit(1);
 	g = cemi(cemi(a, c), invc(a));
 	for (int i = 0; i < N; i++)
 		printf("%d, %d %d %d\n", g.x[i], g.y[i], h.x[i], h.y[i]);
 	printf("\n");
+	kpk();
 
 	return;
 }
