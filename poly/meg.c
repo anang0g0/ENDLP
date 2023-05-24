@@ -151,7 +151,7 @@ int main()
 	g=hami(e,f);
 	printpol(g.u);
 	printf(",%d\n",g.v);
-	exit(1);
+	//exit(1);
 	g.v = 13;
 	g.u = mkpol();
 	h.v = 15;
@@ -201,10 +201,10 @@ int main()
 	key[0] = aniki(r1);
 	key[1] = aniky(r1);
 	
-	sem ka1=semi(semi(a,x),invs(a));
-	sem ka2=semi(semi(a,y),invs(a));
-	sem kb1=semi(semi(b,x),invs(b));
-	sem kb2=semi(semi(b,y),invs(b));
+	//sem ka1=semi(semi(a,x),invs(a));
+	//sem ka2=semi(semi(a,y),invs(a));
+	//sem kb1=semi(semi(b,x),invs(b));
+	//sem kb2=semi(semi(b,y),invs(b));
 	// for(int i=0;i<2;i++)
 	printpol(a1.u);
 	printf(" %d\n", a1.v);
@@ -212,7 +212,7 @@ int main()
 	printf(" %d\n", a2.v);
 	printpol(a3.u);
 	printf(" %d\n", a3.v);
-	exit(1);
+	//exit(1);
 
 	ham tmp[16];
 	tmp[0] = hami(hami(a1, a2), a3);
