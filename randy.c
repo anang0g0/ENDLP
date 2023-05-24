@@ -17,7 +17,7 @@ unsigned char c[8];
 unsigned long long u;
 } UI ;
 
-int data(UI L)
+UI data(UI L)
 {
 	unsigned char x0[N] = {21, 8, 19, 12, 2, 11, 28, 20, 7, 5, 9, 1, 22, 27, 16, 31, 18, 3, 26, 29, 17, 15, 25, 14, 30, 13, 6, 4, 10, 24, 23, 0};
     unsigned char salt[N] = {1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0};
@@ -25,34 +25,37 @@ int data(UI L)
 	for(int i=0;i<8;i++)
 	salt[i]+=L.c[i];
 
-    FILE *fp= fopen("1.bin", "wb");
+    //FILE *fp= fopen("1.bin", "wb");
 	int j=0;
 
-    while (j < 4000000)
+    while (j < 8)
     {
 
         for (int i = 0; i < N; i++)
         {
             salt[i] ^= ROTL8(be(salt[x0[i]]), salt[i] % 8); // normal
         }
-        fwrite(salt, 1, N, fp);
-
+        //fwrite(salt, 1, N, fp);
+        L.c[j]=salt[j];
         j++;
     }
-    fclose(fp);
+    //fclose(fp);
 
-    return j;
+    return L;
 }
 
 int main()
 {
     time_t t;
 	UI nn={0};
-	printf("初期値を入力してください = ");
-    scanf("%llu",&nn.u);
-
-    int n = data(nn);
-    printf("count=%d\n", n);
+	//printf("初期値を入力してください = ");
+    //scanf("%llu",&nn.u);
+    nn.u=time(&t)*clock();
+    while(1){
+    unsigned long long n = data(nn).u;
+    nn.u=n;
+    printf("%llu\n", n);
+    }
 
     return 0;
 }
