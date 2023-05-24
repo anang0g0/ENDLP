@@ -180,7 +180,6 @@ sem tdp(sem a, sem b, sem c)
 
 int kpk()
 {
-
 	sem a, b, c, d, e, f, g, h, a1,a2,a3, b1,b2,b3, c1,c2,c3, d1,d2,d3, e1, f1, g1, h1;
 	a.u = 11;
 	a.v = 2;
@@ -228,7 +227,12 @@ int kpk()
 	d2 = tdp(f, y,(g));
 	d3 = tdp(g, y,(h));
 	sem pi,phi;
-
+	phi.u=12;
+	phi.v=6;
+	pi=semi(d,phi);
+	printf("e=%d %d\n",pi.u,pi.v);
+	exit(1);
+	
 	/*
 	pi=semi(invs(d),a);
 	phi=semi(invs(h),e);
