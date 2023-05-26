@@ -30,6 +30,7 @@ NTL_CLIENT
 
 // def M32(x) (((1 << 32)-1)&(x)) end
 
+
 typedef struct
 {
   ZZ x;
@@ -343,12 +344,25 @@ typedef struct
   ZZ y;
   int f;
 } po;
+
 typedef struct
 {
   ZZ x;
   ZZ y;
   ZZ z;
 } ten;
+
+typedef struct
+{
+	ZZ v;
+	po u;
+} sem;
+typedef struct
+{
+	int v;
+	int u;
+} kem;
+
 typedef struct
 {
   char *name;
@@ -545,15 +559,23 @@ CRV.G.y=to_ZZ("3694866613525431056");
 CRV.G.z=to_ZZ("1");
 }
 if(n==16){
-CRV.a= to_ZZ("4898");
-CRV.b=to_ZZ("18058");
-CRV.G.x= to_ZZ("0");
-CRV.G.y= to_ZZ("8130");
-CRV.p=to_ZZ("22189");
-CRV.n=to_ZZ("22447");
+CRV.a=to_ZZ("2");
+CRV.b=to_ZZ("17");
+CRV.n=to_ZZ("41");
+CRV.p=to_ZZ("31");
+CRV.G.x=to_ZZ("10");
+CRV.G.y=to_ZZ("13");
+}
+if(n==3){
+CRV.a=to_ZZ("1");
+CRV.b=to_ZZ("8");
+CRV.p=to_ZZ("19");
+CRV.n=to_ZZ("23");
+CRV.G.x=to_ZZ("3");
+CRV.G.y=to_ZZ("0");
+CRV.G.z=to_ZZ("1");
 }
 }
-
 ZZ PLO[2][2];
 void niji(ZZ ISR[2][2]){
 ZZ p,q,tmp;
@@ -987,6 +1009,15 @@ ten mltn2(ten x, ZZ n)
   }
 
   return ret;
+}
+
+ten p2t(po a){
+ten b;
+b.x=a.x;
+b.y=a.y;
+b.z=to_ZZ("1");
+
+return b;
 }
 
 po Qmlt(ten y, ZZ n)
@@ -2560,6 +2591,374 @@ ten uncompress_point(ten compressed_point)
   return z;
 }
 
+// invert of integer
+int inv2(int a, int n)
+{
+	int d, x, s, q, r, t;
+
+	d = n;
+	x = 0;
+	s = 1;
+	while (a != 0)
+	{
+		q = d / a;
+		r = d % a;
+		d = a;
+		a = r;
+		t = x - q * s;
+		x = s;
+		s = t;
+	}
+	//  gcd = d;  // $\gcd(a, n)$
+
+	return ((x + n) % (n / d));
+}
+kem invs2(kem a)
+{
+	kem s = {0};
+	s.u = 23 - ((((inv2(a.v, 23) * (a.u)))) % 23);
+	s.v = inv2(a.v, 23);
+	// s.u%=23;
+
+	return s;
+}
+
+sem invs(sem a)
+{
+	sem s;
+  ten aa=p2t(a.u);
+  cout << a.v << endl;
+  cout << inv(a.v,CRV.n) << endl;
+  //exit(1);
+  s.u = Qmlt(aa,inv((a.v), CRV.n));
+	s.v = inv(a.v, CRV.p);
+	// s.u%=23;
+
+	return s;
+}
+
+
+sem semi(sem a, sem b)
+{
+	sem n;// = {0};
+  ten m=p2t(b.u);
+	n.u = eadd(Qmlt(m,a.v),a.u);
+	n.v = (a.v * b.v) % CRV.p;
+	//n.u = n.to_ZZ("23");
+
+	return n;
+}
+
+kem kemi(kem a, kem b)
+{
+	kem n = {0};
+	n.u = ((a.v * b.u) % 23 + a.u);
+	n.v = (a.v * b.v) % 23;
+	n.u %= 23;
+
+	return n;
+}
+
+sem cemi(sem a, sem b)
+{
+	sem n;// = {0};
+  ten m=p2t(a.u);
+
+	n.u = eadd(Qmlt(m,b.v),b.u);
+	n.v = (a.v * b.v) % CRV.p;
+	//n.u = n.to_ZZ("23");
+
+	return n;
+}
+
+
+
+kem tdp2(kem a, kem b, kem c)
+{
+	return kemi(a, kemi(b, invs2(c)));
+}
+
+sem tdp(sem a, sem b, sem c)
+{
+	return semi(a, semi(b, invs(c)));
+}
+
+void psem(sem a){
+cout << a.u.x << "," << a.u.y << "," << a.v << endl;
+}
+
+int kpk()
+{
+	kem a, b, c, d, e, f, g, h, a1,a2,a3, b1,b2,b3, c1,c2,c3, d1,d2,d3, e1, f1, g1, h1;
+	a.u = 11;
+	a.v = 2;
+	b.u = 13;
+	b.v = 4;
+	c.u = 5;
+	c.v = 6;
+	d.u = 7;
+	d.v = 8;
+
+	e.u = 0;
+	e.v = 4;
+	f.u = 11;
+	f.v = 12;
+	g.u = 13;
+	g.v = 14;
+	h.u = 15;
+	h.v = 16;
+
+	kem x, y;
+	int p = 17;
+	kem key[4];
+	kem tmp1;
+	tmp1.u = 7;
+	tmp1.v = 8;
+
+	x.u = 19;
+	x.v = 20;
+	y.u = 21;
+	y.v = 22;
+	int r1 = 0b00, r2 = 0b11;
+	// alice's public key
+	a1 = tdp2(a, x,(b));
+	a2 = tdp2(b, x,(c));
+	a3 = tdp2(c,x,(d));
+	b1 = tdp2(a, y,(b));
+	b2 = tdp2(b, y,(c));
+	b3 = tdp2(c, y,(d));
+
+	// bob's public key
+	c1 = tdp2(e, x,(f));
+	c2 = tdp2(f, x,(g));
+	c3 = tdp2(g, x,(h));
+	d1 = tdp2(e, y,(f));
+	d2 = tdp2(f, y,(g));
+	d3 = tdp2(g, y,(h));
+	kem pi,phi;
+	phi.u=12;
+	phi.v=6;
+	pi=kemi(d,phi);
+	printf("e=%d %d\n",pi.u,pi.v);
+	//exit(1);
+	
+	/*
+	pi=semi(invs(d),a);
+	phi=semi(invs(h),e);
+	printf("p1=%d %d\n",pi.u,pi.v);
+	printf("p2=%d %d\n",phi.u,phi.v);
+	for(int i=0;i<23;i++){
+	for(int j=0;j<23;j++){
+	e.u=i;
+	e.v=j;
+	phi=semi(invs(h),e);
+	if(phi.u==12 && phi.v==6){
+	printf("e=%d %d\n",e.u,e.v);
+	phi=semi(invs(h),e);
+	printf("phi=%d %d\n",phi.u,phi.v);
+	exit(1);
+	}
+	}
+	}
+	exit(1);
+	*/
+	printf("Alice's Pubkey1 = %d %d\n", a1.u, a1.v);
+	printf("Alice's Pubkey1 = %d %d\n", a2.u, a2.v);
+	printf("Alice's Pubkey1 = %d %d\n", a3.u, a3.v);
+	printf("Alice's Pubkey2 = %d %d\n", b1.u, b1.v);
+	printf("Alice's Pubkey2 = %d %d\n", b2.u, b2.v);
+	printf("Alice's Pubkey2 = %d %d\n", b3.u, b3.v);
+	printf("Bob's Pubkey1 = %d %d\n", c1.u, c1.v);
+	printf("Bob's Pubkey1 = %d %d\n", c2.u, c2.v);
+	printf("Bob's Pubkey1 = %d %d\n", c3.u, c3.v);
+	printf("Bob's Pubkey2 = %d %d\n", d1.u, d1.v);
+	printf("Bob's Pubkey2 = %d %d\n", d2.u, d2.v);
+	printf("Bob's Pubkey2 = %d %d\n", d3.u, d3.v);
+
+	kem tmp[16];
+	tmp[3].u=12;
+	tmp[3].v=6;
+	pi=kemi(invs2(d),a);
+	phi=kemi(invs2(h),e);
+	printf("%d %d\n",pi.u,pi.v);
+	printf("%d %d\n",phi.u,phi.v);
+	//exit(1);
+
+	key[0] = kemi(kemi(a1, a2), a3);
+	key[1] = kemi(kemi(c1, c2), c3);
+	printf("Alice's encrypted key = (%d,%d)\n", key[0].u, key[0].v);
+	printf("Bob's encrypted key = (%d,%d)\n", key[1].u, key[1].v);
+	tmp[0] = kemi(kemi(invs2(a), key[0]), (d));
+	tmp[1] = kemi(kemi(invs2(e), key[1]), (h));
+	printf("decrypted key-A = (%d,%d)\n", tmp[0].u, tmp[0].v);
+	printf("decrypted key-B = (%d,%d)\n", tmp[1].u, tmp[1].v);
+	tmp[5] = kemi(kemi(x, x), x);
+	tmp[4]=kemi(kemi((a),key[5]),invs2(d));
+	key[1] = kemi(kemi(c1, c2), c3);
+	printf("x^3=%d %d\n",tmp[5].u,tmp[5].v);
+	//exit(1);
+	return 0;
+}
+
+int ekp()
+{
+	sem a, b, c, d, e, f, g, h, a1,a2,a3, b1,b2,b3, c1,c2,c3, d1,d2,d3, e1, f1, g1, h1;
+  
+  
+	a.u = Qmlt(CRV.G,to_ZZ("1"));
+	a.v = to_ZZ("6");
+	b.u = Qmlt(CRV.G,to_ZZ("1"));
+	b.v = to_ZZ("15");
+	c.u = Qmlt(CRV.G,to_ZZ("5"));
+	c.v = 16;
+	d.u = Qmlt(CRV.G,to_ZZ("15"));
+	d.v = 8;
+
+	e.u = Qmlt(CRV.G,to_ZZ("5"));
+	e.v = 4;
+	f.u = Qmlt(CRV.G,to_ZZ("17"));
+	f.v = 12;
+	g.u = Qmlt(CRV.G,to_ZZ("13"));
+	g.v = 14;
+	h.u = Qmlt(CRV.G,to_ZZ("11"));
+	h.v = 16;
+
+printf("inv6=%d\n",inv2(6,41));
+c=semi(a,a);
+psem(c);
+b=cemi(invs(a),c);
+psem(b);
+psem(a);
+exit(1);
+	sem x, y;
+	int p = 17;
+	sem key[4];
+	sem tmp1;
+	tmp1.u = Qmlt(CRV.G,to_ZZ("7"));
+	tmp1.v = 8;
+
+	x.u = Qmlt(CRV.G,to_ZZ("19"));
+	x.v = to_ZZ("20");
+	y.u = Qmlt(CRV.G,to_ZZ("21"));
+	y.v = to_ZZ("22");
+	
+  int r1 = 0b00, r2 = 0b11;
+	// alice's public key
+	a1 = tdp(a, x,(b));
+  a2 = tdp(b, x,(c));
+	a3 = tdp(c,x,(d));
+
+	b1 = tdp(a, y,(b));
+	b2 = tdp(b, y,(c));
+  //exit(1);
+	b3 = tdp(c, y,(d));
+//exit(1);
+	// bob's public key
+	c1 = tdp(e, x,(f));
+	c2 = tdp(f, x,(g));
+	c3 = tdp(g, x,(h));
+	d1 = tdp(e, y,(f));
+	d2 = tdp(f, y,(g));
+	d3 = tdp(g, y,(h));
+	sem pi,phi;
+  //pi=cemi((x),invs(x));
+  pi=semi(invs(a),semi(a,(a)));
+  psem(pi);
+  //psem(a);
+  exit(1);
+  pi=semi(a,x);
+  psem(pi);
+  pi=cemi(invs(x),pi);
+  psem(pi);
+  psem(x);
+  exit(1);
+  psem(a);
+  exit(1);
+	//phi.u=12;
+	//phi.v=6;
+	//pi=semi(d,phi);
+	//printf("e=%d %d\n",pi.u,pi.v);
+	//exit(1);
+	
+	/*
+	pi=semi(invs(d),a);
+	phi=semi(invs(h),e);
+	printf("p1=%d %d\n",pi.u,pi.v);
+	printf("p2=%d %d\n",phi.u,phi.v);
+	for(int i=0;i<23;i++){
+	for(int j=0;j<23;j++){
+	e.u=i;
+	e.v=j;
+	phi=semi(invs(h),e);
+	if(phi.u==12 && phi.v==6){
+	printf("e=%d %d\n",e.u,e.v);
+	phi=semi(invs(h),e);
+	printf("phi=%d %d\n",phi.u,phi.v);
+	exit(1);
+	}
+	}
+	}
+	exit(1);
+	*/
+	printf("Alice's Pubkey1 ="); // %d %d\n", a1.u, a1.v);
+  psem(a1);
+	printf("Alice's Pubkey1 =");
+  psem(a2);
+	printf("Alice's Pubkey1 = "); //%d %d\n", a3.u, a3.v);
+  psem(a3);
+	printf("Alice's Pubkey2 = "); //%d %d\n", b1.u, b1.v);
+  psem(b1);
+	printf("Alice's Pubkey2 = "); //%d %d\n", b2.u, b2.v);
+  psem(b2);
+	printf("Alice's Pubkey2 = "); //%d %d\n", b3.u, b3.v);
+  psem(b3);
+	printf("Bob's Pubkey1 = "); //%d %d\n", c1.u, c1.v);
+  psem(c1);
+	printf("Bob's Pubkey1 = "); //%d %d\n", c2.u, c2.v);
+  psem(c2);
+	printf("Bob's Pubkey1 = "); //%d %d\n", c3.u, c3.v);
+  psem(c3);
+	printf("Bob's Pubkey2 = "); //%d %d\n", d1.u, d1.v);
+  psem(d1);
+	printf("Bob's Pubkey2 = "); //%d %d\n", d2.u, d2.v);
+  psem(d2);
+	printf("Bob's Pubkey2 = "); //%d %d\n", d3.u, d3.v);
+  psem(d3);
+
+	sem tmp[16];
+	//tmp[3].u=12;
+	//tmp[3].v=6;
+	pi=semi(invs(d),a);
+	phi=semi(invs(h),e);
+  psem(pi);
+  psem(phi);
+	//printf("%d %d\n",pi.u,pi.v);
+	//printf("%d %d\n",phi.u,phi.v);
+	//
+  c=cemi(invs(c),(c));
+  exit(1);
+	key[0] = semi(semi(a1, a2), a3);
+	key[1] = semi(semi(c1, c2), c3);
+  //  exit(1);
+	printf("Alice's encrypted key = "); //(%d,%d)\n", key[0].u, key[0].v);
+  psem(key[0]);
+	printf("Bob's encrypted key = "); //(%d,%d)\n", key[1].u, key[1].v);
+  psem(key[1]);
+	tmp[0] = semi(semi(invs(a), key[0]), (d));
+	tmp[1] = semi(semi(invs(e), key[1]), (h));
+	printf("decrypted key-A = "); //(%d,%d)\n", tmp[0].u, tmp[0].v);
+	psem(tmp[0]);
+  printf("decrypted key-B = "); //(%d,%d)\n", tmp[1].u, tmp[1].v);
+	psem(tmp[1]);
+  tmp[5] = semi(semi(x, x), x);
+	//tmp[4]=semi(semi((a),key[5]),invs(d));
+	//key[1] = semi(semi(c1, c2), c3);
+	printf("x^3= ");//%d %d\n",tmp[5].u,tmp[5].v);
+  psem(tmp[5]);
+	exit(1);
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
   ZZ z, r, d, I, salt;
@@ -2578,18 +2977,50 @@ int main(int argc, char *argv[])
   // mp_init(4096);
   P = to_ZZ("340282366920938463463374607431768211283");
   a = to_ZZ("143864072772599444046778416709082679388");
-  ZZ c=to_ZZ("10");
+  ZZ c=to_ZZ("6");
   ZZ b=to_ZZ("22222222222222222222222222222222");
   ten A, B;
   po C, M;
-C.x=CRV.G.x;
-C.y=CRV.G.y;
+
+po cho;
+cho.x=to_ZZ("10");
+cho.y=to_ZZ("13");
+
 init_curve(16);
+cout << inv2(6,41) << "\n";
+/*
 //mktbl3(CRV.G);
 //cout << elp3(b).x << endl;
 mktable(CRV.G.x,CRV.G.y);
-cout << ellip(c).x << endl;
-cout << Qmlt(CRV.G,c).x << " --Q" << endl;
+cout << ellip(to_ZZ("7")).x << endl;
+cout << ellip(to_ZZ("7")).y << endl;
+//cout << ellip(to_ZZ("41-7")).x << endl;
+//cout << ellip(to_ZZ("41-7")).y << endl;
+//exit(1);
+sem ae,oe,uo;
+ae.v=26;
+ae.u=Qmlt(CRV.G,to_ZZ("26"));
+oe.u=Qmlt(CRV.G,to_ZZ("-26"));
+psem(ae);
+psem(oe);
+//exit(1);
+
+//oe.v=to_ZZ("6");
+//oe.u=cho;
+//uo=semi(oe,oe);
+//psem(uo);
+//uo=cemi(uo,ae);
+//psem(uo);
+cout << Qmlt(CRV.G,c).x << " --Qx" << endl;
+cout << Qmlt(CRV.G,c).y << " --Qy" << endl;
+cout << eadd(Qmlt(CRV.G,c),cho).x << " --Qx" << endl;
+cout << eadd(Qmlt(CRV.G,c),cho).y << " --Qy" << endl;
+cout << eadd(ae.u,oe.u).x << " --Qx" << endl;
+cout << eadd(ae.u,oe.u).y << " --Qy" << endl;
+*/
+ekp();
+exit(1);
+
 /*
 cout << ellip(c).x << " --ellip" << endl;
 cout << elp3(c).x << " --elp3" << endl;
