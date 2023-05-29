@@ -2430,54 +2430,34 @@ int ekp()
 	sem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
 	a.u = Qmlt(CRV.G, to_ZZ("6"));
-	a.v = to_ZZ("6");
+	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
 	c.u =Qmlt(CRV.G, to_ZZ("11"));
 	//c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
-	c.v = to_ZZ("31");
+	c.v = to_ZZ("2");
 	d.u = Qmlt(CRV.G, to_ZZ("12"));
 	//d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
-	d.v = to_ZZ("8");
+	d.v = to_ZZ("1");
 	g1.u=eadd(c.u,d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
 	//exit(1);
 
 	e.u = Qmlt(CRV.G, to_ZZ("5"));
-	e.v = 4;
+	e.v = to_ZZ("4");
 	f.u = Qmlt(CRV.G, to_ZZ("17"));
-	f.v = 12;
+	f.v = to_ZZ("12");
 	g.u = Qmlt(CRV.G, to_ZZ("13"));
-	g.v = 14;
+	g.v = to_ZZ("14");
 	h.u = Qmlt(CRV.G, to_ZZ("11"));
-	h.v = 16;
+	h.v = to_ZZ("16");
 
 	printf("inv6=%d\n", inv2(6, 41));
-/*
-	c = semi(a, a);
-	psem(c);
-	psem(a);
-	psem(invs(a));
-	//exit(1);
-	b = semi(invs(a),(c));
-	psem(b);
-	b = semi(c,invs(a));
-	psem(b);
-	psem(a);
-	//exit(1);
-	b = cemi(a,invs(c));
-	psem(b);
-	b = cemi(invs(c),a);
-	psem(b);
-	psem(a);
-	//exit(1);
-*/	
+
+	
 	sem x, y;
 	int p = 17;
 	sem key[4];
-	sem tmp1;
-	tmp1.u = Qmlt(CRV.G, to_ZZ("7"));
-	tmp1.v = 8;
 
 	x.u = Qmlt(CRV.G, to_ZZ("19"));
 	x.v = to_ZZ("20");
@@ -2486,6 +2466,7 @@ int ekp()
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
+	
 	a1 = tdp(a, x, (b));
 	a2 = tdp(b, x, (c));
 	a3 = tdp(c, x, (d));
@@ -2493,7 +2474,8 @@ int ekp()
 	psem(a2);
 	psem(a3);
 	//exit(1);
-
+	
+	
 	sem aga;
 	aga=semi(a1,semi(a2,a3));
 	//aga=tdp(a1,a2,a3); //semi(semi(a,a),invs(a));
@@ -2502,25 +2484,33 @@ int ekp()
 	psem(aga);
 	aga=semi(semi(x,x),x);
 	psem(aga);
+	
 	exit(1);
+	
 	b1 = tdp(a, y, (b));
 	b2 = tdp(b, y, (c));
 	// exit(1);
 	b3 = tdp(c, y, (d));
 	// exit(1);
 	//  bob's public key
-	c1 = tdp(e, x, (f));
-	c2 = tdp(f, x, (g));
-	c3 = tdp(g, x, (h));
+	
+	//c1 = tdp(e, x, (f));
+	//c2 = tdp(f, x, (g));
+	//c3 = tdp(g, x, (h));
 	d1 = tdp(e, y, (f));
 	d2 = tdp(f, y, (g));
 	d3 = tdp(g, y, (h));
 	sem pi, phi;
-	//pi=semi(invs(a),a);
-	//psem(pi);	
-	//pi=semi((a),invs(a));
-	//psem(pi);
+	pi=invs(b);
+	psem(pi);
 	//exit(1);
+	pi=semi((a),(pi));
+	psem(pi);
+	exit(1);
+	pi=semi(pi,a);
+	psem(pi);
+	psem(b);
+	exit(1);
 	phi=tdp(a1,a2,(a3));
 	psem(phi);
 	exit(1);
