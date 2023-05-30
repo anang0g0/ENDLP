@@ -244,7 +244,7 @@ int kpk()
 	ww=semi(semi(b,ww),invs(b));
 	psem(zz);
 	psem(ww);
-	exit(1);
+	//exit(1);
 
 	// bob's public key
 	c1 = tdp(e, x,(f));
@@ -396,8 +396,8 @@ void main()
 
 	// srand(clock());
 	// lf();
-	//kpk();
-	// exit(1);
+	kpk();
+	exit(1);
 
 	for (int i = 0; i < N; i++)
 	{
