@@ -396,8 +396,8 @@ void main()
 
 	// srand(clock());
 	// lf();
-	kpk();
-	 exit(1);
+	//kpk();
+	// exit(1);
 
 	for (int i = 0; i < N; i++)
 	{
