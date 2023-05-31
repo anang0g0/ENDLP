@@ -355,7 +355,7 @@ typedef struct
 {
 	ZZ v;
 	po u;
-} sem;
+} esem;
 typedef struct
 {
 	int v;
@@ -393,8 +393,8 @@ po Pub_key;
 // po D; // edbl
 //  ten P;       // ead2
 //  ten Q;       // edl2
-po N[640];	 // le_temp
-po M[640];	 // ll_temp
+po N[640];	// le_temp
+po M[640];	// ll_temp
 po Gen_key; // randompoint
 ZZ a3[100000];
 int a2[100000], a4[100000];
@@ -420,7 +420,7 @@ void init_curve(int n)
 		CRV.b = to_ZZ("0xb4050a850c04b3abf54132565044b0b7d7bfd8ba270b39432355ffb4");
 		CRV.G.x = to_ZZ("0xb70e0cbd6bb4bf7f321390b94a03c1d356c21122343280d6115c1d21");
 		CRV.G.y = to_ZZ("0xbd376388b5f723fb4c22dfe6cd4375a05a07476444d5819985007e34");
-		//CRV.G.z = to_ZZ("1");
+		// CRV.G.z = to_ZZ("1");
 		CRV.n = to_ZZ("26959946667150639794667015087019625940457807714424391721682722368061");
 		CRV.h = 1;
 		CRV.inv = to_ZZ("13479973333575319897333507543509815336778958130013154071755033149441");
@@ -436,7 +436,7 @@ void init_curve(int n)
 		// R=13479973333575319897333507543509819484712548793029295142314934474707a224bitprime
 		CRV.G.x = to_ZZ("24155712282000049631001357595395450813097367499938434330297713128801");
 		CRV.G.y = to_ZZ("5882461958218329457915762297197751647381159972043925920846779622521");
-		//CRV.G.z = to_ZZ("1");
+		// CRV.G.z = to_ZZ("1");
 		CRV.inv = to_ZZ("13479973333575319897333507543509815336778958130013154071755033149441");
 	}
 
@@ -451,7 +451,7 @@ void init_curve(int n)
 		CRV.b = to_ZZ("41058363725152142129326129780047268409114441015993725554835256314039467401291");
 		CRV.G.x = to_ZZ("48439561293906451759052585252797914202762949526041747995844080717082404635286");
 		CRV.G.y = to_ZZ("36134250956749795798585127919587881956611106672985015071877198253568414405109");
-		//CRV.G.z = to_ZZ("1");
+		// CRV.G.z = to_ZZ("1");
 		CRV.n = to_ZZ("115792089210356248762697446949407573529996955224135760342422259061068512044369");
 		CRV.h = 1;
 		CRV.inv = to_ZZ("57896044605178124381348723474703786765043071707645157097766815654433548926976");
@@ -465,7 +465,7 @@ void init_curve(int n)
 		CRV.b = to_ZZ("41058363725152142129326129780047268409114441015993725554835256314039467401291");
 		CRV.G.x = to_ZZ("395815829005855038029765540278861637762572903522963440114216832740821793555094");
 		CRV.G.y = to_ZZ("30769603638631994634479180612906047718205418376298768584198191172839256571736");
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 		CRV.n = to_ZZ("115792089210356248762697446949407573529996955224135760342422259061068512044369");
 	}
 
@@ -481,7 +481,7 @@ void init_curve(int n)
 		CRV.G.x = to_ZZ("38996611774847114330982137792567050762097251424678060141486085082902623877233");
 		//
 		// w=59
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 
 		/*
 		CRV.name="eccp256r1";
@@ -508,7 +508,7 @@ void init_curve(int n)
 		// infinity devide1
 		CRV.G.x = to_ZZ("18487703388218368811611273467885185415041771995400161457848598846868890320470");
 		CRV.G.y = to_ZZ("24687222602040641145870602721247005746364795831134621092877670314906490902760");
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 	}
 
 	if (n == 2565)
@@ -520,7 +520,7 @@ void init_curve(int n)
 		// infinity devide1
 		CRV.G.x = to_ZZ("63582577761502127973450815015383738377077716646935254059256424901755563321273");
 		CRV.G.y = to_ZZ("22895574053820059180945744963571496712404540419433716833791593749823092772659");
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 	}
 
 	if (n == 2566)
@@ -532,7 +532,7 @@ void init_curve(int n)
 		CRV.p = to_ZZ("101770390931234937383997936042792106564300501093118320554795276781573252710547");
 		CRV.G.y = to_ZZ("98399506821057818865862588903161792587668472549669649472059793708337005935795");
 		CRV.G.x = to_ZZ("28663290192706932057771677870920156363737430016916930158558409220429370107804");
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 	}
 
 	if (n == 384)
@@ -545,7 +545,7 @@ void init_curve(int n)
 		// R=5628858028056354173182720014306230543582819895780778095420563755345515056616034903125147135939193286284507539411263a382bitprime
 		CRV.G.x = to_ZZ("13839325240143548436618097820237988853510646421495011597727751118065256776775190573162986203269450299582183630276103");
 		CRV.G.y = to_ZZ("33479584122550753431257252642915332781925124384694439200422942083526531640009189112108669026825242814943349686581134");
-		//CRV.G.z = 1;
+		// CRV.G.z = 1;
 	}
 
 	if (n == 64)
@@ -556,9 +556,18 @@ void init_curve(int n)
 		CRV.p = to_ZZ("4611686291158102679");
 		CRV.G.x = to_ZZ("0");
 		CRV.G.y = to_ZZ("3694866613525431056");
-		//CRV.G.z = to_ZZ("1");
+		// CRV.G.z = to_ZZ("1");
 	}
 	if (n == 16)
+	{
+		CRV.a = to_ZZ("13596");
+		CRV.b = to_ZZ("9064");
+		CRV.n = to_ZZ("21767");
+		CRV.p = to_ZZ("21739");
+		CRV.G.x = to_ZZ("0");
+		CRV.G.y = to_ZZ("10224");
+	}
+	if (n == 8)
 	{
 		CRV.a = to_ZZ("2");
 		CRV.b = to_ZZ("17");
@@ -575,7 +584,7 @@ void init_curve(int n)
 		CRV.n = to_ZZ("23");
 		CRV.G.x = to_ZZ("3");
 		CRV.G.y = to_ZZ("0");
-		//CRV.G.z = to_ZZ("1");
+		// CRV.G.z = to_ZZ("1");
 	}
 }
 ZZ PLO[2][2];
@@ -673,7 +682,6 @@ equ(unsigned short a, unsigned short b)
 	}
 	return i;
 }
-
 
 // 0335196068
 po eadd(po A, po B)
@@ -889,7 +897,6 @@ po edbl(ZZ x1, ZZ y1)
 	return D;
 }
 
-
 ten p2t(po a)
 {
 	ten b;
@@ -931,14 +938,14 @@ po Qmlt(po y, ZZ n)
 	{
 		Z.x = ret.x;
 		Z.y = ret.y;
-		//Z.z = 1;
+		// Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
 		Z.x = x.x;
 		Z.y = x.y;
-		//Z.z = 1;
+		// Z.z = 1;
 		return x;
 	}
 	// n>>=1;
@@ -973,10 +980,9 @@ po Qmlt(po y, ZZ n)
 	}
 	Z.x = ret.x;
 	Z.y = ret.y;
-	//Z.z = 1;
+	// Z.z = 1;
 	return ret;
 }
-
 
 ////make a calcration table from base point Q
 int mktable(ZZ x, ZZ y)
@@ -1177,8 +1183,6 @@ po ellip(ZZ k)
 	exit(1);
 }
 
-
-
 /*=begin
 ECDSAsignatureenerationandverification
 Tosignameddahem,anentryAwithdomainparametersD=(q,FR,a,b,G,n,h)
@@ -1294,7 +1298,7 @@ void vr_ecdsa(ZZ s, ZZ r, ZZ e)
 	}
 	TT.x = px;
 	TT.y = py;
-	//TT.z = pz;
+	// TT.z = pz;
 
 	// #e=sha(argc,argv);
 	w = inv(s, CRV.n);
@@ -1452,9 +1456,9 @@ void ecdh()
 	tmp = Qmlt(CRV.G, ax);
 	Pub_key.x = tmp.x;
 	Pub_key.y = tmp.y;
-	//Pub_key.z = 1;
-	// cout << "Alice's Pubkey " << Pub_key.x << "," << Pub_key.y << "," << Pub_key.z <<endl;
-	// elp3(ax);
+	// Pub_key.z = 1;
+	//  cout << "Alice's Pubkey " << Pub_key.x << "," << Pub_key.y << "," << Pub_key.z <<endl;
+	//  elp3(ax);
 	cout << "Alice's Pubkey " << Pub_key.x << "," << Pub_key.y << "," << endl;
 	// exit(1);
 	// mktbl3(Pub_key);
@@ -1463,8 +1467,8 @@ void ecdh()
 	tmp = Qmlt(Pub_key, cx);
 	Pub_key.x = tmp.x;
 	Pub_key.y = tmp.y;
-	//Pub_key.z = 1;
-	cout << "Bob's Shared key " << Pub_key.x << "," << Pub_key.y << ","  << endl;
+	// Pub_key.z = 1;
+	cout << "Bob's Shared key " << Pub_key.x << "," << Pub_key.y << "," << endl;
 
 	// mktbl3(CRV.G);
 	// elp3(cx);
@@ -1472,8 +1476,8 @@ void ecdh()
 	tmp = Qmlt(Pub_key, cx);
 	Pub_key.x = tmp.x;
 	Pub_key.y = tmp.y;
-	//Pub_key.z = 1;
-	cout << "Bob's Pubkey " << Pub_key.x << "," << Pub_key.y << ","  << endl;
+	// Pub_key.z = 1;
+	cout << "Bob's Pubkey " << Pub_key.x << "," << Pub_key.y << "," << endl;
 
 	// mktbl3(Pub_key);
 	// elp3(ax);
@@ -1481,7 +1485,7 @@ void ecdh()
 	tmp = Qmlt(CRV.G, cx);
 	Pub_key.x = tmp.x;
 	Pub_key.y = tmp.y;
-	//Pub_key.z = 1;
+	// Pub_key.z = 1;
 	cout << "Alice's Shared key " << Pub_key.x << "," << Pub_key.y << "," << endl;
 	// exit(1);
 	/*
@@ -1558,9 +1562,9 @@ void keygen(ZZ r)
 
 	fp = fopen("eccpub.key", "wb");
 	init_curve(256);
-	//mktbl3(CRV.G);
-	// cin>>r;
-	Qmlt(CRV.G,r);
+	// mktbl3(CRV.G);
+	//  cin>>r;
+	Qmlt(CRV.G, r);
 	cout << "y=" << Pub_key.y << endl;
 
 	for (i = 0; i < 32; i++)
@@ -1612,7 +1616,7 @@ void enc(char *argv[], int nn)
 
 	// mktbl3(CRV.G);
 	// elp3(salt);
-	Pub_key = Qmlt(CRV.G,salt);
+	Pub_key = Qmlt(CRV.G, salt);
 	cout << "y=" << Pub_key.y << endl;
 
 	for (i = 0; i < 32; i++)
@@ -1640,7 +1644,7 @@ void enc(char *argv[], int nn)
 
 	Pub_key.x = 0;
 	Pub_key.y = 0;
-	//Pub_key.z = 0;
+	// Pub_key.z = 0;
 	for (i = 0; i < 32; i++)
 	{
 		II = key[i];
@@ -1656,17 +1660,17 @@ void enc(char *argv[], int nn)
 	for (i = 0; i < 32; i++)
 	{
 		II = key[i + 64];
-		//Pub_key.z ^= II << (i * 8);
+		// Pub_key.z ^= II << (i * 8);
 	}
 
-	//mktbl3(Pub_key);
-	//elp3(salt);
-	Qmlt(Pub_key,salt);
+	// mktbl3(Pub_key);
+	// elp3(salt);
+	Qmlt(Pub_key, salt);
 	//  X=elp(salt,Pub_key);
 
 	X.x = Pub_key.x;
 	X.y = Pub_key.y;
-	//X.z = Pub_key.z;
+	// X.z = Pub_key.z;
 
 	// X=elp(salt,Pub_key);
 	cout << "y=" << X.y << endl;
@@ -1695,14 +1699,14 @@ void enc(char *argv[], int nn)
 		//
 
 		cout << salt << endl;
-		//jadd(X, CRV.G); // ��Â���
+		// jadd(X, CRV.G); // ��Â���
 		salt ^= P.y;
 
 		//    exit(1);
 
 		X.x = P.x;
 		X.y = P.y;
-		//X.z = P.z;
+		// X.z = P.z;
 
 		for (i = 0; i < 32; i++)
 		{
@@ -1757,7 +1761,7 @@ void dec(char *argv[], int nn)
 
 	R.x = 0;
 	R.y = 0;
-	//R.z = 0;
+	// R.z = 0;
 	fp = fopen(argv[2], "wb");
 	fq = fopen(argv[1], "rb");
 	fread(key, 1, 32 * 3, fq);
@@ -1772,7 +1776,7 @@ void dec(char *argv[], int nn)
 		R.y ^= II << (i * 8);
 	}
 
-	Qmlt(R,r);
+	Qmlt(R, r);
 	//    Pub_key=elp(r,R);
 
 	// cout<<"dcPubkey.x="<<Pub_key.x<<"\n";
@@ -1807,15 +1811,15 @@ void dec(char *argv[], int nn)
 			a = (a >> 8);
 		}
 
-		P=eadd(Pub_key, CRV.G);
+		P = eadd(Pub_key, CRV.G);
 		salt ^= P.y; //%(256*read_size));
-		//cout << salt << endl;
+		// cout << salt << endl;
 
 		//    exit(1);
 		a = salt;
 		Pub_key.x = P.x;
 		Pub_key.y = P.y;
-		//Pub_key.z = P.z;
+		// Pub_key.z = P.z;
 
 		for (i = 0; i < 32; i++)
 			I[i] = 0;
@@ -1841,7 +1845,7 @@ void nizk()
 {
 	ZZ r, c, x, b;
 
-	Qmlt(CRV.G,r);
+	Qmlt(CRV.G, r);
 	// elp(r,CRV.G);
 	cout << "inputchallenge\n";
 	cin >> c;
@@ -1927,9 +1931,9 @@ void logcom(int nn, int argc, char *argv[])
 	combo e;
 
 	init_curve(nn);
-	//mktbl3(CRV.G);
-	// elp3(CRV_n)
-	// printeccp192,"\n"
+	// mktbl3(CRV.G);
+	//  elp3(CRV_n)
+	//  printeccp192,"\n"
 
 	// printsecp128r1_p,"\n"
 
@@ -1961,11 +1965,11 @@ void logcom(int nn, int argc, char *argv[])
 	// encryption
 	ai = plain[1];
 	// cout<<"r1="<<ai<<"\n";
-	Qmlt(CRV.G,ai);
+	Qmlt(CRV.G, ai);
 	v.x = Pub_key.x;
 	v.y = Pub_key.y;
-	//v.z = Pub_key.z;
-	// printv_x,"",v_y,"\n"
+	// v.z = Pub_key.z;
+	//  printv_x,"",v_y,"\n"
 
 	e = hash2(argc, argv);
 	nha ^= e.e1.dd[0];
@@ -1977,36 +1981,37 @@ void logcom(int nn, int argc, char *argv[])
 	nha ^= e.e2.dd[1];
 
 	cout << "mha=" << nha << "\n";
-	Qmlt(v,nha);
+	Qmlt(v, nha);
 	c.x = Pub_key.x;
 	c.y = Pub_key.y;
-	//c.z = Pub_key.z;
-	// printc_x,"",c_y,"\n"
+	// c.z = Pub_key.z;
+	//  printc_x,"",c_y,"\n"
 	cin >> r;
 	cout << r << endl;
-	Qmlt(CRV.G,r);
+	Qmlt(CRV.G, r);
 	gr.x = Pub_key.x;
 	gr.y = Pub_key.y;
-	//gr.z = Pub_key.z;
+	// gr.z = Pub_key.z;
 	eadd(gr, c);
 	Gen_key.x = P.x;
 	Gen_key.y = P.y;
-	//Gen_key.z = P.z;
-	if ((Gen_key.y * Gen_key.y) % CRV.p != ((Gen_key.x * Gen_key.x * Gen_key.x) + CRV.a * Gen_key.x  + CRV.b) % CRV.p){
+	// Gen_key.z = P.z;
+	if ((Gen_key.y * Gen_key.y) % CRV.p != ((Gen_key.x * Gen_key.x * Gen_key.x) + CRV.a * Gen_key.x + CRV.b) % CRV.p)
 	{
-		cout << "error!!\n";
-		exit(1);
-	}
+		{
+			cout << "error!!\n";
+			exit(1);
+		}
 
-	if ((Gen_key.y * Gen_key.y) % CRV.p == ((Gen_key.x * Gen_key.x * Gen_key.x) + CRV.a * Gen_key.x + CRV.b ) % CRV.p)
-	{
-		cout << argv[1] << "'sLogCommitmentis"
-			 << "\n";
-		cout << "x=" << Gen_key.x << "\n";
-		cout << "y=" << Gen_key.y << "\n";
-		//cout << "z=" << Gen_key.z << endl;
+		if ((Gen_key.y * Gen_key.y) % CRV.p == ((Gen_key.x * Gen_key.x * Gen_key.x) + CRV.a * Gen_key.x + CRV.b) % CRV.p)
+		{
+			cout << argv[1] << "'sLogCommitmentis"
+				 << "\n";
+			cout << "x=" << Gen_key.x << "\n";
+			cout << "y=" << Gen_key.y << "\n";
+			// cout << "z=" << Gen_key.z << endl;
+		}
 	}
-}
 }
 //
 // otp(133,2244)
@@ -2194,7 +2199,7 @@ po compress_point(po point)
 	po z;
 	z.x = point.x;
 	z.y = point.y % 2;
-	//z.z = 1;
+	// z.z = 1;
 
 	return z;
 }
@@ -2208,7 +2213,7 @@ po uncompress_point(po compressed_point)
 	ZZ y = SqrRootMod(((x * x * x) + CRV.a * x + CRV.b) % CRV.p, CRV.p);
 	z.x = x;
 	z.y = y;
-	//z.z = 1;
+	// z.z = 1;
 	if (is_odd == (y & 1))
 		return z;
 
@@ -2248,21 +2253,21 @@ kem invs2(kem a)
 	return s;
 }
 
-sem invs(sem a)
+esem invs(esem a)
 {
-	sem s;
+	esem s;
 	ten aa = p2t(a.u);
-	s.u = Qmlt(a.u, CRV.n-inv((a.v), CRV.n));
+	s.u = Qmlt(a.u, CRV.n - inv((a.v), CRV.n));
 	s.v = inv(a.v, CRV.n);
 	// s.u%=23;
-	//cout << "sv=" << a.v << endl;
+	// cout << "sv=" << a.v << endl;
 
 	return s;
 }
 
-sem semi(sem a, sem b)
+esem esemi(esem a, esem b)
 {
-	sem n; // = {0};
+	esem n; // = {0};
 	n.u = eadd(Qmlt(b.u, a.v), a.u);
 	n.v = (a.v * b.v) % CRV.n;
 	// n.u = n.to_ZZ("23");
@@ -2270,9 +2275,9 @@ sem semi(sem a, sem b)
 	return n;
 }
 
-sem cemi(sem a, sem b)
+esem cemi(esem a, esem b)
 {
-	sem n; // = {0};
+	esem n; // = {0};
 	ten m = p2t(a.u);
 
 	n.u = eadd(Qmlt(a.u, b.v), b.u);
@@ -2297,12 +2302,12 @@ kem tdp2(kem a, kem b, kem c)
 	return kemi(a, kemi(b, invs2(c)));
 }
 
-sem tdp(sem a, sem b, sem c)
+esem tdp(esem a, esem b, esem c)
 {
-	return semi(semi(a,b),invs(c));
+	return esemi(esemi(a, b), invs(c));
 }
 
-void psem(sem a)
+void pesem(esem a)
 {
 	cout << a.u.x << "," << a.u.y << "," << a.v << endl;
 }
@@ -2363,18 +2368,18 @@ int kpk()
 	// exit(1);
 
 	/*
-	pi=semi(invs(d),a);
-	phi=semi(invs(h),e);
+	pi=esemi(invs(d),a);
+	phi=esemi(invs(h),e);
 	printf("p1=%d %d\n",pi.u,pi.v);
 	printf("p2=%d %d\n",phi.u,phi.v);
 	for(int i=0;i<23;i++){
 	for(int j=0;j<23;j++){
 	e.u=i;
 	e.v=j;
-	phi=semi(invs(h),e);
+	phi=esemi(invs(h),e);
 	if(phi.u==12 && phi.v==6){
 	printf("e=%d %d\n",e.u,e.v);
-	phi=semi(invs(h),e);
+	phi=esemi(invs(h),e);
 	printf("phi=%d %d\n",phi.u,phi.v);
 	exit(1);
 	}
@@ -2420,44 +2425,43 @@ int kpk()
 	return 0;
 }
 
-sem back(sem a, sem a1, sem b)
+esem back(esem a, esem a1, esem b)
 {
-	return semi(invs(a), semi(a1, b));
+	return esemi(invs(a), esemi(a1, b));
 }
 
 int ekp()
 {
-	sem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
+	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
 	a.u = Qmlt(CRV.G, to_ZZ("6"));
 	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
-	c.u =Qmlt(CRV.G, to_ZZ("11"));
-	//c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
+	c.u = Qmlt(CRV.G, to_ZZ("11"));
+	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
 	c.v = to_ZZ("2");
 	d.u = Qmlt(CRV.G, to_ZZ("12"));
-	//d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
+	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
 	d.v = to_ZZ("1");
-	g1.u=eadd(c.u,d.u);
+	g1.u = eadd(c.u, d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
-	//exit(1);
+	// exit(1);
 
 	e.u = Qmlt(CRV.G, to_ZZ("5"));
 	e.v = to_ZZ("4");
 	f.u = Qmlt(CRV.G, to_ZZ("17"));
 	f.v = to_ZZ("12");
-	g.u = Qmlt(CRV.G, to_ZZ("13"));
+	g.u = Qmlt(CRV.G, to_ZZ("23"));
 	g.v = to_ZZ("14");
-	h.u = Qmlt(CRV.G, to_ZZ("11"));
-	h.v = to_ZZ("16");
+	h.u = Qmlt(CRV.G, to_ZZ("35"));
+	h.v = to_ZZ("26");
 
 	printf("inv6=%d\n", inv2(6, 41));
 
-	
-	sem x, y;
+	esem x, y;
 	int p = 17;
-	sem key[4];
+	esem key[4];
 
 	x.u = Qmlt(CRV.G, to_ZZ("19"));
 	x.v = to_ZZ("20");
@@ -2466,109 +2470,118 @@ int ekp()
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
-	
+
 	a1 = tdp(a, x, (b));
 	a2 = tdp(b, x, (c));
 	a3 = tdp(c, x, (d));
-	psem(a1);
-	psem(a2);
-	psem(a3);
-	//exit(1);
-	
-	
-	sem aga;
-	aga=semi(a1,semi(a2,a3));
-	//aga=tdp(a1,a2,a3); //semi(semi(a,a),invs(a));
-	psem(aga);
-	aga=semi(semi(invs(a),aga),d);
-	psem(aga);
-	aga=semi(semi(x,x),x);
-	psem(aga);
-	
+	pesem(a1);
+	pesem(a2);
+	pesem(a3);
+	esem ogo;
+	ogo = esemi(a1, esemi(a2, a3));
+	pesem(ogo);
+	// exit(1);
+
+	esem aga;
+	aga = esemi(a1, esemi(a2, a3));
+	// aga=tdp(a1,a2,a3); //esemi(esemi(a,a),invs(a));
+	pesem(aga);
+	aga = esemi(esemi(invs(a), aga), d);
+	pesem(aga);
+	aga = esemi(esemi(x, x), x);
+	pesem(aga);
+
 	exit(1);
-	
+
 	b1 = tdp(a, y, (b));
 	b2 = tdp(b, y, (c));
 	// exit(1);
 	b3 = tdp(c, y, (d));
 	// exit(1);
 	//  bob's public key
-	
-	//c1 = tdp(e, x, (f));
-	//c2 = tdp(f, x, (g));
-	//c3 = tdp(g, x, (h));
+
+	c1 = tdp(e, x, (f));
+	c2 = tdp(f, x, (g));
+	c3 = tdp(g, x, (h));
+	aga = esemi(c1, esemi(c2, c3));
+	pesem(aga);
+	ogo = esemi(x, esemi(x, x));
+	pesem(ogo);
+	exit(1);
 	d1 = tdp(e, y, (f));
 	d2 = tdp(f, y, (g));
 	d3 = tdp(g, y, (h));
-	sem pi, phi;
-	pi=invs(b);
-	psem(pi);
-	//exit(1);
-	pi=semi((a),(pi));
-	psem(pi);
-	exit(1);
-	pi=semi(pi,a);
-	psem(pi);
-	psem(b);
-	exit(1);
-	phi=tdp(a1,a2,(a3));
-	psem(phi);
-	exit(1);
-	pi=semi((a),semi(pi,invs(d)));
-	psem(pi);
-	exit(1);
-	pi=tdp(x,x,x);
-	psem(pi);
-	exit(1);
-	//pi=semi(a,semi(pi,invs(d))));
-	phi=semi(a,semi(pi,invs(d)));
-	phi=semi(pi,invs(d));
-	psem(pi);
-	psem(phi);
-	
-	psem(cemi(pi,(c)));
-	psem(semi(pi,(c)));
-	psem(cemi((c),pi));
-	psem(semi((c),pi));
-	psem(a);
-	exit(1);
-	//pi=tdp(a1,a2,(a3));
-	psem(semi(a,pi));
-	pi=cemi(d,phi);
-	psem(pi);
-	exit(1);
 
-	pi=cemi(pi,d); //semi(pi,d)));
-	psem(semi(invs(a),pi));
+	esem pi, phi;
+	/*
+	pi=invs(b);
+	pesem(pi);
 	//exit(1);
-	//psem(back(a,a1,b));
-	pi = semi(a, x);
-	psem(pi);
+	pi=esemi((a),(pi));
+	pesem(pi);
+	//exit(1);
+	pi=esemi(pi,a);
+	pesem(pi);
+	pesem(b);
+	//exit(1);
+	phi=tdp(a1,a2,(a3));
+	pesem(phi);
+	//exit(1);
+	pi=tdp(a,pi,d); //esemi((a),esemi(pi,invs(d)));
+	pesem(pi);
+	//exit(1);
+	pi=esemi(x,esemi(x,x)); //tdp(x,x,x);
+	pesem(pi);
+	//exit(1);
+	//pi=esemi(a,esemi(pi,invs(d))));
+	phi=esemi(a,esemi(pi,invs(d)));
+	phi=esemi(pi,invs(d));
+	pesem(pi);
+	pesem(phi);
+
+	pesem(cemi(pi,(c)));
+	pesem(esemi(pi,(c)));
+	pesem(cemi((c),pi));
+	pesem(esemi((c),pi));
+	pesem(a);
+	//exit(1);
+	//pi=tdp(a1,a2,(a3));
+	pesem(esemi(a,pi));
+	pi=cemi(d,phi);
+	pesem(pi);
+	//exit(1);
+
+	pi=cemi(pi,d); //esemi(pi,d)));
+	pesem(esemi(invs(a),pi));
+	//exit(1);
+	//pesem(back(a,a1,b));
+	pi = esemi(a, x);
+	pesem(pi);
 	pi = cemi(invs(x), pi);
-	psem(pi);
-	psem(x);
-	exit(1);
-	psem(a);
-	exit(1);
+	pesem(pi);
+	pesem(x);
+	//exit(1);
+	pesem(a);
+	//exit(1);
 	// phi.u=12;
 	// phi.v=6;
-	// pi=semi(d,phi);
+	// pi=esemi(d,phi);
 	// printf("e=%d %d\n",pi.u,pi.v);
 	// exit(1);
-
+*/
 	/*
-	pi=semi(invs(d),a);
-	phi=semi(invs(h),e);
+	pi=esemi(invs(d),a);
+	phi=esemi(invs(h),e);
 	printf("p1=%d %d\n",pi.u,pi.v);
 	printf("p2=%d %d\n",phi.u,phi.v);
 	for(int i=0;i<23;i++){
 	for(int j=0;j<23;j++){
 	e.u=i;
 	e.v=j;
-	phi=semi(invs(h),e);
+	phi=esemi(invs(h),e);
 	if(phi.u==12 && phi.v==6){
 	printf("e=%d %d\n",e.u,e.v);
-	phi=semi(invs(h),e);
+	phi=esemi(invs(h),e);
 	printf("phi=%d %d\n",phi.u,phi.v);
 	exit(1);
 	}
@@ -2577,60 +2590,60 @@ int ekp()
 	exit(1);
 	*/
 	printf("Alice's Pubkey1 ="); // %d %d\n", a1.u, a1.v);
-	psem(a1);
+	pesem(a1);
 	printf("Alice's Pubkey1 =");
-	psem(a2);
+	pesem(a2);
 	printf("Alice's Pubkey1 = "); //%d %d\n", a3.u, a3.v);
-	psem(a3);
+	pesem(a3);
 	printf("Alice's Pubkey2 = "); //%d %d\n", b1.u, b1.v);
-	psem(b1);
+	pesem(b1);
 	printf("Alice's Pubkey2 = "); //%d %d\n", b2.u, b2.v);
-	psem(b2);
+	pesem(b2);
 	printf("Alice's Pubkey2 = "); //%d %d\n", b3.u, b3.v);
-	psem(b3);
+	pesem(b3);
 	printf("Bob's Pubkey1 = "); //%d %d\n", c1.u, c1.v);
-	psem(c1);
+	pesem(c1);
 	printf("Bob's Pubkey1 = "); //%d %d\n", c2.u, c2.v);
-	psem(c2);
+	pesem(c2);
 	printf("Bob's Pubkey1 = "); //%d %d\n", c3.u, c3.v);
-	psem(c3);
+	pesem(c3);
 	printf("Bob's Pubkey2 = "); //%d %d\n", d1.u, d1.v);
-	psem(d1);
+	pesem(d1);
 	printf("Bob's Pubkey2 = "); //%d %d\n", d2.u, d2.v);
-	psem(d2);
+	pesem(d2);
 	printf("Bob's Pubkey2 = "); //%d %d\n", d3.u, d3.v);
-	psem(d3);
+	pesem(d3);
 
-	sem tmp[16];
+	esem tmp[16];
 	// tmp[3].u=12;
 	// tmp[3].v=6;
-	pi = semi(invs(d), a);
-	phi = semi(invs(h), e);
-	psem(pi);
-	psem(phi);
-	// printf("%d %d\n",pi.u,pi.v);
-	// printf("%d %d\n",phi.u,phi.v);
+	pi = esemi(invs(d), a);
+	phi = esemi(invs(h), e);
+	// pesem(pi);
+	// pesem(phi);
+	//  printf("%d %d\n",pi.u,pi.v);
+	//  printf("%d %d\n",phi.u,phi.v);
 	//
-	c = cemi(invs(c), (c));
-	exit(1);
-	key[0] = semi(semi(a1, a2), a3);
-	key[1] = semi(semi(c1, c2), c3);
-	//  exit(1);
+	// c = esemi(invs(c), (c));
+	// exit(1);
+	key[0] = tdp(a1, a2, a3);
+	key[1] = tdp(c1, c2, c3);
+	// exit(1);
 	printf("Alice's encrypted key = "); //(%d,%d)\n", key[0].u, key[0].v);
-	psem(key[0]);
+	pesem(key[0]);
 	printf("Bob's encrypted key = "); //(%d,%d)\n", key[1].u, key[1].v);
-	psem(key[1]);
-	tmp[0] = semi(semi(invs(a), key[0]), (d));
-	tmp[1] = semi(semi(invs(e), key[1]), (h));
+	pesem(key[1]);
+	tmp[0] = esemi(esemi(invs(a), key[0]), (d));
+	tmp[1] = esemi(esemi(invs(e), key[1]), (h));
 	printf("decrypted key-A = "); //(%d,%d)\n", tmp[0].u, tmp[0].v);
-	psem(tmp[0]);
+	pesem(tmp[0]);
 	printf("decrypted key-B = "); //(%d,%d)\n", tmp[1].u, tmp[1].v);
-	psem(tmp[1]);
-	tmp[5] = semi(semi(x, x), x);
-	// tmp[4]=semi(semi((a),key[5]),invs(d));
-	// key[1] = semi(semi(c1, c2), c3);
+	pesem(tmp[1]);
+	tmp[5] = esemi(esemi(x, x), x);
+	// tmp[4]=esemi(esemi((a),key[5]),invs(d));
+	// key[1] = esemi(esemi(c1, c2), c3);
 	printf("x^3= "); //%d %d\n",tmp[5].u,tmp[5].v);
-	psem(tmp[5]);
+	pesem(tmp[5]);
 	exit(1);
 	return 0;
 }
@@ -2664,33 +2677,33 @@ int main(int argc, char *argv[])
 
 	init_curve(16);
 	cout << inv2(6, 41) << "\n";
-	
-	//mktbl3(CRV.G);
-	//cout << elp3(b).x << endl;
-	//mktable(CRV.G.x,CRV.G.y);
-	//cout << ellip(to_ZZ("7")).x << endl;
-	//cout << ellip(to_ZZ("7")).y << endl;
-	//cout << ellip(to_ZZ("41-7")).x << endl;
-	//cout << ellip(to_ZZ("41-7")).y << endl;
-	//exit(1);
-	sem ae[10];
-	ae[0].v=to_ZZ("6");
-	ae[0].u=Qmlt(CRV.G,to_ZZ("6"));
-	ae[1].u=Qmlt(CRV.G,to_ZZ("15"));
-	ae[1].v=to_ZZ("15");
-	psem(ae[0]);
-	psem(ae[1]);
-	eadd(ae[0].u,ae[1].u);
-	ae[2]=invs(ae[0]);
-	psem(ae[2]);
-	//exit(1);
 
-	//oe.v=to_ZZ("6");
-	//oe.u=cho;
-	//uo=semi(oe,oe);
-	//psem(uo);
-	//uo=cemi(uo,ae);
-	//psem(uo);
+	// mktbl3(CRV.G);
+	// cout << elp3(b).x << endl;
+	// mktable(CRV.G.x,CRV.G.y);
+	// cout << ellip(to_ZZ("7")).x << endl;
+	// cout << ellip(to_ZZ("7")).y << endl;
+	// cout << ellip(to_ZZ("41-7")).x << endl;
+	// cout << ellip(to_ZZ("41-7")).y << endl;
+	// exit(1);
+	esem ae[10];
+	ae[0].v = to_ZZ("6");
+	ae[0].u = Qmlt(CRV.G, to_ZZ("6"));
+	ae[1].u = Qmlt(CRV.G, to_ZZ("15"));
+	ae[1].v = to_ZZ("15");
+	pesem(ae[0]);
+	pesem(ae[1]);
+	eadd(ae[0].u, ae[1].u);
+	ae[2] = invs(ae[0]);
+	pesem(ae[2]);
+	// exit(1);
+
+	// oe.v=to_ZZ("6");
+	// oe.u=cho;
+	// uo=esemi(oe,oe);
+	// pesem(uo);
+	// uo=cemi(uo,ae);
+	// pesem(uo);
 	/*
 	cout << Qmlt(CRV.G,c).x << " --Qx" << endl;
 	cout << Qmlt(CRV.G,c).y << " --Qy" << endl;
