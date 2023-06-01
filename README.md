@@ -1,4 +1,4 @@
-# Key exchange by semidirect Decomposition Problem 
+# Key exchange by Decomposition Problem using semidirect product of eliptic curve  
 ## 警告
 この方式で行列を使うと線形代数攻撃で解読できます。
 なぜなら、A1,A2で同じ元を使っている２つの式を合わせれば、未知変数の個数と一致して、全ての秘密鍵が計算できるからです。それに対抗するためには、まだどのような組み合わせが安全かわかりませんが、線形代数以外の群を使った半直積を試してみてください。
