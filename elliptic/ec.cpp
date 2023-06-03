@@ -996,9 +996,9 @@ po Qmlt(po y, ZZ n)
 
 esem Qexp(ZZ x,esem e){
 ZZ i=to_ZZ("2");
-
+e.u=edbl(e.u.x,e.u.y);
 e.v=pow_mod(e.v,x,CRV.p);
-while(i<x){
+while(i<x-1){
 e.u=eadd(e.u,Qmlt(e.u,(i)));
 i++;
 }
@@ -2482,11 +2482,12 @@ int ehw()
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
 	
-	d=Qexp(to_ZZ("3"),A);
+	d=Qexp(to_ZZ("4"),A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
 	e.u=eadd(edbl(A.u.x,A.u.y),A.u);
 	cout << e.u.x << "," << e.u.y << endl;
-
+	f.u=eadd(eadd(Qmlt(A.u,to_ZZ("3")),Qmlt(A.u,to_ZZ("2"))),A.u);
+	cout << f.u.x << "," << f.u.y << endl;
 	exit(1);
 	
 	Y=esemi(esemi(Qexp(a,X),A),invs(Qexp(a,X)));
