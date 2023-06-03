@@ -560,12 +560,12 @@ void init_curve(int n)
 	}
 	if (n == 16)
 	{
-	CRV.a=to_ZZ("1256");
-	CRV.b=to_ZZ("1513");
-	CRV.n=to_ZZ("2039");
-	CRV.p=to_ZZ("2027");
-	CRV.G.x=to_ZZ("0");
-	CRV.G.y=to_ZZ("376");
+		CRV.a = to_ZZ("1256");
+		CRV.b = to_ZZ("1513");
+		CRV.n = to_ZZ("2039");
+		CRV.p = to_ZZ("2027");
+		CRV.G.x = to_ZZ("0");
+		CRV.G.y = to_ZZ("376");
 	}
 	if (n == 8)
 	{
@@ -992,6 +992,17 @@ po Qmlt(po y, ZZ n)
 	Z.y = ret.y;
 	// Z.z = 1;
 	return ret;
+}
+
+esem Qexp(ZZ x,esem e){
+ZZ i=to_ZZ("2");
+
+e.v=pow_mod(e.v,x,CRV.p);
+while(i<x){
+e.u=eadd(e.u,Qmlt(e.u,(i)));
+i++;
+}
+return e;
 }
 
 ////make a calcration table from base point Q
@@ -2278,7 +2289,14 @@ esem invs(esem a)
 esem esemi(esem a, esem b)
 {
 	esem n; // = {0};
-	n.u = eadd(Qmlt(b.u, a.v), a.u);
+	if (b.u.x == a.u.x && b.u.y == a.u.y)
+	{
+		n.u = edbl(b.u.x, b.u.y);
+	}
+	else
+	{
+		n.u = eadd(Qmlt(b.u, a.v), a.u);
+	}
 	n.v = (a.v * b.v) % CRV.n;
 	// n.u = n.to_ZZ("23");
 
@@ -2440,13 +2458,69 @@ esem back(esem a, esem a1, esem b)
 	return esemi(invs(a), esemi(a1, b));
 }
 
-int csp(){
+esem exchange(esem a, ZZ b)
+{
+	esem v;
+	v.u = Qmlt(a.u, b);
+	v.v = a.v;
+
+	return v;
+}
+
+
+int ehw()
+{
+	esem A,X,Y,Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
+	ZZ a,b,c,r,s;
+	a=to_ZZ("123");
+	b=to_ZZ("456");
+	c=to_ZZ("789");
+	r=to_ZZ("517");
+	s=to_ZZ("17");
+	A.u = CRV.G;
+	A.v = to_ZZ("26");
+	X.u = Qmlt(CRV.G, a);
+	X.v = to_ZZ("25");
+	
+	d=Qexp(to_ZZ("3"),A);
+	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
+	e.u=eadd(edbl(A.u.x,A.u.y),A.u);
+	cout << e.u.x << "," << e.u.y << endl;
+
+	exit(1);
+	
+	Y=esemi(esemi(Qexp(a,X),A),invs(Qexp(a,X)));
+	Z=esemi(esemi(Qexp(b,X),Qexp(c,A)),invs(Qexp(b,X)));
+
+	c1=esemi(esemi(Qexp(r,X),Qexp(s,Y)),invs(Qexp(r,X)));
+	c2=esemi(esemi(Qexp(r,X),Qexp(s,Z)),invs(Qexp(r,X)));
+	c1=esemi(esemi(Qexp(a,X),c1),invs(Qexp(a,X)));
+	c2=Qexp(s,c2);
+	c2=esemi(esemi(Qexp(b,X),c2),invs(Qexp(b,X)));
+	c1=esemi(esemi(Qexp(b-a,X),Qexp(c,c1)),invs(Qexp(b-a,X)));
+	 
+	cout << c1.u.x << "," << c1.u.y << endl;
+	cout << c2.u.x << "," << c2.u.y << endl;
+	cout << c1.v << "," << c2.v << endl;
+
+
+	 exit(1);
+}
+
+int csp()
+{
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
 	a.u = Qmlt(CRV.G, to_ZZ("6"));
 	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
+	c=exchange(b,to_ZZ("6"));
+	pesem(c);
+	d=exchange(a,to_ZZ("15"));
+	pesem(d);
+	exit(1);
+
 	c.u = Qmlt(CRV.G, to_ZZ("11"));
 	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
 	c.v = to_ZZ("2");
@@ -2472,10 +2546,10 @@ int csp(){
 	int p = 17;
 	esem key[4];
 
-	x.u = Qmlt(CRV.G, to_ZZ("19"));
-	x.v = to_ZZ("20");
-	y.u = Qmlt(CRV.G, to_ZZ("21"));
-	y.v = to_ZZ("22");
+	x.u = Qmlt(CRV.G, to_ZZ("9"));
+	x.v = to_ZZ("1");
+	y.u = Qmlt(CRV.G, to_ZZ("2"));
+	y.v = to_ZZ("1");
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
@@ -2488,26 +2562,29 @@ int csp(){
 	pesem(a2);
 	pesem(b1);
 	pesem(b2);
-
-	esem ogo;
-	ogo = esemi(esemi(a1, a2), esemi(a1,a2));
-	pesem(ogo);
-	ogo=esemi(a, esemi(ogo,invs(a)));
-	pesem(ogo);
-	ogo=esemi(x,esemi(y,esemi(x,y)));
-	pesem(ogo);
-
 	// exit(1);
 
-	esem aga;
-	aga = esemi(b1, esemi(b2, esemi(b1,b2)));
-	pesem(aga);
-	aga=esemi(b, esemi(aga,invs(b)));
-	pesem(aga);
-	ogo=esemi(x,esemi(y,esemi(x,y)));
+	esem ogo;
+	ogo = esemi(esemi(a1, a2), esemi(a1, a2));
+	// ogo=esemi(esemi(esemi(a1,a2),a1),a2);
+	// ogo=esemi(ogo,ogo);
 	pesem(ogo);
-	//exit(1);
+	ogo = esemi(a, esemi(ogo, invs(a)));
+	pesem(ogo);
+	ogo = esemi(esemi(x, y), esemi(x, y));
+	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
+	pesem(ogo);
 
+	exit(1);
+
+	esem aga;
+	aga = esemi(b1, esemi(b2, esemi(b1, b2)));
+	pesem(aga);
+	aga = esemi(b, esemi(aga, invs(b)));
+	pesem(aga);
+	ogo = esemi(x, esemi(y, esemi(x, y)));
+	pesem(ogo);
+	// exit(1);
 }
 
 int ekp()
@@ -2758,6 +2835,9 @@ int main(int argc, char *argv[])
 	init_curve(16);
 	cout << inv2(6, 41) << "\n";
 
+	ehw();
+	exit(1);
+
 	// mktbl3(CRV.G);
 	// cout << elp3(b).x << endl;
 	// mktable(CRV.G.x,CRV.G.y);
@@ -2774,12 +2854,11 @@ int main(int argc, char *argv[])
 	pesem(ae[0]);
 	pesem(ae[1]);
 
-	//eadd(ae[0].u, ae[1].u);
-	ae[2]=(esemi(ae[0],ae[1]));
+	// eadd(ae[0].u, ae[1].u);
+	ae[2] = (esemi(ae[0], ae[1]));
 	ae[2] = invs(ae[2]);
 	pesem(ae[2]);
-	//exit(1);
-
+	
 	// oe.v=to_ZZ("6");
 	// oe.u=cho;
 	// uo=esemi(oe,oe);
@@ -2794,7 +2873,7 @@ int main(int argc, char *argv[])
 	cout << eadd(ae.u,oe.u).x << " --Qx" << endl;
 	cout << eadd(ae.u,oe.u).y << " --Qy" << endl;
 	*/
-	//ekp();
+	// ekp();
 	csp();
 	exit(1);
 
