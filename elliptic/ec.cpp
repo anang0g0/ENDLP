@@ -2307,12 +2307,11 @@ esem invs(esem a)
 	return s;
 }
 
-esem emul(esem a,esem b,ZZ d){
+esem emul(esem X,esem Y){
 esem c;
 
-//d+=1;
-c.u=eadd(Qmlt(a.u,d),b.u);
-c.v=a.v*b.v%CRV.p;
+c.u=eadd(Qmlt(Y.u,X.v),X.u);
+c.v=Y.v*X.v%CRV.n;
 
 return c;
 }
@@ -2527,27 +2526,17 @@ int ehw()
 	cout << f.u.x << "," << f.u.y << endl;
 	//exit(1);
 
-	Y = tdp(Qexp(a, X),A,Qexp(a,X));
-	Z = tdp(Qexp(b,X),Qexp(c,A),Qexp(b,X));
-	//A = tdp(Qexp(b-a,X),Y,Qexp(b-a,X));
-	X = Qpow(to_ZZ("23"),A);
-	Y = Qpow(to_ZZ("100"),A);
+	Y = emul(emul(Qpow(a, X),A),invs(Qpow(a,X)));
+	Z = emul(emul(Qpow(a,X),Qpow(c,A)),invs(Qpow(a,X)));
+	X = Qpow(c,Y); //tdp(Qexp(b-a,X),Y,Qexp(b-a,X));
+	//X = Qpow(to_ZZ("23"),A);
+	//Y = Qpow(to_ZZ("100"),A);
 	//Y.u = eadd(Qmlt(X.u,to_ZZ("1")),Y.u);
-	B.u=eadd(Qmlt(Y.u,X.v),X.u);
-	B.v=Y.v*X.v%CRV.n;
-	//emul(X,Y,to_ZZ("9"));
-	Z=Qpow(to_ZZ("123"),A);
-	pesem(Z);
+	B=emul(X,Y);
+	//Z=Qpow(to_ZZ("123"),A);
+	//pesem(Z);
 	pesem(B);
-	exit(1);
-
-	Y=X;
-	ZZ ii=to_ZZ("2");
-	while(Z.u.x!=Y.u.x){
-	Y=Qexp(ii,X);
-	cout << ii << endl;
-	ii++;
-	}
+	
 	
 	pesem(Y);
 	pesem(Z);
