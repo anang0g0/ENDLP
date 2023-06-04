@@ -996,7 +996,19 @@ po Qmlt(po y, ZZ n)
 
 esem Qexp(ZZ x, esem e)
 {
-	ZZ i=(x)*(x-1)/to_ZZ("2");
+	ZZ i;
+	i=(x)*(x-1)/to_ZZ("2");
+
+	e.v = pow_mod(e.v, x, CRV.p);
+	e.u=Qmlt(e.u,i);
+
+	return e;
+}
+
+esem Qexe(ZZ x, esem e)
+{
+	ZZ i;
+	i=(x)*(x+1)/to_ZZ("2");
 
 	e.v = pow_mod(e.v, x, CRV.p);
 	e.u=Qmlt(e.u,i);
@@ -2289,6 +2301,7 @@ esem invs(esem a)
 esem emul(esem a,esem b,ZZ d){
 esem c;
 
+d+=1;
 c.u=eadd(Qmlt(a.u,d),b.u);
 c.v=a.v*b.v%CRV.p;
 
@@ -2508,12 +2521,13 @@ int ehw()
 	Z = tdp(Qexp(b,X),Qexp(c,A),Qexp(b,X));
 	//A = tdp(Qexp(b-a,X),Y,Qexp(b-a,X));
 	X = Qexp(to_ZZ("3"),A);
-	Y = Qexp(to_ZZ("5"),A);
-	Y.u = eadd(Qmlt(X.u,to_ZZ("6")),Y.u);
-	Z=Qexp(to_ZZ("8"),A);
+	Y = Qexp(to_ZZ("7"),A);
+	//Y.u = eadd(Qmlt(X.u,to_ZZ("7")),Y.u);
+	X=emul(X,Y,to_ZZ("7"));
+	Z=Qexp(to_ZZ("10"),A);
 	pesem(Y);
 	pesem(Z);
-	//pesem(X);
+	pesem(X);
 	exit(1);
 
 	c1 = tdp(Qexp(r, X), Qexp(s, Y), invs(Qexp(r, X)));
