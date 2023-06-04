@@ -2537,8 +2537,8 @@ int ehw()
 
 	s=to_ZZ("2");
 	c=to_ZZ("3");
-	B=Qpow(c,A);
-	Z=Qpow(s,B);
+	//B=Qpow(c,A);
+	Z=Qpow(s*c,A);
 	B=Qpow(s,A);
 	B=Qpow(c,B);
 	pesem(Z);
