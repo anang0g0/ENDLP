@@ -994,15 +994,32 @@ po Qmlt(po y, ZZ n)
 	return ret;
 }
 
-esem Qexp(ZZ x,esem e){
-ZZ i=to_ZZ("2");
-e.u=edbl(e.u.x,e.u.y);
-e.v=pow_mod(e.v,x,CRV.p);
-while(i<x-1){
-e.u=eadd(e.u,Qmlt(e.u,(i)));
-i++;
+esem Qexp(ZZ x, esem e)
+{
+	ZZ i;
+	int ii=2;
+	esem g = e;
+
+	i=(x)*(x-1)/to_ZZ("2");
+
+	e.v = pow_mod(e.v, x, CRV.p);
+	e.u=Qmlt(e.u,i);
+
+	return e;
 }
-return e;
+
+esem Qsig(ZZ x, esem e)
+{
+	ZZ i;
+	int ii=2;
+	esem g = e;
+
+	i=(x)*(x+1)/to_ZZ("2");
+
+	e.v = pow_mod(e.v, x, CRV.p);
+	e.u=Qmlt(e.u,i);
+
+	return e;
 }
 
 ////make a calcration table from base point Q
@@ -2467,45 +2484,48 @@ esem exchange(esem a, ZZ b)
 	return v;
 }
 
-
 int ehw()
 {
-	esem A,X,Y,Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
-	ZZ a,b,c,r,s;
-	a=to_ZZ("123");
-	b=to_ZZ("456");
-	c=to_ZZ("789");
-	r=to_ZZ("517");
-	s=to_ZZ("17");
+	esem A, X, Y, Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
+	ZZ a, b, c, r, s;
+	a = to_ZZ("3");
+	b = to_ZZ("4");
+	c = to_ZZ("789");
+	r = to_ZZ("517");
+	s = to_ZZ("17");
 	A.u = CRV.G;
-	A.v = to_ZZ("26");
+	A.v = to_ZZ("1");
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
-	
-	d=Qexp(to_ZZ("4"),A);
-	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
-	e.u=eadd(edbl(A.u.x,A.u.y),A.u);
-	cout << e.u.x << "," << e.u.y << endl;
-	f.u=eadd(eadd(Qmlt(A.u,to_ZZ("3")),Qmlt(A.u,to_ZZ("2"))),A.u);
-	cout << f.u.x << "," << f.u.y << endl;
-	exit(1);
-	
-	Y=esemi(esemi(Qexp(a,X),A),invs(Qexp(a,X)));
-	Z=esemi(esemi(Qexp(b,X),Qexp(c,A)),invs(Qexp(b,X)));
 
-	c1=esemi(esemi(Qexp(r,X),Qexp(s,Y)),invs(Qexp(r,X)));
-	c2=esemi(esemi(Qexp(r,X),Qexp(s,Z)),invs(Qexp(r,X)));
-	c1=esemi(esemi(Qexp(a,X),c1),invs(Qexp(a,X)));
-	c2=Qexp(s,c2);
-	c2=esemi(esemi(Qexp(b,X),c2),invs(Qexp(b,X)));
-	c1=esemi(esemi(Qexp(b-a,X),Qexp(c,c1)),invs(Qexp(b-a,X)));
-	 
+	d.u = Qsig(to_ZZ("5"),A).u;
+	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
+	e.u = edbl(Qmlt(A.u, to_ZZ("5")).x,Qmlt(A.u, to_ZZ("5")).y);
+	cout << e.u.x << "," << e.u.y << endl;
+	f.u=eadd(eadd(eadd(eadd(Qmlt(A.u,to_ZZ("5")),Qmlt(A.u,to_ZZ("4"))),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
+	cout << f.u.x << "," << f.u.y << endl;
+	//exit(1);
+
+	Y = Qexp(a, A);
+	Z = esemi(esemi(A,A),A);
+	A = Qexp(b-a,X);
+	//Y=esemi(A,Y);
+	pesem(Y);
+	pesem(Z);
+	exit(1);
+
+	c1 = esemi(esemi(Qexp(r, X), Qexp(s, Y)), invs(Qexp(r, X)));
+	c2 = esemi(esemi(Qexp(r, X), Qexp(s, Z)), invs(Qexp(r, X)));
+	c1 = esemi(esemi(Qexp(a, X), c1), invs(Qexp(a, X)));
+	c2 = Qexp(s, c2);
+	c2 = esemi(esemi(Qexp(b, X), c2), invs(Qexp(b, X)));
+	c1 = esemi(esemi(Qexp(b - a, X), Qexp(c, c1)), invs(Qexp(b - a, X)));
+
 	cout << c1.u.x << "," << c1.u.y << endl;
 	cout << c2.u.x << "," << c2.u.y << endl;
 	cout << c1.v << "," << c2.v << endl;
 
-
-	 exit(1);
+	exit(1);
 }
 
 int csp()
@@ -2516,9 +2536,9 @@ int csp()
 	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
-	c=exchange(b,to_ZZ("6"));
+	c = exchange(b, to_ZZ("6"));
 	pesem(c);
-	d=exchange(a,to_ZZ("15"));
+	d = exchange(a, to_ZZ("15"));
 	pesem(d);
 	exit(1);
 
@@ -2859,7 +2879,7 @@ int main(int argc, char *argv[])
 	ae[2] = (esemi(ae[0], ae[1]));
 	ae[2] = invs(ae[2]);
 	pesem(ae[2]);
-	
+
 	// oe.v=to_ZZ("6");
 	// oe.u=cho;
 	// uo=esemi(oe,oe);
