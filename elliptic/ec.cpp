@@ -997,20 +997,29 @@ po Qmlt(po y, ZZ n)
 esem Qexp(ZZ x, esem e)
 {
 	ZZ i;
+	/*
+	if(x==1)
+	return e;
+	if(x==2){
+	e.u=Qmlt(e.u,x);
+	e.v=e.v*e.v%CRV.p;
+	return e;
+	}
+	*/
 	i=(x)*(x-1)/to_ZZ("2");
-
-	e.v = pow_mod(e.v, x, CRV.p);
+	//i=pow_mod(e.v,x,CRV.n);
+	//e.v = pow_mod(e.v, x, CRV.p);
 	e.u=Qmlt(e.u,i);
 
 	return e;
 }
 
-esem Qexe(ZZ x, esem e)
+esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
-	i=(x)*(x+1)/to_ZZ("2");
+	i=(pow_mod(e.v,x,CRV.n)-ZZ(1)*inv(e.v-ZZ(1),CRV.n))%CRV.n;
 
-	e.v = pow_mod(e.v, x, CRV.p);
+	e.v = pow_mod(e.v, x, CRV.n);
 	e.u=Qmlt(e.u,i);
 
 	return e;
@@ -2301,12 +2310,13 @@ esem invs(esem a)
 esem emul(esem a,esem b,ZZ d){
 esem c;
 
-d+=1;
+//d+=1;
 c.u=eadd(Qmlt(a.u,d),b.u);
 c.v=a.v*b.v%CRV.p;
 
 return c;
 }
+
 
 esem esemi(esem a, esem b)
 {
@@ -2496,7 +2506,7 @@ esem exchange(esem a, ZZ b)
 
 int ehw()
 {
-	esem A, X, Y, Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
+	esem A, B, X, Y, Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 	ZZ a, b, c, r, s;
 	a = to_ZZ("3");
 	b = to_ZZ("4");
@@ -2504,27 +2514,41 @@ int ehw()
 	r = to_ZZ("517");
 	s = to_ZZ("17");
 	A.u = CRV.G;
-	A.v = to_ZZ("1");
+	A.v = to_ZZ("2");
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
 
-	d = Qexp(to_ZZ("5"),A);
+	d = Qexp(to_ZZ("6"),A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
 	//e.u = edbl(Qmlt(A.u, to_ZZ("5")).x,Qmlt(A.u, to_ZZ("5")).y);
 	//cout << e.u.x << "," << e.u.y << endl;
-	f.u=eadd(eadd(eadd(Qmlt(A.u,to_ZZ("4")),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
-	//f.u=eadd(eadd(eadd(eadd(Qmlt(A.u,to_ZZ("5")),Qmlt(A.u,to_ZZ("4"))),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
+	//f.u=eadd(eadd(eadd(Qmlt(A.u,to_ZZ("4")),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
+	f.u=eadd(eadd(eadd(eadd(Qmlt(A.u,to_ZZ("5")),Qmlt(A.u,to_ZZ("4"))),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
 	cout << f.u.x << "," << f.u.y << endl;
 	//exit(1);
 
 	Y = tdp(Qexp(a, X),A,Qexp(a,X));
 	Z = tdp(Qexp(b,X),Qexp(c,A),Qexp(b,X));
 	//A = tdp(Qexp(b-a,X),Y,Qexp(b-a,X));
-	X = Qexp(to_ZZ("3"),A);
-	Y = Qexp(to_ZZ("7"),A);
-	//Y.u = eadd(Qmlt(X.u,to_ZZ("7")),Y.u);
-	X=emul(X,Y,to_ZZ("7"));
-	Z=Qexp(to_ZZ("10"),A);
+	X = Qpow(to_ZZ("23"),A);
+	Y = Qpow(to_ZZ("100"),A);
+	//Y.u = eadd(Qmlt(X.u,to_ZZ("1")),Y.u);
+	B.u=eadd(Qmlt(Y.u,X.v),X.u);
+	B.v=Y.v*X.v%CRV.n;
+	//emul(X,Y,to_ZZ("9"));
+	Z=Qpow(to_ZZ("123"),A);
+	pesem(Z);
+	pesem(B);
+	exit(1);
+
+	Y=X;
+	ZZ ii=to_ZZ("2");
+	while(Z.u.x!=Y.u.x){
+	Y=Qexp(ii,X);
+	cout << ii << endl;
+	ii++;
+	}
+	
 	pesem(Y);
 	pesem(Z);
 	pesem(X);
