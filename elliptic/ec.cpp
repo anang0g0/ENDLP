@@ -2535,14 +2535,14 @@ int ehw()
 	cout << f.u.x << "," << f.u.y << endl;
 	// exit(1);
 
-	s=to_ZZ("2");
-	c=to_ZZ("3");
-	//B=Qpow(c,A);
-	Z=Qpow(s*c,A);
-	B=Qpow(s,A);
-	B=Qpow(c,B);
-	pesem(Z);
-	pesem(B);
+Y=emul(emul(Qpow(a,X),A),invs(Qpow(a,X)));
+Z=emul(emul(Qpow(b,X),Qpow(c,A)),invs(Qpow(b,X)));
+c1=emul(emul(Qpow(r,X),Qpow(s,Y)),invs(Qpow(r,X)));
+c2=emul(emul(Qpow(r,X),Qpow(s,Z)),invs(Qpow(r,X)));
+//c2=emul(emul(Qpow(b-a,X),Qpow(c,c1)),invs(Qpow(b-a,X)));
+c1=sabun(a,b,X,Qpow(c,c1));
+	pesem(c1);
+	pesem(c2);
 	exit(1);
 
 	//c1 = emul(emul(Qpow(r, X), Y), invs(Qpow(r, X)));
