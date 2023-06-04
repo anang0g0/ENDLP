@@ -996,11 +996,7 @@ po Qmlt(po y, ZZ n)
 
 esem Qexp(ZZ x, esem e)
 {
-	ZZ i;
-	int ii=2;
-	esem g = e;
-
-	i=(x)*(x-1)/to_ZZ("2");
+	ZZ i=(x)*(x-1)/to_ZZ("2");
 
 	e.v = pow_mod(e.v, x, CRV.p);
 	e.u=Qmlt(e.u,i);
@@ -1010,11 +1006,7 @@ esem Qexp(ZZ x, esem e)
 
 esem Qsig(ZZ x, esem e)
 {
-	ZZ i;
-	int ii=2;
-	esem g = e;
-
-	i=(x)*(x+1)/to_ZZ("2");
+	ZZ i=(x)*(x+1)/to_ZZ("2");
 
 	e.v = pow_mod(e.v, x, CRV.p);
 	e.u=Qmlt(e.u,i);
