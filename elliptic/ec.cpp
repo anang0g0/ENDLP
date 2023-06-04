@@ -1004,15 +1004,6 @@ esem Qexp(ZZ x, esem e)
 	return e;
 }
 
-esem Qsig(ZZ x, esem e)
-{
-	ZZ i=(x)*(x+1)/to_ZZ("2");
-
-	e.v = pow_mod(e.v, x, CRV.p);
-	e.u=Qmlt(e.u,i);
-
-	return e;
-}
 
 ////make a calcration table from base point Q
 int mktable(ZZ x, ZZ y)
@@ -2295,6 +2286,15 @@ esem invs(esem a)
 	return s;
 }
 
+esem emul(esem a,esem b,ZZ d){
+esem c;
+
+c.u=eadd(Qmlt(a.u,d),b.u);
+c.v=a.v*b.v%CRV.p;
+
+return c;
+}
+
 esem esemi(esem a, esem b)
 {
 	esem n; // = {0};
@@ -2342,6 +2342,11 @@ kem tdp2(kem a, kem b, kem c)
 esem tdp(esem a, esem b, esem c)
 {
 	return esemi(esemi(a, b), invs(c));
+}
+
+esem tdpx(esem a, esem b, esem c)
+{
+	return esemi(esemi(invs(a), b), c);
 }
 
 void pesem(esem a)
@@ -2490,28 +2495,33 @@ int ehw()
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
 
-	d.u = Qsig(to_ZZ("5"),A).u;
+	d = Qexp(to_ZZ("5"),A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
-	e.u = edbl(Qmlt(A.u, to_ZZ("5")).x,Qmlt(A.u, to_ZZ("5")).y);
-	cout << e.u.x << "," << e.u.y << endl;
-	f.u=eadd(eadd(eadd(eadd(Qmlt(A.u,to_ZZ("5")),Qmlt(A.u,to_ZZ("4"))),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
+	//e.u = edbl(Qmlt(A.u, to_ZZ("5")).x,Qmlt(A.u, to_ZZ("5")).y);
+	//cout << e.u.x << "," << e.u.y << endl;
+	f.u=eadd(eadd(eadd(Qmlt(A.u,to_ZZ("4")),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
+	//f.u=eadd(eadd(eadd(eadd(Qmlt(A.u,to_ZZ("5")),Qmlt(A.u,to_ZZ("4"))),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
 	cout << f.u.x << "," << f.u.y << endl;
 	//exit(1);
 
-	Y = Qexp(a, A);
-	Z = esemi(esemi(A,A),A);
-	A = Qexp(b-a,X);
-	//Y=esemi(A,Y);
+	Y = tdp(Qexp(a, X),A,Qexp(a,X));
+	Z = tdp(Qexp(b,X),Qexp(c,A),Qexp(b,X));
+	//A = tdp(Qexp(b-a,X),Y,Qexp(b-a,X));
+	X = Qexp(to_ZZ("3"),A);
+	Y = Qexp(to_ZZ("5"),A);
+	Y.u = eadd(Qmlt(X.u,to_ZZ("6")),Y.u);
+	Z=Qexp(to_ZZ("8"),A);
 	pesem(Y);
 	pesem(Z);
+	//pesem(X);
 	exit(1);
 
-	c1 = esemi(esemi(Qexp(r, X), Qexp(s, Y)), invs(Qexp(r, X)));
-	c2 = esemi(esemi(Qexp(r, X), Qexp(s, Z)), invs(Qexp(r, X)));
-	c1 = esemi(esemi(Qexp(a, X), c1), invs(Qexp(a, X)));
+	c1 = tdp(Qexp(r, X), Qexp(s, Y), invs(Qexp(r, X)));
+	c2 = tdp(Qexp(r, X), Qexp(s, Z), invs(Qexp(r, X)));
+	c1 = tdp(Qexp(a, X), c1, invs(Qexp(a, X)));
 	c2 = Qexp(s, c2);
-	c2 = esemi(esemi(Qexp(b, X), c2), invs(Qexp(b, X)));
-	c1 = esemi(esemi(Qexp(b - a, X), Qexp(c, c1)), invs(Qexp(b - a, X)));
+	c2 = tdp(Qexp(b, X), c2, Qexp(b, X));
+	c1 = tdp(Qexp(b - a, X), Qexp(c, c1), Qexp(b - a, X));
 
 	cout << c1.u.x << "," << c1.u.y << endl;
 	cout << c2.u.x << "," << c2.u.y << endl;
