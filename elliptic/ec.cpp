@@ -2503,7 +2503,7 @@ esem exchange(esem a, ZZ b)
 }
 
 // X^(b-a)YX^-(b-a)
-esem sabun(ZZ a, ZZ b, esem X,esem Y)
+esem sabun(ZZ a, ZZ b, esem X, esem Y)
 {
 	esem B;
 	B = emul(emul(invs(Qpow(a, X)), Y), (Qpow(a, X)));
@@ -2512,7 +2512,7 @@ esem sabun(ZZ a, ZZ b, esem X,esem Y)
 	return B;
 }
 
-int ehw()
+void ehw()
 {
 	esem A, B, X, Y, Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 	ZZ a, b, c, r, s;
@@ -2528,42 +2528,18 @@ int ehw()
 
 	d = Qexp(to_ZZ("6"), A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
-	// e.u = edbl(Qmlt(A.u, to_ZZ("5")).x,Qmlt(A.u, to_ZZ("5")).y);
-	// cout << e.u.x << "," << e.u.y << endl;
-	// f.u=eadd(eadd(eadd(Qmlt(A.u,to_ZZ("4")),Qmlt(A.u,to_ZZ("3"))),Qmlt(A.u,to_ZZ("2"))),A.u);
 	f.u = eadd(eadd(eadd(eadd(Qmlt(A.u, to_ZZ("5")), Qmlt(A.u, to_ZZ("4"))), Qmlt(A.u, to_ZZ("3"))), Qmlt(A.u, to_ZZ("2"))), A.u);
 	cout << f.u.x << "," << f.u.y << endl;
-	// exit(1);
 
-Y=emul(emul(Qpow(a,X),A),invs(Qpow(a,X)));
-Z=emul(emul(Qpow(b,X),Qpow(c,A)),invs(Qpow(b,X)));
-c1=emul(emul(Qpow(r,X),Qpow(s,Y)),invs(Qpow(r,X)));
-c2=emul(emul(Qpow(r,X),Qpow(s,Z)),invs(Qpow(r,X)));
-//c2=emul(emul(Qpow(b-a,X),Qpow(c,c1)),invs(Qpow(b-a,X)));
-c1=sabun(a,b,X,Qpow(c,c1));
+	Y = emul(emul(Qpow(a, X), A), invs(Qpow(a, X)));
+	Z = emul(emul(Qpow(b, X), Qpow(c, A)), invs(Qpow(b, X)));
+	c1 = emul(emul(Qpow(r, X), Qpow(s, Y)), invs(Qpow(r, X)));
+	c2 = emul(emul(Qpow(r, X), Qpow(s, Z)), invs(Qpow(r, X)));
+	c1 = sabun(a, b, X, Qpow(c, c1));
 	pesem(c1);
 	pesem(c2);
-	exit(1);
 
-	//c1 = emul(emul(Qpow(r, X), Y), invs(Qpow(r, X)));
-	//c2 = emul(emul(Qpow(r, X), Z), invs(Qpow(r, X)));
-	c1=Qpow(c,c1);
-	//B = emul(emul(invs(Qpow(a, X)), c1), (Qpow(a, X)));
-	//c1 = emul(emul(Qpow(b, X), B), invs(Qpow(b, X)));
-	c1=sabun(a,b,X,c1);
-	//
-	//c1 = emul(emul(Qpow(a, X), c1), invs(Qpow(a, X)));
-	//c2 = emul(emul(Qpow(b, X), c2), invs(Qpow(b, X)));
-	//c1 = sabun(a,b,X,Qpow(c, c1));
-	pesem(c1);
-	pesem(c2);
-	exit(1);
-
-	cout << c1.u.x << "," << c1.u.y << endl;
-	cout << c2.u.x << "," << c2.u.y << endl;
-	cout << c1.v << "," << c2.v << endl;
-
-	exit(1);
+	return;
 }
 
 int csp()
