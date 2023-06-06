@@ -9,7 +9,7 @@
 #include "hash2.c"
 #include "seed2.cpp"
 #include "sha256.cpp"
-//#include "perm_rand.c"
+// #include "perm_rand.c"
 
 #define _SHA256_WITH_MAIN
 
@@ -95,13 +95,56 @@ ZZ inv(ZZ a, ZZ n)
 	return ((x + n) % (n / d));
 }
 
+typedef struct
+{
+	ZZ x;
+	ZZ y;
+	int f;
+} po;
+
+typedef struct
+{
+	char *name;
+	ZZ p;
+	ZZ seedE;
+	ZZ r;
+	ZZ a;
+	ZZ b;
+	po G;
+	ZZ n;
+	int h;
+	ZZ inv;
+} cv;
+typedef struct
+{
+	unsigned int MD[8];
+} arr;
+
+typedef struct
+{
+	po G[2][2];
+} ellmat;
+
+cv CRV;
+
 ZZ pow_mod(ZZ x, ZZ n, ZZ p)
 {
+
 	if (n == 0)
 		return to_ZZ("1");
+	if(n < 0){
+	cout << n << "minus\n";
+	exit(1);
+	}
 	if ((n & 1) == 1)
+	{
+		//cout << n << " aaa\n";
+		if (n == -1)
+			exit(1);
 		return (pow_mod(x, n - 1, p) * x) % p;
+	}
 	x = pow_mod(x, n / 2, p);
+	//cout << "ttt\n";
 	return (ZZ)((x * x) % p);
 }
 
@@ -342,13 +385,6 @@ typedef struct
 {
 	ZZ x;
 	ZZ y;
-	int f;
-} po;
-
-typedef struct
-{
-	ZZ x;
-	ZZ y;
 	ZZ z;
 } ten;
 
@@ -363,30 +399,6 @@ typedef struct
 	int u;
 } kem;
 
-typedef struct
-{
-	char *name;
-	ZZ p;
-	ZZ seedE;
-	ZZ r;
-	ZZ a;
-	ZZ b;
-	po G;
-	ZZ n;
-	int h;
-	ZZ inv;
-} cv;
-typedef struct
-{
-	unsigned int MD[8];
-} arr;
-
-typedef struct
-{
-	po G[2][2];
-} ellmat;
-
-cv CRV;
 po le[640];
 po ll[640];
 po Pub_key;
@@ -1018,6 +1030,13 @@ esem Qexp(ZZ x, esem e)
 esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
+	if (x < 0)
+	{
+		cout << x << " coolie\n";
+		x = x % CRV.n;
+		x += CRV.n;
+		// exit(1);
+	}
 	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - ZZ(1), CRV.n)) % CRV.n;
 
 	e.v = pow_mod(e.v, x, CRV.n);
@@ -2498,7 +2517,7 @@ esem exchange(esem a, ZZ b)
 {
 	esem v;
 	v.u = Qmlt(a.u, b);
-	v.v = pow_mod(a.v,b,CRV.n);
+	v.v = pow_mod(a.v, b, CRV.n);
 
 	return v;
 }
@@ -2555,7 +2574,7 @@ int csp()
 	pesem(c);
 	d = exchange(a, to_ZZ("15"));
 	pesem(d);
-	//exit(1);
+	// exit(1);
 
 	c.u = Qmlt(CRV.G, to_ZZ("11"));
 	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
@@ -2611,7 +2630,7 @@ int csp()
 	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
 	pesem(ogo);
 
-	//exit(1);
+	// exit(1);
 
 	esem aga;
 	aga = esemi(b1, esemi(b2, esemi(b1, b2)));
@@ -2623,7 +2642,50 @@ int csp()
 	// exit(1);
 }
 
+esem vom()
+{
+	esem x;
+	x.u = Qmlt(CRV.G, ZZ(random()));
+	x.v = ZZ(rand());
+	return x;
+}
+void epp()
+{
+	esem A = vom();
+	esem B = vom();
+	esem C = vom();
 
+	ZZ x;
+	ZZ y;
+	ZZ z;
+	ZZ w;
+	ZZ r;
+	do
+	{
+		x = ZZ(random()) % CRV.n;
+		y = ZZ(random()) % CRV.n;
+		z = ZZ(random()) % CRV.n;
+		w = ZZ(random()) % CRV.n;
+	} while (x - z < 0 || y - w < 0);
+
+	r = ZZ(random()) % CRV.n;
+
+	printf("epp\n");
+	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
+	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
+	esem c1 = esemi(esemi(Qpow(r, A), D), Qpow(r, C));
+	esem c2 = esemi(esemi(Qpow(r, A), E), Qpow(r, C));
+
+	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
+
+	pesem(D);
+	pesem(E);
+	pesem(c1);
+	pesem(c2);
+	pesem(X);
+
+	return;
+}
 
 int ekp()
 {
@@ -2633,15 +2695,15 @@ int ekp()
 	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
-	c.u =Qmlt(CRV.G, to_ZZ("11"));
-	//c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
+	c.u = Qmlt(CRV.G, to_ZZ("11"));
+	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
 	c.v = to_ZZ("2");
 	d.u = Qmlt(CRV.G, to_ZZ("12"));
-	//d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
+	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
 	d.v = to_ZZ("1");
-	g1.u=eadd(c.u,d.u);
+	g1.u = eadd(c.u, d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
-	//exit(1);
+	// exit(1);
 
 	e.u = Qmlt(CRV.G, to_ZZ("5"));
 	e.v = to_ZZ("4");
@@ -2654,7 +2716,6 @@ int ekp()
 
 	printf("inv6=%d\n", inv2(6, 41));
 
-	
 	esem x, y;
 	int p = 17;
 	esem key[4];
@@ -2666,34 +2727,33 @@ int ekp()
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
-	
+
 	a1 = tdp(a, x, (b));
 	a2 = tdp(b, x, (c));
 	a3 = tdp(c, x, (d));
 	pesem(a1);
 	pesem(a2);
 	pesem(a3);
-	//exit(1);
-	
-	
+	// exit(1);
+
 	esem aga;
-	aga=esemi(a1,esemi(a2,a3));
-	//aga=tdp(a1,a2,a3); //semi(semi(a,a),invs(a));
+	aga = esemi(a1, esemi(a2, a3));
+	// aga=tdp(a1,a2,a3); //semi(semi(a,a),invs(a));
 	pesem(aga);
-	aga=esemi(esemi(invs(a),aga),d);
+	aga = esemi(esemi(invs(a), aga), d);
 	pesem(aga);
-	aga=esemi(esemi(x,x),x);
+	aga = esemi(esemi(x, x), x);
 	pesem(aga);
-	
-	//exit(1);
-	
+
+	// exit(1);
+
 	b1 = tdp(a, y, (b));
 	b2 = tdp(b, y, (c));
 	// exit(1);
 	b3 = tdp(c, y, (d));
 	// exit(1);
 	//  bob's public key
-	
+
 	c1 = tdp(e, x, (f));
 	c2 = tdp(f, x, (g));
 	c3 = tdp(g, x, (h));
@@ -2736,8 +2796,8 @@ int ekp()
 	// printf("%d %d\n",pi.u,pi.v);
 	// printf("%d %d\n",phi.u,phi.v);
 	//
-	//c = cemi(invs(c), (c));
-	//exit(1);
+	// c = cemi(invs(c), (c));
+	// exit(1);
 	key[0] = esemi(esemi(a1, a2), a3);
 	key[1] = esemi(esemi(c1, c2), c3);
 	//  exit(1);
@@ -2756,10 +2816,9 @@ int ekp()
 	// key[1] = semi(semi(c1, c2), c3);
 	printf("x^3= "); //%d %d\n",tmp[5].u,tmp[5].v);
 	pesem(tmp[5]);
-	//exit(1);
+	// exit(1);
 	return 0;
 }
-
 
 int main(int argc, char *argv[])
 {
@@ -2790,6 +2849,10 @@ int main(int argc, char *argv[])
 
 	init_curve(16);
 	cout << inv2(6, 41) << "\n";
+	srand(clock());
+
+	epp();
+	exit(1);
 
 	ehw();
 	csp();
