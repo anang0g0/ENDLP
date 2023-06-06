@@ -675,7 +675,7 @@ unsigned short uint16_prime[6900] = {
     65323, 65327, 65353, 65357, 65371, 65381, 65393, 65407, 65413, 65419,
     65423, 65437, 65447, 65449, 65479, 65497, 65519, 65521};
 
-#define N 521
+#define N 16
 
 int BBB=0;
 int A = 0;
@@ -2017,7 +2017,7 @@ void alp()
   int flg=0;
   // set a half of bit size random number
 
-  ii=to_ZZ("1"); //91929493797357126777135769139716525652319754650249024631321344126610074238977");
+  ii=to_ZZ("3"); //91929493797357126777135769139716525652319754650249024631321344126610074238977");
   ii*=2;
 
   
@@ -2039,7 +2039,7 @@ void alp()
     {
       //
       label:
-      for (int u = 0; u < 16; u++)
+      for (int u = 0; u < 7; u++)
       {
         uu = (ii * ii) + h[j] * uint16_prime[u] * uint16_prime[u];
         //cout << "ii=" << i << " " << j << " " << u << endl;
@@ -2063,7 +2063,7 @@ void alp()
           {
           //cout << "ii=" << i << " " << j << " " << u << " " << oo % 2 << " " << 4*oo-ii*ii  << " " << h[j]*uint16_prime[u]*uint16_prime[u] << endl;
             k = k + 1;
-            while (k<100)//uint16_prime[k] != 65521)
+            while (k<10)//uint16_prime[k] != 65521)
             {
               //           cout << k << " ";
               if (oo % (ZZ)uint16_prime[k] == 0 || mm % (ZZ)uint16_prime[k] == 0)
