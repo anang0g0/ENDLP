@@ -2610,7 +2610,7 @@ int csp()
 	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
 	pesem(ogo);
 
-	exit(1);
+	//exit(1);
 
 	esem aga;
 	aga = esemi(b1, esemi(b2, esemi(b1, b2)));
@@ -2622,6 +2622,8 @@ int csp()
 	// exit(1);
 }
 
+
+
 int ekp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
@@ -2630,157 +2632,74 @@ int ekp()
 	a.v = to_ZZ("26");
 	b.u = Qmlt(CRV.G, to_ZZ("15"));
 	b.v = to_ZZ("25");
-	c.u = Qmlt(CRV.G, to_ZZ("11"));
-	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
+	c.u =Qmlt(CRV.G, to_ZZ("11"));
+	//c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
 	c.v = to_ZZ("2");
 	d.u = Qmlt(CRV.G, to_ZZ("12"));
-	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
+	//d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
 	d.v = to_ZZ("1");
-	g1.u = eadd(c.u, d.u);
+	g1.u=eadd(c.u,d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
-	// exit(1);
+	//exit(1);
 
 	e.u = Qmlt(CRV.G, to_ZZ("5"));
 	e.v = to_ZZ("4");
 	f.u = Qmlt(CRV.G, to_ZZ("17"));
 	f.v = to_ZZ("12");
-	g.u = Qmlt(CRV.G, to_ZZ("23"));
+	g.u = Qmlt(CRV.G, to_ZZ("13"));
 	g.v = to_ZZ("14");
-	h.u = Qmlt(CRV.G, to_ZZ("35"));
-	h.v = to_ZZ("26");
+	h.u = Qmlt(CRV.G, to_ZZ("11"));
+	h.v = to_ZZ("16");
 
 	printf("inv6=%d\n", inv2(6, 41));
 
+	
 	esem x, y;
 	int p = 17;
 	esem key[4];
 
-	x.u = Qmlt(CRV.G, to_ZZ("19"));
+	x.u = Qmlt(CRV.G, to_ZZ("12"));
 	x.v = to_ZZ("20");
 	y.u = Qmlt(CRV.G, to_ZZ("21"));
 	y.v = to_ZZ("22");
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
-
+	
 	a1 = tdp(a, x, (b));
 	a2 = tdp(b, x, (c));
 	a3 = tdp(c, x, (d));
 	pesem(a1);
 	pesem(a2);
 	pesem(a3);
-	esem ogo;
-	ogo = esemi(a1, esemi(a2, a3));
-	pesem(ogo);
-	// exit(1);
-
+	//exit(1);
+	
+	
 	esem aga;
-	aga = esemi(a1, esemi(a2, a3));
-	// aga=tdp(a1,a2,a3); //esemi(esemi(a,a),invs(a));
+	aga=esemi(a1,esemi(a2,a3));
+	//aga=tdp(a1,a2,a3); //semi(semi(a,a),invs(a));
 	pesem(aga);
-	aga = esemi(esemi(invs(a), aga), d);
+	aga=esemi(esemi(invs(a),aga),d);
 	pesem(aga);
-	aga = esemi(esemi(x, x), x);
+	aga=esemi(esemi(x,x),x);
 	pesem(aga);
-
-	exit(1);
-
+	
+	//exit(1);
+	
 	b1 = tdp(a, y, (b));
 	b2 = tdp(b, y, (c));
 	// exit(1);
 	b3 = tdp(c, y, (d));
 	// exit(1);
 	//  bob's public key
-
+	
 	c1 = tdp(e, x, (f));
 	c2 = tdp(f, x, (g));
 	c3 = tdp(g, x, (h));
-	aga = esemi(c1, esemi(c2, c3));
-	pesem(aga);
-	ogo = esemi(x, esemi(x, x));
-	pesem(ogo);
-	exit(1);
 	d1 = tdp(e, y, (f));
 	d2 = tdp(f, y, (g));
 	d3 = tdp(g, y, (h));
-
 	esem pi, phi;
-	/*
-	pi=invs(b);
-	pesem(pi);
-	//exit(1);
-	pi=esemi((a),(pi));
-	pesem(pi);
-	//exit(1);
-	pi=esemi(pi,a);
-	pesem(pi);
-	pesem(b);
-	//exit(1);
-	phi=tdp(a1,a2,(a3));
-	pesem(phi);
-	//exit(1);
-	pi=tdp(a,pi,d); //esemi((a),esemi(pi,invs(d)));
-	pesem(pi);
-	//exit(1);
-	pi=esemi(x,esemi(x,x)); //tdp(x,x,x);
-	pesem(pi);
-	//exit(1);
-	//pi=esemi(a,esemi(pi,invs(d))));
-	phi=esemi(a,esemi(pi,invs(d)));
-	phi=esemi(pi,invs(d));
-	pesem(pi);
-	pesem(phi);
-
-	pesem(cemi(pi,(c)));
-	pesem(esemi(pi,(c)));
-	pesem(cemi((c),pi));
-	pesem(esemi((c),pi));
-	pesem(a);
-	//exit(1);
-	//pi=tdp(a1,a2,(a3));
-	pesem(esemi(a,pi));
-	pi=cemi(d,phi);
-	pesem(pi);
-	//exit(1);
-
-	pi=cemi(pi,d); //esemi(pi,d)));
-	pesem(esemi(invs(a),pi));
-	//exit(1);
-	//pesem(back(a,a1,b));
-	pi = esemi(a, x);
-	pesem(pi);
-	pi = cemi(invs(x), pi);
-	pesem(pi);
-	pesem(x);
-	//exit(1);
-	pesem(a);
-	//exit(1);
-	// phi.u=12;
-	// phi.v=6;
-	// pi=esemi(d,phi);
-	// printf("e=%d %d\n",pi.u,pi.v);
-	// exit(1);
-*/
-	/*
-	pi=esemi(invs(d),a);
-	phi=esemi(invs(h),e);
-	printf("p1=%d %d\n",pi.u,pi.v);
-	printf("p2=%d %d\n",phi.u,phi.v);
-	for(int i=0;i<23;i++){
-	for(int j=0;j<23;j++){
-	e.u=i;
-	e.v=j;
-	phi=esemi(invs(h),e);
-	if(phi.u==12 && phi.v==6){
-	printf("e=%d %d\n",e.u,e.v);
-	phi=esemi(invs(h),e);
-	printf("phi=%d %d\n",phi.u,phi.v);
-	exit(1);
-	}
-	}
-	}
-	exit(1);
-	*/
 	printf("Alice's Pubkey1 ="); // %d %d\n", a1.u, a1.v);
 	pesem(a1);
 	printf("Alice's Pubkey1 =");
@@ -2811,16 +2730,16 @@ int ekp()
 	// tmp[3].v=6;
 	pi = esemi(invs(d), a);
 	phi = esemi(invs(h), e);
-	// pesem(pi);
-	// pesem(phi);
-	//  printf("%d %d\n",pi.u,pi.v);
-	//  printf("%d %d\n",phi.u,phi.v);
+	pesem(pi);
+	pesem(phi);
+	// printf("%d %d\n",pi.u,pi.v);
+	// printf("%d %d\n",phi.u,phi.v);
 	//
-	// c = esemi(invs(c), (c));
-	// exit(1);
-	key[0] = tdp(a1, a2, a3);
-	key[1] = tdp(c1, c2, c3);
-	// exit(1);
+	//c = cemi(invs(c), (c));
+	//exit(1);
+	key[0] = esemi(esemi(a1, a2), a3);
+	key[1] = esemi(esemi(c1, c2), c3);
+	//  exit(1);
 	printf("Alice's encrypted key = "); //(%d,%d)\n", key[0].u, key[0].v);
 	pesem(key[0]);
 	printf("Bob's encrypted key = "); //(%d,%d)\n", key[1].u, key[1].v);
@@ -2832,13 +2751,14 @@ int ekp()
 	printf("decrypted key-B = "); //(%d,%d)\n", tmp[1].u, tmp[1].v);
 	pesem(tmp[1]);
 	tmp[5] = esemi(esemi(x, x), x);
-	// tmp[4]=esemi(esemi((a),key[5]),invs(d));
-	// key[1] = esemi(esemi(c1, c2), c3);
+	// tmp[4]=semi(semi((a),key[5]),invs(d));
+	// key[1] = semi(semi(c1, c2), c3);
 	printf("x^3= "); //%d %d\n",tmp[5].u,tmp[5].v);
 	pesem(tmp[5]);
 	exit(1);
 	return 0;
 }
+
 
 int main(int argc, char *argv[])
 {
@@ -2870,8 +2790,9 @@ int main(int argc, char *argv[])
 	init_curve(16);
 	cout << inv2(6, 41) << "\n";
 
-	//ehw();
+	ehw();
 	csp();
+	ekp();
 	exit(1);
 
 	// mktbl3(CRV.G);
