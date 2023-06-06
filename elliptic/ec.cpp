@@ -2756,7 +2756,7 @@ int ekp()
 	// key[1] = semi(semi(c1, c2), c3);
 	printf("x^3= "); //%d %d\n",tmp[5].u,tmp[5].v);
 	pesem(tmp[5]);
-	exit(1);
+	//exit(1);
 	return 0;
 }
 
@@ -2794,6 +2794,7 @@ int main(int argc, char *argv[])
 	ehw();
 	csp();
 	ekp();
+	kpk();
 	exit(1);
 
 	// mktbl3(CRV.G);
