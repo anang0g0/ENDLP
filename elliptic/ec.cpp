@@ -2497,7 +2497,7 @@ esem exchange(esem a, ZZ b)
 {
 	esem v;
 	v.u = Qmlt(a.u, b);
-	v.v = a.v;
+	v.v = pow_mod(a.v,b,CRV.n);
 
 	return v;
 }
@@ -2554,7 +2554,7 @@ int csp()
 	pesem(c);
 	d = exchange(a, to_ZZ("15"));
 	pesem(d);
-	exit(1);
+	//exit(1);
 
 	c.u = Qmlt(CRV.G, to_ZZ("11"));
 	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
@@ -2870,7 +2870,8 @@ int main(int argc, char *argv[])
 	init_curve(16);
 	cout << inv2(6, 41) << "\n";
 
-	ehw();
+	//ehw();
+	csp();
 	exit(1);
 
 	// mktbl3(CRV.G);
