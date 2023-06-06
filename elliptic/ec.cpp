@@ -9,7 +9,7 @@
 #include "hash2.c"
 #include "seed2.cpp"
 #include "sha256.cpp"
-#include "perm_rand.c"
+//#include "perm_rand.c"
 
 #define _SHA256_WITH_MAIN
 
