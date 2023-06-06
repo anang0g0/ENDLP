@@ -1030,7 +1030,7 @@ esem Qexp(ZZ x, esem e)
 esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
-	if (x < 0)
+	if (x <= 0)
 	{
 		cout << x << " coolie\n";
 		x = x % CRV.n;
@@ -2666,7 +2666,7 @@ void epp()
 		y = ZZ(random()) % CRV.n;
 		z = ZZ(random()) % CRV.n;
 		w = ZZ(random()) % CRV.n;
-	} while (x - z < 0 || y - w < 0);
+	} while (x - z <= 0 || y - w <= 0);
 
 	r = ZZ(random()) % CRV.n;
 
