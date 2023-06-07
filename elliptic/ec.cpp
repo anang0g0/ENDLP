@@ -2562,7 +2562,7 @@ void ehw()
 	return;
 }
 
-int csp()
+void csp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
@@ -2629,7 +2629,7 @@ int csp()
 	ogo = esemi(esemi(x, y), esemi(x, y));
 	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
 	pesem(ogo);
-
+	
 	// exit(1);
 
 	esem aga;
@@ -2640,6 +2640,7 @@ int csp()
 	ogo = esemi(x, esemi(y, esemi(x, y)));
 	pesem(ogo);
 	// exit(1);
+return;
 }
 
 esem vom()
@@ -2847,12 +2848,12 @@ int main(int argc, char *argv[])
 	cho.x = to_ZZ("10");
 	cho.y = to_ZZ("13");
 
-	init_curve(16);
+	init_curve(256);
 	cout << inv2(6, 41) << "\n";
 	srand(clock());
 
 	epp();
-	exit(1);
+	//exit(1);
 
 	ehw();
 	csp();
