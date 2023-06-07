@@ -2562,38 +2562,55 @@ void ehw()
 	return;
 }
 
+esem vom()
+{
+	esem x;
+	x.u = Qmlt(CRV.G, ZZ(random()));
+	x.v = ZZ(rand());
+	return x;
+}
+
 void csp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
-	a.u = Qmlt(CRV.G, to_ZZ("6"));
-	a.v = to_ZZ("26");
-	b.u = Qmlt(CRV.G, to_ZZ("15"));
-	b.v = to_ZZ("25");
+	//a.u = Qmlt(CRV.G, to_ZZ("6"));
+	//a.v = to_ZZ("26");
+	//b.u = Qmlt(CRV.G, to_ZZ("15"));
+	//b.v = to_ZZ("25");
+	a=vom();
+	b=vom();
 	c = exchange(b, to_ZZ("6"));
 	pesem(c);
 	d = exchange(a, to_ZZ("15"));
 	pesem(d);
 	// exit(1);
 
-	c.u = Qmlt(CRV.G, to_ZZ("11"));
+	//c.u = Qmlt(CRV.G, to_ZZ("11"));
 	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
-	c.v = to_ZZ("2");
-	d.u = Qmlt(CRV.G, to_ZZ("12"));
+	//c.v = to_ZZ("2");
+	//d.u = Qmlt(CRV.G, to_ZZ("12"));
 	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
-	d.v = to_ZZ("1");
+	//d.v = to_ZZ("1");
+	c=vom();
+	d=vom();
 	g1.u = eadd(c.u, d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
 	// exit(1);
 
-	e.u = Qmlt(CRV.G, to_ZZ("5"));
-	e.v = to_ZZ("4");
-	f.u = Qmlt(CRV.G, to_ZZ("17"));
-	f.v = to_ZZ("12");
-	g.u = Qmlt(CRV.G, to_ZZ("23"));
-	g.v = to_ZZ("14");
-	h.u = Qmlt(CRV.G, to_ZZ("35"));
-	h.v = to_ZZ("26");
+	//e.u = Qmlt(CRV.G, to_ZZ("5"));
+	//e.v = to_ZZ("4");
+	//f.u = Qmlt(CRV.G, to_ZZ("17"));
+	//f.v = to_ZZ("12");
+	//g.u = Qmlt(CRV.G, to_ZZ("23"));
+	//g.v = to_ZZ("14");
+	//h.u = Qmlt(CRV.G, to_ZZ("35"));
+	//h.v = to_ZZ("26");
+
+	e=vom();
+	f=vom();
+	g=vom();
+	h=vom();
 
 	printf("inv6=%d\n", inv2(6, 41));
 
@@ -2601,10 +2618,14 @@ void csp()
 	int p = 17;
 	esem key[4];
 
-	x.u = Qmlt(CRV.G, to_ZZ("9"));
-	x.v = to_ZZ("1");
-	y.u = Qmlt(CRV.G, to_ZZ("2"));
-	y.v = to_ZZ("1");
+	//x.u = Qmlt(CRV.G, to_ZZ("9"));
+	//x.v = to_ZZ("1");
+	//y.u = Qmlt(CRV.G, to_ZZ("2"));
+	//y.v = to_ZZ("1");
+
+	x=vom();
+	y=vom();
+
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
@@ -2643,13 +2664,6 @@ void csp()
 return;
 }
 
-esem vom()
-{
-	esem x;
-	x.u = Qmlt(CRV.G, ZZ(random()));
-	x.v = ZZ(rand());
-	return x;
-}
 void epp()
 {
 	esem A = vom();
