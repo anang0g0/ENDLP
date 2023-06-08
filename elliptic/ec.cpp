@@ -2733,10 +2733,10 @@ ve ev(){
 ve e;
 ve v=vomx();
 ve x=vomx();
-e.v[0]=v.v[0]+x.v[0]%CRV.n;
-e.v[1]=v.v[1]+x.v[1]%CRV.n;
 e.e[0]=(Qmlt(v.e[0],x.v[0]),x.e[0]);
 e.e[1]=(Qmlt(v.e[1],x.v[1]),x.e[1]);
+e.v[0]=v.v[0]+x.v[0]%CRV.n;
+e.v[1]=v.v[1]+x.v[1]%CRV.n;
 
 return e;
 }
@@ -2747,7 +2747,7 @@ x.e[0]=Qmlt(v.e[0],v.v[0]*n*(n-1)/2);
 x.e[1]=Qmlt(v.e[1],v.v[1]*n*(n-1)/2);
 x.v[0]=n*v.v[0]%CRV.n;
 x.v[1]=n*v.v[1]%CRV.n;
-
+cout << "n= " << n << endl;
 return x;
 }
 
