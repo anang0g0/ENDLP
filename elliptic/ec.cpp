@@ -2703,6 +2703,54 @@ void epp()
 	return;
 }
 
+typedef struct {
+po e[2];
+ZZ v[2];
+} ve;
+
+ve vomx(){
+ve x;
+
+x.e[0]=Qmlt(CRV.G,ZZ(random()));
+x.e[1]=Qmlt(CRV.G,ZZ(random()));
+x.v[0]=ZZ(random());
+x.v[1]=ZZ(random());
+
+return x;
+}
+
+void pev(ve a){
+cout << a.v[0] << endl;
+cout << a.v[1] << endl;
+cout << a.e[0].x << " ,";
+cout << a.e[0].y << endl;
+cout << a.e[1].x << " ,";
+cout << a.e[1].y << endl;
+}
+
+
+ve ev(){
+ve e;
+ve v=vomx();
+ve x=vomx();
+e.v[0]=v.v[0]+x.v[0]%CRV.n;
+e.v[1]=v.v[1]+x.v[1]%CRV.n;
+e.e[0]=(Qmlt(v.e[0],x.v[0]),x.e[0]);
+e.e[1]=(Qmlt(v.e[1],x.v[1]),x.e[1]);
+
+return e;
+}
+
+ve Epow(ve v, ZZ n){
+ve x;
+x.e[0]=Qmlt(v.e[0],v.v[0]*n*(n-1)/2);
+x.e[1]=Qmlt(v.e[1],v.v[1]*n*(n-1)/2);
+x.v[0]=n*v.v[0]%CRV.n;
+x.v[1]=n*v.v[1]%CRV.n;
+
+return x;
+}
+
 int ekp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
@@ -2866,6 +2914,11 @@ int main(int argc, char *argv[])
 	init_curve(256);
 	cout << inv2(6, 41) << "\n";
 	srand(clock());
+	ve rr=ev();
+	pev(rr);
+	ve s=Epow(rr,ZZ(random()));
+	pev(s);
+	exit(1);
 
 	epp();
 	//exit(1);
