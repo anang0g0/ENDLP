@@ -2532,6 +2532,14 @@ esem sabun(ZZ a, ZZ b, esem X, esem Y)
 	return B;
 }
 
+esem vom()
+{
+	esem x;
+	x.u = Qmlt(CRV.G, ZZ(random()));
+	x.v = ZZ(rand());
+	return x;
+}
+
 void ehw()
 {
 	esem A, B, X, Y, Z, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
@@ -2562,14 +2570,6 @@ void ehw()
 	return;
 }
 
-esem vom()
-{
-	esem x;
-	x.u = Qmlt(CRV.G, ZZ(random()));
-	x.v = ZZ(rand());
-	return x;
-}
-
 void csp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
@@ -2581,9 +2581,9 @@ void csp()
 	a=vom();
 	b=vom();
 	c = exchange(b, to_ZZ("6"));
-	pesem(c);
+	//pesem(c);
 	d = exchange(a, to_ZZ("15"));
-	pesem(d);
+	//pesem(d);
 	// exit(1);
 
 	//c.u = Qmlt(CRV.G, to_ZZ("11"));
@@ -2595,7 +2595,7 @@ void csp()
 	c=vom();
 	d=vom();
 	g1.u = eadd(c.u, d.u);
-	cout << g1.u.x << "," << g1.u.y << endl;
+	//cout << g1.u.x << "," << g1.u.y << endl;
 	// exit(1);
 
 	//e.u = Qmlt(CRV.G, to_ZZ("5"));
@@ -2634,20 +2634,20 @@ void csp()
 	a2 = esemi(invs(a), esemi(y, (a)));
 	b1 = esemi(invs(b), esemi(x, (b)));
 	b2 = esemi(invs(b), esemi(y, b));
-	pesem(a1);
-	pesem(a2);
-	pesem(b1);
-	pesem(b2);
+	//pesem(a1);
+	//pesem(a2);
+	//pesem(b1);
+	//pesem(b2);
 	// exit(1);
 
 	esem ogo;
-	ogo = esemi(esemi(a1, a2), esemi(a1, a2));
+	ogo = esemi(a1, esemi(a2, esemi(a1, a2)));
 	// ogo=esemi(esemi(esemi(a1,a2),a1),a2);
 	// ogo=esemi(ogo,ogo);
-	pesem(ogo);
+	//pesem(ogo);
 	ogo = esemi(a, esemi(ogo, invs(a)));
 	pesem(ogo);
-	ogo = esemi(esemi(x, y), esemi(x, y));
+	ogo = esemi(x, esemi(y, esemi(x, y)));
 	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
 	pesem(ogo);
 	
@@ -2655,7 +2655,7 @@ void csp()
 
 	esem aga;
 	aga = esemi(b1, esemi(b2, esemi(b1, b2)));
-	pesem(aga);
+	//pesem(aga);
 	aga = esemi(b, esemi(aga, invs(b)));
 	pesem(aga);
 	ogo = esemi(x, esemi(y, esemi(x, y)));
@@ -2663,6 +2663,7 @@ void csp()
 	// exit(1);
 return;
 }
+
 
 void epp()
 {
@@ -2693,10 +2694,10 @@ void epp()
 
 	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
 
-	pesem(D);
-	pesem(E);
+	//pesem(D);
+	//pesem(E);
 	pesem(c1);
-	pesem(c2);
+	//pesem(c2);
 	pesem(X);
 
 	return;
@@ -2869,10 +2870,10 @@ int main(int argc, char *argv[])
 	epp();
 	//exit(1);
 
-	ehw();
+	//ehw();
 	csp();
 	ekp();
-	kpk();
+	//kpk();
 	exit(1);
 
 	// mktbl3(CRV.G);
