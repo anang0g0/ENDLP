@@ -12,6 +12,7 @@
 // #include "perm_rand.c"
 
 #define _SHA256_WITH_MAIN
+#define NP 127
 
 #ifdef _SHA256_WITH_MAIN
 #include <cstdio>
@@ -132,19 +133,20 @@ ZZ pow_mod(ZZ x, ZZ n, ZZ p)
 
 	if (n == 0)
 		return to_ZZ("1");
-	if(n < 0){
-	cout << n << "minus\n";
-	exit(1);
+	if (n < 0)
+	{
+		cout << n << "minus\n";
+		exit(1);
 	}
 	if ((n & 1) == 1)
 	{
-		//cout << n << " aaa\n";
+		// cout << n << " aaa\n";
 		if (n == -1)
 			exit(1);
 		return (pow_mod(x, n - 1, p) * x) % p;
 	}
 	x = pow_mod(x, n / 2, p);
-	//cout << "ttt\n";
+	// cout << "ttt\n";
 	return (ZZ)((x * x) % p);
 }
 
@@ -2304,11 +2306,12 @@ int inv2(int a, int n)
 
 	return ((x + n) % (n / d));
 }
+
 kem invs2(kem a)
 {
 	kem s = {0};
-	s.u = 23 - ((((inv2(a.v, 23) * (a.u)))) % 23);
-	s.v = inv2(a.v, 23);
+	s.u = NP - ((((inv2(a.v, NP) * (a.u)))) % NP);
+	s.v = inv2(a.v, NP);
 	// s.u%=23;
 
 	return s;
@@ -2326,7 +2329,7 @@ esem invs(esem a)
 	return s;
 }
 
-esem emul(esem X, esem Y)
+esem Emul(esem X, esem Y)
 {
 	esem c;
 
@@ -2368,9 +2371,31 @@ esem cemi(esem a, esem b)
 kem kemi(kem a, kem b)
 {
 	kem n = {0};
-	n.u = ((a.v * b.u) % 23 + a.u);
-	n.v = (a.v * b.v) % 23;
-	n.u %= 23;
+	n.u = ((a.v * b.u) % NP + a.u);
+	n.v = (a.v * b.v) % NP;
+	n.u %= NP;
+
+	return n;
+}
+
+#define ROTL8(x, shift) ((uint8_t)((x) << (shift)) | ((x) >> (8 - (shift))))
+unsigned char be(unsigned char b)
+{
+	return b ^ ROTL8(b, 1) ^ ROTL8(b, 2) ^ ROTL8(b, 3) ^ ROTL8(b, 4) ^ 0x63;
+}
+
+unsigned char it(unsigned char s)
+{
+	return ROTL8(s, 1) ^ ROTL8(s, 3) ^ ROTL8(s, 6) ^ 5;
+}
+
+
+kem ker(kem a, kem b)
+{
+	kem n = {0};
+	n.u = (inv2(it(b.u),NP)*a.v - inv2(it(b.u),NP)*a.v)%NP;
+	n.v = be(a.v)*inv2(be(a.v),NP)%NP;
+	//n.u %= 23;
 
 	return n;
 }
@@ -2526,8 +2551,8 @@ esem exchange(esem a, ZZ b)
 esem sabun(ZZ a, ZZ b, esem X, esem Y)
 {
 	esem B;
-	B = emul(emul(invs(Qpow(a, X)), Y), (Qpow(a, X)));
-	B = emul(emul(Qpow(b, X), B), invs(Qpow(b, X)));
+	B = Emul(Emul(invs(Qpow(a, X)), Y), (Qpow(a, X)));
+	B = Emul(Emul(Qpow(b, X), B), invs(Qpow(b, X)));
 
 	return B;
 }
@@ -2559,10 +2584,10 @@ void ehw()
 	f.u = eadd(eadd(eadd(eadd(Qmlt(A.u, to_ZZ("5")), Qmlt(A.u, to_ZZ("4"))), Qmlt(A.u, to_ZZ("3"))), Qmlt(A.u, to_ZZ("2"))), A.u);
 	cout << f.u.x << "," << f.u.y << endl;
 
-	Y = emul(emul(Qpow(a, X), A), invs(Qpow(a, X)));
-	Z = emul(emul(Qpow(b, X), Qpow(c, A)), invs(Qpow(b, X)));
-	c1 = emul(emul(Qpow(r, X), Qpow(s, Y)), invs(Qpow(r, X)));
-	c2 = emul(emul(Qpow(r, X), Qpow(s, Z)), invs(Qpow(r, X)));
+	Y = Emul(Emul(Qpow(a, X), A), invs(Qpow(a, X)));
+	Z = Emul(Emul(Qpow(b, X), Qpow(c, A)), invs(Qpow(b, X)));
+	c1 = Emul(Emul(Qpow(r, X), Qpow(s, Y)), invs(Qpow(r, X)));
+	c2 = Emul(Emul(Qpow(r, X), Qpow(s, Z)), invs(Qpow(r, X)));
 	c1 = sabun(a, b, X, Qpow(c, c1));
 	pesem(c1);
 	pesem(c2);
@@ -2574,43 +2599,24 @@ void csp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
-	//a.u = Qmlt(CRV.G, to_ZZ("6"));
-	//a.v = to_ZZ("26");
-	//b.u = Qmlt(CRV.G, to_ZZ("15"));
-	//b.v = to_ZZ("25");
-	a=vom();
-	b=vom();
+	a = vom();
+	b = vom();
 	c = exchange(b, to_ZZ("6"));
-	//pesem(c);
+	// pesem(c);
 	d = exchange(a, to_ZZ("15"));
-	//pesem(d);
-	// exit(1);
+	// pesem(d);
+	//  exit(1);
 
-	//c.u = Qmlt(CRV.G, to_ZZ("11"));
-	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
-	//c.v = to_ZZ("2");
-	//d.u = Qmlt(CRV.G, to_ZZ("12"));
-	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
-	//d.v = to_ZZ("1");
-	c=vom();
-	d=vom();
+	c = vom();
+	d = vom();
 	g1.u = eadd(c.u, d.u);
-	//cout << g1.u.x << "," << g1.u.y << endl;
-	// exit(1);
+	// cout << g1.u.x << "," << g1.u.y << endl;
+	//  exit(1);
 
-	//e.u = Qmlt(CRV.G, to_ZZ("5"));
-	//e.v = to_ZZ("4");
-	//f.u = Qmlt(CRV.G, to_ZZ("17"));
-	//f.v = to_ZZ("12");
-	//g.u = Qmlt(CRV.G, to_ZZ("23"));
-	//g.v = to_ZZ("14");
-	//h.u = Qmlt(CRV.G, to_ZZ("35"));
-	//h.v = to_ZZ("26");
-
-	e=vom();
-	f=vom();
-	g=vom();
-	h=vom();
+	e = vom();
+	f = vom();
+	g = vom();
+	h = vom();
 
 	printf("inv6=%d\n", inv2(6, 41));
 
@@ -2618,14 +2624,8 @@ void csp()
 	int p = 17;
 	esem key[4];
 
-	//x.u = Qmlt(CRV.G, to_ZZ("9"));
-	//x.v = to_ZZ("1");
-	//y.u = Qmlt(CRV.G, to_ZZ("2"));
-	//y.v = to_ZZ("1");
-
-	x=vom();
-	y=vom();
-
+	x = vom();
+	y = vom();
 
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
@@ -2634,36 +2634,35 @@ void csp()
 	a2 = esemi(invs(a), esemi(y, (a)));
 	b1 = esemi(invs(b), esemi(x, (b)));
 	b2 = esemi(invs(b), esemi(y, b));
-	//pesem(a1);
-	//pesem(a2);
-	//pesem(b1);
-	//pesem(b2);
-	// exit(1);
+	// pesem(a1);
+	// pesem(a2);
+	// pesem(b1);
+	// pesem(b2);
+	//  exit(1);
 
 	esem ogo;
 	ogo = esemi(a1, esemi(a2, esemi(a1, a2)));
 	// ogo=esemi(esemi(esemi(a1,a2),a1),a2);
 	// ogo=esemi(ogo,ogo);
-	//pesem(ogo);
+	// pesem(ogo);
 	ogo = esemi(a, esemi(ogo, invs(a)));
 	pesem(ogo);
 	ogo = esemi(x, esemi(y, esemi(x, y)));
 	// ogo.u=Qmlt(ogo.u,to_ZZ("2"));
 	pesem(ogo);
-	
+
 	// exit(1);
 
 	esem aga;
 	aga = esemi(b1, esemi(b2, esemi(b1, b2)));
-	//pesem(aga);
+	// pesem(aga);
 	aga = esemi(b, esemi(aga, invs(b)));
 	pesem(aga);
 	ogo = esemi(x, esemi(y, esemi(x, y)));
 	pesem(ogo);
 	// exit(1);
-return;
+	return;
 }
-
 
 void epp()
 {
@@ -2694,61 +2693,81 @@ void epp()
 
 	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
 
-	//pesem(D);
-	//pesem(E);
+	// pesem(D);
+	// pesem(E);
 	pesem(c1);
-	//pesem(c2);
+	// pesem(c2);
 	pesem(X);
 
 	return;
 }
 
-typedef struct {
-po e[2];
-ZZ v[2];
+typedef struct
+{
+	po e[2];
+	ZZ v[2];
 } ve;
 
-ve vomx(){
-ve x;
+ve vomx()
+{
+	ve x;
 
-x.e[0]=Qmlt(CRV.G,ZZ(random()));
-x.e[1]=Qmlt(CRV.G,ZZ(random()));
-x.v[0]=ZZ(random());
-x.v[1]=ZZ(random());
+	x.e[0] = Qmlt(CRV.G, ZZ(random()));
+	x.e[1] = Qmlt(CRV.G, ZZ(random()));
+	x.v[0] = ZZ(random());
+	x.v[1] = ZZ(random());
 
-return x;
+	return x;
 }
 
-void pev(ve a){
-cout << a.v[0] << endl;
-cout << a.v[1] << endl;
-cout << a.e[0].x << " ,";
-cout << a.e[0].y << endl;
-cout << a.e[1].x << " ,";
-cout << a.e[1].y << endl;
+void pev(ve a)
+{
+	cout << a.v[0] << endl;
+	cout << a.v[1] << endl;
+	cout << a.e[0].x << " ,";
+	cout << a.e[0].y << endl;
+	cout << a.e[1].x << " ,";
+	cout << a.e[1].y << endl;
 }
 
+ve einv(ve e)
+{
+	e.e[0] = (Qmlt(e.e[0], e.v[0]));
+	e.e[1] = (Qmlt(e.e[1], e.v[1]));
+	e.v[0] = inv(e.v[0], CRV.n);
+	e.v[1] = inv(e.v[1], CRV.n);
 
-ve ev(){
-ve e;
-ve v=vomx();
-ve x=vomx();
-e.e[0]=(Qmlt(v.e[0],x.v[0]),x.e[0]);
-e.e[1]=(Qmlt(v.e[1],x.v[1]),x.e[1]);
-e.v[0]=v.v[0]+x.v[0]%CRV.n;
-e.v[1]=v.v[1]+x.v[1]%CRV.n;
-
-return e;
+	return e;
 }
 
-ve Epow(ve v, ZZ n){
-ve x;
-x.e[0]=Qmlt(v.e[0],v.v[0]*n*(n-1)/2);
-x.e[1]=Qmlt(v.e[1],v.v[1]*n*(n-1)/2);
-x.v[0]=n*v.v[0]%CRV.n;
-x.v[1]=n*v.v[1]%CRV.n;
-cout << "n= " << n << endl;
-return x;
+ve Emul(ve v, ve x)
+{
+	ve e;
+	// ve v=vomx();
+	// ve x=vomx();
+	e.e[0] = eadd(Qmlt(v.e[0], inv(CRV.n - x.v[0], CRV.n)), x.e[0]);
+	e.e[1] = eadd(Qmlt(v.e[1], inv(CRV.n - x.v[1], CRV.n)), x.e[1]);
+	e.v[0] = (v.v[0] * x.v[0]) % CRV.n;
+	e.v[1] = (v.v[1] * x.v[1]) % CRV.n;
+
+	return e;
+}
+
+ve Epow(ve v, ZZ n)
+{
+	ve x;
+	x.e[0] = Qmlt(v.e[0], v.v[0] * n * (n - 1) / 2);
+	x.e[1] = Qmlt(v.e[1], v.v[1] * n * (n - 1) / 2);
+	x.v[0] = n * v.v[0] % CRV.n;
+	x.v[1] = n * v.v[1] % CRV.n;
+	cout << "n= " << n << endl;
+
+	return x;
+}
+
+ve tdk(ve a, ve b, ve c)
+{
+	return Emul(Emul(a, b), einv(c));
 }
 
 int ekp()
@@ -2884,6 +2903,36 @@ int ekp()
 	return 0;
 }
 
+kem invs3(kem a)
+{
+	kem s = {0};
+	s.u = NP - ((((inv2(be(a.u), NP) * (a.v)))) % NP);
+	s.v = inv2(be(a.v), NP);
+	// s.u%=23;
+
+	return s;
+}
+
+kem invl(kem c)
+{
+	kem nn;
+	nn.u = NP-(unsigned char)inv2((c.v),NP)*be(c.u)%NP;
+	nn.v = inv2((c.v),NP);
+	printf("@%d\n",nn.u);
+	return nn;
+}
+
+kem kemi2(kem a, kem b)
+{
+	kem n = {0};
+	n.u = ((be(a.u) * b.v) % NP + b.u)%NP;
+	n.v = ((a.v) * b.v) % NP;
+	n.u %= NP;
+
+	return n;
+}
+
+
 int main(int argc, char *argv[])
 {
 	ZZ z, r, d, I, salt;
@@ -2896,6 +2945,14 @@ int main(int argc, char *argv[])
 	po T;
 	ZZ P;
 	ZZ a;
+	kem pp,qq;
+	pp.u=(15);
+	pp.v=(13);
+	qq=kemi2(pp,invl(pp));
+	printf("%d %d\n",qq.u,qq.v);
+	qq=kemi2(invl(pp),pp);
+	printf("%d %d\n",qq.u,qq.v);
+	exit(1);
 
 	ellmat J;
 	ZZ Za[2][2];
@@ -2912,21 +2969,37 @@ int main(int argc, char *argv[])
 	cho.y = to_ZZ("13");
 
 	init_curve(256);
+	ve e = vomx();
+
+	ve dd = Emul(e, einv(e));
+	pev(dd);
+	dd = Emul(einv(e), e);
+	pev(dd);
+	exit(1);
+
+	esem ee = vom();
+	esem cc;
+	cc = esemi(ee, invs(ee));
+	pesem(cc);
+	cc = esemi(invs(ee), ee);
+	pesem(cc);
+	exit(1);
+
 	cout << inv2(6, 41) << "\n";
 	srand(clock());
-	ve rr=ev();
+	ve rr = vomx();
 	pev(rr);
-	ve s=Epow(rr,ZZ(random()));
+	ve s = Epow(rr, ZZ(random()));
 	pev(s);
 	exit(1);
 
 	epp();
-	//exit(1);
+	// exit(1);
 
-	//ehw();
+	// ehw();
 	csp();
 	ekp();
-	//kpk();
+	// kpk();
 	exit(1);
 
 	// mktbl3(CRV.G);
