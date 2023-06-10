@@ -2918,7 +2918,7 @@ kem invl(kem c)
 	kem nn;
 	nn.u = NP-(unsigned char)inv2((c.v),NP)*be(c.u)%NP;
 	nn.v = inv2((c.v),NP);
-	printf("@%d\n",nn.u);
+	//printf("@%d\n",nn.u);
 	return nn;
 }
 
@@ -2975,7 +2975,7 @@ int main(int argc, char *argv[])
 	pev(dd);
 	dd = Emul(einv(e), e);
 	pev(dd);
-	exit(1);
+	//exit(1);
 
 	esem ee = vom();
 	esem cc;
@@ -2983,7 +2983,7 @@ int main(int argc, char *argv[])
 	pesem(cc);
 	cc = esemi(invs(ee), ee);
 	pesem(cc);
-	exit(1);
+	//exit(1);
 
 	cout << inv2(6, 41) << "\n";
 	srand(clock());
@@ -2991,7 +2991,7 @@ int main(int argc, char *argv[])
 	pev(rr);
 	ve s = Epow(rr, ZZ(random()));
 	pev(s);
-	exit(1);
+	//exit(1);
 
 	epp();
 	// exit(1);
