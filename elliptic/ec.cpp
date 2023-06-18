@@ -2578,6 +2578,8 @@ void ehw()
 	A.v = to_ZZ("2");
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
+	Qmlt(CRV.G,a);
+	exit(1);
 
 	d = Qexp(to_ZZ("6"), A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
@@ -2944,7 +2946,10 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	ZZ a;
+		init_curve(256);
+	ZZ a=to_ZZ("4");
+	cout << exp(a,CRV.p-1,CRV.p) << ", " << CRV.p <<endl;
+	exit(1);
 	kem pp,qq;
 	pp.u=(15);
 	pp.v=(13);
@@ -2968,7 +2973,7 @@ int main(int argc, char *argv[])
 	cho.x = to_ZZ("10");
 	cho.y = to_ZZ("13");
 
-	init_curve(256);
+
 	ve e = vomx();
 
 	ve dd = Emul(e, einv(e));
@@ -2996,7 +3001,8 @@ int main(int argc, char *argv[])
 	epp();
 	// exit(1);
 
-	// ehw();
+	ehw();
+	exit(1);
 	csp();
 	ekp();
 	// kpk();
