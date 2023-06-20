@@ -1,4 +1,4 @@
-# Key exchange by Decomposition Problem using semidirect product of eliptic curve  
+# Key exchange by semidirect product of Eliptic curve Multiple Discrete Logarithm Problem
 
 # 20230605
 楕円曲線の半直積でできた離散対数問題に基づく公開鍵暗号を実装しました。  
