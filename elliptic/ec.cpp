@@ -2720,14 +2720,14 @@ void epp()
 
 	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
 	*/
-
+	
 	esem D = Qadd(Qadd(Qpow(x, A), B), Qpow(y, C));
-	esem E = Qadd(Qadd(Qpow(z, A), B), Qpow(w, C));
+	esem E = Qadd(Qadd(Qadd(Qpow(x,A),Qpow(z, A)), B), Qadd(Qpow(y,C),Qpow(w, C)));
 	esem c1 = Qadd(Qadd(Qpow(r, A), D), Qpow(r, C));
 	esem c2 = Qadd(Qadd(Qpow(r, A), E), Qpow(r, C));
 
-	esem X = Qadd(Qadd(esemi(Qpow(x - z, A), Qpow(z,A)),B), esemi(Qpow(y-w,C),Qpow(w, C)));
-	pesem(D);
+	esem X = Qadd(Qadd(Qpow(z,A),D),Qpow(w, C));
+	pesem(E);
 	// pesem(c2);
 	pesem(X);
 
