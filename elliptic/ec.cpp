@@ -2356,14 +2356,8 @@ esem Emul(esem X, esem Y)
 esem esemi(esem a, esem b)
 {
 	esem n; // = {0};
-	if (b.u.x == a.u.x && b.u.y == a.u.y)
-	{
-		n.u = edbl(b.u.x, b.u.y);
-	}
-	else
-	{
-		n.u = eadd(Qmlt(b.u, a.v), a.u);
-	}
+
+	n.u = eadd(Qmlt(b.u, a.v), a.u);
 	n.v = (a.v * b.v) % CRV.n;
 	// n.u = n.to_ZZ("23");
 
@@ -2610,6 +2604,7 @@ void ehw()
 	return;
 }
 
+
 void csp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
@@ -2679,6 +2674,21 @@ void csp()
 	return;
 }
 
+typedef struct
+{
+	po e[2];
+	ZZ v[2];
+} ve;
+
+esem Qadd(esem a,esem b){
+	esem c;
+
+	c.v=(a.v+b.v)%CRV.n;
+	c.u=eadd(a.u,b.u);
+
+	return c;
+}
+
 void epp()
 {
 	esem A = vom();
@@ -2690,6 +2700,7 @@ void epp()
 	ZZ z;
 	ZZ w;
 	ZZ r;
+	
 	do
 	{
 		x = ZZ(random()) % CRV.n;
@@ -2701,27 +2712,28 @@ void epp()
 	r = ZZ(random()) % CRV.n;
 
 	printf("epp\n");
+	/*
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
 	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
 	esem c1 = esemi(esemi(Qpow(r, A), D), Qpow(r, C));
 	esem c2 = esemi(esemi(Qpow(r, A), E), Qpow(r, C));
 
 	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
+	*/
 
-	// pesem(D);
-	// pesem(E);
-	pesem(c1);
+	esem D = Qadd(Qadd(Qpow(x, A), B), Qpow(y, C));
+	esem E = Qadd(Qadd(Qpow(z, A), B), Qpow(w, C));
+	esem c1 = Qadd(Qadd(Qpow(r, A), D), Qpow(r, C));
+	esem c2 = Qadd(Qadd(Qpow(r, A), E), Qpow(r, C));
+
+	esem X = Qadd(Qadd(esemi(Qpow(x - z, A), Qpow(z,A)),B), esemi(Qpow(y-w,C),Qpow(w, C)));
+	pesem(D);
 	// pesem(c2);
 	pesem(X);
 
 	return;
 }
 
-typedef struct
-{
-	po e[2];
-	ZZ v[2];
-} ve;
 
 ve vomx()
 {
@@ -2963,7 +2975,7 @@ int main(int argc, char *argv[])
 	cout << exp(a, CRV.p - 1, CRV.p) << ", " << CRV.p << endl;
 
 	Qmlt(CRV.G, CRV.n);
-	exit(1);
+	//exit(1);
 
 	kem pp, qq;
 	pp.u = (15);
@@ -3012,7 +3024,7 @@ int main(int argc, char *argv[])
 	pev(s);
 
 	epp();
-	// exit(1);
+	 exit(1);
 
 	ehw();
 	exit(1);
