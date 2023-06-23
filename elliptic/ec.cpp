@@ -2710,7 +2710,7 @@ void epp()
 	} while (x - z <= 0 || y - w <= 0);
 
 	r = ZZ(random()) % CRV.n;
-
+	ZZ s = ZZ(random()) % CRV.n;
 	printf("epp\n");
 	/*
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
@@ -2723,11 +2723,11 @@ void epp()
 	
 	esem D = Qadd(Qadd(Qpow(x, A), B), Qpow(y, C));
 	esem E = Qadd(Qadd(Qadd(Qpow(x,A),Qpow(z, A)), B), Qadd(Qpow(y,C),Qpow(w, C)));
-	esem c1 = Qadd(Qadd(Qpow(r, A), D), Qpow(r, C));
-	esem c2 = Qadd(Qadd(Qpow(r, A), E), Qpow(r, C));
+	esem c1 = Qadd(Qadd(Qpow(r, A), D), Qpow(s, C));
+	esem c2 = Qadd(Qadd(Qpow(r, A), E), Qpow(s, C));
 
-	esem X = Qadd(Qadd(Qpow(z,A),D),Qpow(w, C));
-	pesem(E);
+	esem X = Qadd(Qadd(Qpow(z,A),c1),Qpow(w, C));
+	pesem(c2);
 	// pesem(c2);
 	pesem(X);
 
