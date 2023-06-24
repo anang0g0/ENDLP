@@ -2735,6 +2735,44 @@ void epp()
 	return;
 }
 
+void epm()
+{
+	esem A = vom();
+	esem B = vom();
+	esem C = vom();
+
+	ZZ x;
+	ZZ y;
+	ZZ z;
+	ZZ w;
+	ZZ r,t;
+	
+	do
+	{
+		x = ZZ(random()) % CRV.n;
+		y = ZZ(random()) % CRV.n;
+		z = ZZ(random()) % CRV.n;
+		w = ZZ(random()) % CRV.n;
+	} while (x - z <= 0 || y - w <= 0);
+	t = ZZ(random()) % CRV.n;
+	r = ZZ(random()) % CRV.n;
+	ZZ s = ZZ(random()) % CRV.n;
+	printf("epm\n");
+
+	
+	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
+	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
+	esem c1 = esemi(esemi(Qpow(r, A), D), Qpow(r, C));
+	esem c2 = esemi(esemi(Qpow(r, A), E), Qpow(r, C));
+
+	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
+	
+	pesem(c1);
+	// pesem(c2);
+	pesem(X);
+
+	return;
+}
 
 ve vomx()
 {
@@ -3025,6 +3063,7 @@ int main(int argc, char *argv[])
 	pev(s);
 
 	epp();
+	epm();
 	 exit(1);
 
 	ehw();
