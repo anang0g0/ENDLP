@@ -1048,7 +1048,7 @@ esem Qpow(ZZ x, esem e)
 	}
 	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v-1, CRV.n)) % CRV.n;
 
-	e.v = pow_mod(e.v, x-1, CRV.n);
+	e.v = pow_mod(e.v, x, CRV.n);
 	e.u = Qmlt(e.u, i);
 
 	return e;
