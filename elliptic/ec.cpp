@@ -1023,26 +1023,19 @@ po Qmlt(po y, ZZ n)
 	return ret;
 }
 
+// 等差数列
 esem Qexp(ZZ x, esem e)
 {
 	ZZ i;
-	/*
-	if(x==1)
-	return e;
-	if(x==2){
-	e.u=Qmlt(e.u,x);
-	e.v=e.v*e.v%CRV.p;
-	return e;
-	}
-	*/
 	i = (x) * (x - 1) / to_ZZ("2");
 	// i=pow_mod(e.v,x,CRV.n);
-	// e.v = pow_mod(e.v, x, CRV.p);
+	e.v = pow_mod(e.v, x-1, CRV.n);
 	e.u = Qmlt(e.u, i);
 
 	return e;
 }
 
+//等比数列
 esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
@@ -1053,10 +1046,41 @@ esem Qpow(ZZ x, esem e)
 		x += CRV.n;
 		// exit(1);
 	}
-	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - ZZ(1), CRV.n)) % CRV.n;
+	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v-1, CRV.n)) % CRV.n;
 
 	e.v = pow_mod(e.v, x, CRV.n);
 	e.u = Qmlt(e.u, i);
+
+	return e;
+}
+
+esem esemi(esem a, esem b)
+{
+	esem n; // = {0};
+
+	n.u = eadd(Qmlt(b.u, a.v), a.u);
+	n.v = (a.v * b.v) % CRV.n;
+	// n.u = n.to_ZZ("23");
+
+	return n;
+}
+
+//等比数列
+esem Qpow2(ZZ x,ZZ y ,esem e)
+{
+	ZZ i;
+	esem E;
+	if (x <= 0)
+	{
+		cout << x << " coolie\n";
+		x = x % CRV.n;
+		x += CRV.n;
+		// exit(1);
+	}
+	E=Qpow(x,e);
+	e=Qpow(y,e);
+	e=esemi(E,e);
+	e.v = pow_mod(e.v, x+y%CRV.n, CRV.n);
 
 	return e;
 }
@@ -2353,16 +2377,6 @@ esem Emul(esem X, esem Y)
 	return c;
 }
 
-esem esemi(esem a, esem b)
-{
-	esem n; // = {0};
-
-	n.u = eadd(Qmlt(b.u, a.v), a.u);
-	n.v = (a.v * b.v) % CRV.n;
-	// n.u = n.to_ZZ("23");
-
-	return n;
-}
 
 esem cemi(esem a, esem b)
 {
@@ -2758,7 +2772,9 @@ void epm()
 	r = ZZ(random()) % CRV.n;
 	ZZ s = ZZ(random()) % CRV.n;
 	printf("epm\n");
-
+	B=Qpow(CRV.n,A);
+	pesem(B);
+	//exit(1);
 	
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
 	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
@@ -2770,6 +2786,7 @@ void epm()
 	pesem(c1);
 	// pesem(c2);
 	pesem(X);
+	exit(1);
 
 	return;
 }
@@ -3009,7 +3026,7 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(256);
+	init_curve(16);
 	ZZ a = to_ZZ("4");
 	cout << exp(a, CRV.p - 1, CRV.p) << ", " << CRV.p << endl;
 
@@ -3062,7 +3079,7 @@ int main(int argc, char *argv[])
 	ve s = Epow(rr, ZZ(random()));
 	pev(s);
 
-	epp();
+	//epp();
 	epm();
 	 exit(1);
 
