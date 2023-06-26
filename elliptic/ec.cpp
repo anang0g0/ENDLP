@@ -2581,8 +2581,17 @@ esem sabun(ZZ a, ZZ b, esem X, esem Y)
 esem vom()
 {
 	esem x;
+	ZZ p; //=to_ZZ("1");
+	cout << "in vom\n";
 	x.u = Qmlt(CRV.G, ZZ(random()));
-	x.v = ZZ(rand());
+	while(1){
+	p=ZZ(random());
+	if(pow_mod(p,(CRV.n-ZZ(1))/ZZ(2),CRV.n)==CRV.n-ZZ(1) && p>1){
+	x.v = p;
+	cout << "p=" << p << endl;
+	break;
+	}
+	}
 	return x;
 }
 
