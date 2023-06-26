@@ -2570,17 +2570,18 @@ esem vom()
 	ZZ p;
 	cout << "in vom\n";
 	x.u = Qmlt(CRV.G, ZZ(random()));
-	CRV.n = to_ZZ("11");
+	
 	while (1)
 	{
 		p = ZZ(random());
-		if (pow_mod(p, (CRV.n - ZZ(1)) / ZZ(2), CRV.n) == CRV.n - ZZ(1) && pow_mod(p, ZZ(2), CRV.n) != ZZ(1)) // && p<CRV.n && (CRV.n-ZZ(1))%p>=0)
+		if (pow_mod(p, (CRV.n - ZZ(1)) / ZZ(2), CRV.n) != ZZ(1) && pow_mod(p, ZZ(2), CRV.n) != ZZ(1))
 		{
 			x.v = p;
 			cout << "p=" << p << endl;
 			break;
 		}
 	}
+	
 	return x;
 }
 
@@ -3067,7 +3068,7 @@ int main(int argc, char *argv[])
 	// exit(1);
 
 	cout << inv2(6, 41) << "\n";
-	srand(clock());
+	srandom(199111+clock());
 	ve rr = vomx();
 	pev(rr);
 	ve s = Epow(rr, ZZ(random()));
