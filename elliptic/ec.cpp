@@ -2600,8 +2600,8 @@ void ehw()
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
 	Qmlt(CRV.G, a);
-	exit(1);
-
+	//exit(1);
+	printf("ehw\n");
 	d = Qexp(to_ZZ("6"), A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
 	f.u = eadd(eadd(eadd(eadd(Qmlt(A.u, to_ZZ("5")), Qmlt(A.u, to_ZZ("4"))), Qmlt(A.u, to_ZZ("3"))), Qmlt(A.u, to_ZZ("2"))), A.u);
@@ -2772,7 +2772,7 @@ void epm()
 	r = ZZ(random()) % CRV.n;
 	ZZ s = ZZ(random()) % CRV.n;
 	printf("epm\n");
-	B=Qpow(CRV.n,A);
+	B=Qpow(CRV.n-1,A);
 	pesem(B);
 	//exit(1);
 	
@@ -2786,7 +2786,7 @@ void epm()
 	pesem(c1);
 	// pesem(c2);
 	pesem(X);
-	exit(1);
+	//exit(1);
 
 	return;
 }
@@ -3079,15 +3079,15 @@ int main(int argc, char *argv[])
 	ve s = Epow(rr, ZZ(random()));
 	pev(s);
 
-	//epp();
+	epp();
 	epm();
-	 exit(1);
+	// exit(1);
 
 	ehw();
-	exit(1);
+	//exit(1);
 	csp();
 	ekp();
-	// kpk();
+	 kpk();
 	exit(1);
 
 	// mktbl3(CRV.G);
