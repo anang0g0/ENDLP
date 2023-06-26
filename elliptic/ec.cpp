@@ -2580,8 +2580,9 @@ esem vom()
 			cout << "p=" << p << endl;
 			break;
 		}
+		
 	}
-	
+
 	return x;
 }
 
