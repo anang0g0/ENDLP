@@ -1029,13 +1029,13 @@ esem Qexp(ZZ x, esem e)
 	ZZ i;
 	i = (x) * (x - 1) / to_ZZ("2");
 	// i=pow_mod(e.v,x,CRV.n);
-	e.v = pow_mod(e.v, x-1, CRV.n);
+	e.v = pow_mod(e.v, x - 1, CRV.n);
 	e.u = Qmlt(e.u, i);
 
 	return e;
 }
 
-//等比数列
+// 等比数列
 esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
@@ -1046,7 +1046,7 @@ esem Qpow(ZZ x, esem e)
 		x += CRV.n;
 		// exit(1);
 	}
-	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v-1, CRV.n)) % CRV.n;
+	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - 1, CRV.n)) % CRV.n;
 
 	e.v = pow_mod(e.v, x, CRV.n);
 	e.u = Qmlt(e.u, i);
@@ -1065,8 +1065,8 @@ esem esemi(esem a, esem b)
 	return n;
 }
 
-//等比数列
-esem Qpow2(ZZ x,ZZ y ,esem e)
+// 等比数列
+esem Qpow2(ZZ x, ZZ y, esem e)
 {
 	ZZ i;
 	esem E;
@@ -1077,10 +1077,10 @@ esem Qpow2(ZZ x,ZZ y ,esem e)
 		x += CRV.n;
 		// exit(1);
 	}
-	E=Qpow(x,e);
-	e=Qpow(y,e);
-	e=esemi(E,e);
-	e.v = pow_mod(e.v, x+y%CRV.n, CRV.n);
+	E = Qpow(x, e);
+	e = Qpow(y, e);
+	e = esemi(E, e);
+	e.v = pow_mod(e.v, x + y % CRV.n, CRV.n);
 
 	return e;
 }
@@ -2377,7 +2377,6 @@ esem Emul(esem X, esem Y)
 	return c;
 }
 
-
 esem cemi(esem a, esem b)
 {
 	esem n; // = {0};
@@ -2584,7 +2583,7 @@ esem vom()
 	ZZ p;
 	cout << "in vom\n";
 	x.u = Qmlt(CRV.G, ZZ(random()));
-	
+
 	while (1)
 	{
 		p = ZZ(random());
@@ -2594,7 +2593,6 @@ esem vom()
 			cout << "p=" << p << endl;
 			break;
 		}
-		
 	}
 
 	return x;
@@ -2614,7 +2612,7 @@ void ehw()
 	X.u = Qmlt(CRV.G, a);
 	X.v = to_ZZ("25");
 	Qmlt(CRV.G, a);
-	//exit(1);
+	// exit(1);
 	printf("ehw\n");
 	d = Qexp(to_ZZ("6"), A);
 	cout << d.u.x << "," << d.u.y << "," << d.v << endl;
@@ -2786,10 +2784,10 @@ void epm()
 	r = ZZ(random()) % CRV.n;
 	ZZ s = ZZ(random()) % CRV.n;
 	printf("epm\n");
-	B=Qpow(CRV.n-1,A);
+	B = Qpow(CRV.n - 1, A);
 	pesem(B);
-	//exit(1);
-	
+	// exit(1);
+
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
 	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
 	esem c1 = esemi(esemi(Qpow(r, A), D), Qpow(r, C));
@@ -2800,7 +2798,7 @@ void epm()
 	pesem(c1);
 	// pesem(c2);
 	pesem(X);
-	//exit(1);
+	// exit(1);
 
 	return;
 }
@@ -3029,6 +3027,13 @@ kem kemi2(kem a, kem b)
 	return n;
 }
 
+int primitive(ZZ x, ZZ p)
+{
+	if (pow_mod(x, (p - 1) / 2, p) != 1 && (x * x % p) != 1)
+		return 1;
+	return 0;
+}
+
 int main(int argc, char *argv[])
 {
 	ZZ z, r, d, I, salt;
@@ -3040,7 +3045,10 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(16);
+	init_curve(256);
+	cout << primitive(to_ZZ("6"), CRV.n) << endl;
+	exit(1);
+
 	ZZ a = to_ZZ("4");
 	cout << exp(a, CRV.p - 1, CRV.p) << ", " << CRV.p << endl;
 
@@ -3087,7 +3095,7 @@ int main(int argc, char *argv[])
 	// exit(1);
 
 	cout << inv2(6, 41) << "\n";
-	srandom(199111+clock());
+	srandom(199111 + clock());
 	ve rr = vomx();
 	pev(rr);
 	ve s = Epow(rr, ZZ(random()));
@@ -3098,10 +3106,10 @@ int main(int argc, char *argv[])
 	// exit(1);
 
 	ehw();
-	//exit(1);
+	// exit(1);
 	csp();
 	ekp();
-	 kpk();
+	kpk();
 	exit(1);
 
 	// mktbl3(CRV.G);
