@@ -1,4 +1,9 @@
-# Key exchange by semidirect product of Eliptic curve Multiple Discrete Logarithm Problem
+# Key exchange by near-ring using semidirect product of Eliptic curve
+
+# 20230704
+
+Near-Ringはこのことだったの？という感じで、現在半分配環を勉強中。  
+半直積に楕円曲線を使って、それに加法群を導入したら左分配法則しか満たさない半分配環になったというお話。
 
 # 20230630
 まだ途中です。
