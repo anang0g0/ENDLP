@@ -1,5 +1,5 @@
-# Key exchange by near-ring using semidirect product of Eliptic curve（Elliptic curve Near-Ring Discrete Logarithm Problem）
-
+# Key exchange by near-ring using semidirect product of Eliptic curve
+## Elliptic Curve Near-Ring Discrete Logarithm Problem
 # 20230704
 
 Near-Ringはこのことだったの？という感じで、現在半分配環を勉強中。  
