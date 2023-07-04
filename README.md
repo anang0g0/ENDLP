@@ -1,4 +1,4 @@
-# Key exchange by near-ring using semidirect product of Eliptic curve
+# Key exchange by near-ring using semidirect product of Eliptic curve（Elliptic curve Near-Ring Discrete Logarithm Problem）
 
 # 20230704
 
