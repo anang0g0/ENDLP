@@ -1,10 +1,14 @@
-# Key exchange by near-ring using semidirect product of Eliptic curve
-## Elliptic Curve Near-Ring Discrete Logarithm Problem
+# Key Exchange by Discrete Logarithm Problem of Near-Field
+
+# 20230708
+
+どうやら有限体を使っているので半分配体であるらしい。
+
 # 20230704
 
 Near-Ringはこのことだったの？という感じで、現在半分配環を勉強中。  
 半直積に楕円曲線を使って、それに加法群を導入したら左分配法則しか満たさない半分配環になったというお話。
-それでもきちんと動いているのは分配則を使ってないからｗ
+それでもきちんと動いているのは分配則を使ってないから。
 
 結合則だけを使う分には問題なし。
 
