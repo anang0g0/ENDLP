@@ -1,5 +1,5 @@
-## Key Exchange based on Discrete Logarithm Problem of Finite Near-Field
 # 有限半分配体の離散対数問題に基づく鍵交換
+## Key Exchange based on Discrete Logarithm Problem of Finite Near-Field
 
 # 20230708
 
