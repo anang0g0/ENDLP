@@ -69,7 +69,7 @@ $(c,s)^{m+n}=(c^{m+n},c^m\frac{c^{n-1}-1}{c-1}s+\frac{c^{m-1}-1}{c-1}s)$
 
 ## 例１
 定義：原始根
-「$p$は素数であるとする。巡回群$Z^\*_p$の生成元$g$は$Z^*_p$の原始根(primitive root)またはmodulo p　の原始根と呼ばれる。」
+「$p$は素数であるとする。巡回群$Z^*_p$の生成元$g$は$Z^*_p$の原始根(primitive root)またはmodulo p　の原始根と呼ばれる。」
 
 秘密鍵：$s,t,u,x,y,z \in Z_p,B \in E,s > u, x > z$
 公開鍵：$A,C,D,E \in E,D=A^sB^tC^u,E=A^xB^yC^z$
@@ -212,7 +212,7 @@ $A=(p,P),B=(q,Q),C=(r,R)$
 
 
 **定義：原始根**
-「$p$は素数であるとする。巡回群$Z^\*_p$の生成元$g$は$Z^*_p$の原始根(primitive root)またはmodulo p　の原始根と呼ばれる。」
+「$p$は素数であるとする。巡回群$Z^*_p$の生成元$g$は$Z^*_p$の原始根(primitive root)またはmodulo p　の原始根と呼ばれる。」
 
 秘密鍵：$s,t,u,x,y,z \in Z_p,B \in E,s > u, x > z$
 公開鍵：$A,C,D,E \in E,D=A^sB^tC^u,E=A^xB^yC^z$
