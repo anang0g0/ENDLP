@@ -2437,7 +2437,7 @@ esem tdpx(esem a, esem b, esem c)
 
 void pesem(esem a)
 {
-	cout << a.u.x << "," << a.u.y << "," << a.v << endl;
+	cout << "((" << a.u.x << "," << a.u.y << ")," << a.v << ")" << endl;
 }
 
 int kpk()
@@ -2789,7 +2789,17 @@ void epm()
 	// exit(1);
 
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
+	//esemi(Qpow(x,A),Qpow(y,B));
+	//
 	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
+	//esemi(Qpow(y,B),Qpow(x,A));
+	pesem(D);
+	cout << " g0^x*g1^y\n";
+	pesem(E);
+	cout << " g1^y*g0^x\n";
+	//exit(1);
+
+	//
 	esem c1 = esemi(esemi(Qpow(r, A), D), Qpow(r, C));
 	esem c2 = esemi(esemi(Qpow(r, A), E), Qpow(r, C));
 
@@ -3095,7 +3105,7 @@ int main(int argc, char *argv[])
 	// exit(1);
 
 	cout << inv2(6, 41) << "\n";
-	srandom(199111 + clock());
+	srandom(29491919 + clock());
 	ve rr = vomx();
 	pev(rr);
 	ve s = Epow(rr, ZZ(random()));
