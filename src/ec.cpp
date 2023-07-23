@@ -2789,10 +2789,10 @@ void epm()
 	// exit(1);
 
 	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
-	//esemi(Qpow(x,A),Qpow(y,B));
+	//D=esemi(Qpow(x,A),Qpow(y,B));
 	//
 	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
-	//esemi(Qpow(y,B),Qpow(x,A));
+	//E=esemi(Qpow(y,B),Qpow(x,A));
 	pesem(D);
 	cout << " g0^x*g1^y\n";
 	pesem(E);
