@@ -605,26 +605,6 @@ void init_curve(int n)
 		CRV.G.x = to_ZZ("10");
 		CRV.G.y = to_ZZ("13");
 	}
-	if (n == 3)
-	{
-		CRV.a = to_ZZ("3");
-		CRV.b = to_ZZ("5");
-		CRV.p = to_ZZ("17");
-		CRV.n = to_ZZ("23");
-		CRV.G.x = to_ZZ("1");
-		CRV.G.y = to_ZZ("3");
-		// CRV.G.z = to_ZZ("1");
-	}
-	if (n == 33)
-	{
-		CRV.a = to_ZZ("7");
-		CRV.b = to_ZZ("3");
-		CRV.p = to_ZZ("23");
-		CRV.n = to_ZZ("31");
-		CRV.G.x = to_ZZ("0");
-		CRV.G.y = to_ZZ("7");
-		// CRV.G.z = to_ZZ("1");
-	}
 }
 ZZ PLO[2][2];
 void niji(ZZ ISR[2][2])
