@@ -2582,11 +2582,11 @@ esem vom()
 	esem x;
 	ZZ p;
 	cout << "in vom\n";
-	x.u = Qmlt(CRV.G, ZZ(random()));
+	x.u = Qmlt(CRV.G, ZZ(random())%CRV.n);
 
 	while (1)
 	{
-		p = ZZ(random());
+		p = ZZ(random())%CRV.p;
 		if (pow_mod(p, (CRV.n - ZZ(1)) / ZZ(2), CRV.n) != ZZ(1) && pow_mod(p, ZZ(2), CRV.n) != ZZ(1))
 		{
 			x.v = p;
@@ -2817,10 +2817,10 @@ ve vomx()
 {
 	ve x;
 
-	x.e[0] = Qmlt(CRV.G, ZZ(random()));
-	x.e[1] = Qmlt(CRV.G, ZZ(random()));
-	x.v[0] = ZZ(random());
-	x.v[1] = ZZ(random());
+	x.e[0] = Qmlt(CRV.G, ZZ(random())%CRV.n);
+	x.e[1] = Qmlt(CRV.G, ZZ(random())%CRV.n);
+	x.v[0] = ZZ(random())%CRV.p;
+	x.v[1] = ZZ(random())%CRV.p;
 
 	return x;
 }
@@ -3055,15 +3055,35 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(256);
+	init_curve(8);
+	int count=0;
+for(j=0;j<31;j++){
+	for(i=0;i<31;i++){
+		if(i*i%31==(j*j*j+2*j+17)%31){
+		printf("%d,%d %d\n",j,i,count);
+		count++;
+		}
+		}
+	}
+	//exit(1);
 	cout << primitive(to_ZZ("6"), CRV.n) << endl;
+	esem TT;
+	TT.u.x=to_ZZ("10");
+	TT.u.y=to_ZZ("13");
+	TT.v=to_ZZ("2");
+	esem Y;
+	Y.u.x=to_ZZ("19");
+	Y.u.y=to_ZZ("1");
+	Y.v=to_ZZ("3");
+	esem D = esemi(Qpow(to_ZZ("3"), TT), Qpow(to_ZZ("2"), Y));
+	pesem(D);
 	//exit(1);
 
 	ZZ a = to_ZZ("4");
 	cout << exp(a, CRV.p - 1, CRV.p) << ", " << CRV.p << endl;
 
 	Qmlt(CRV.G, CRV.n);
-	// exit(1);
+ //exit(1);
 
 	kem pp, qq;
 	pp.u = (15);
@@ -3089,12 +3109,12 @@ int main(int argc, char *argv[])
 	cho.y = to_ZZ("13");
 
 	ve e = vomx();
-
 	ve dd = Emul(e, einv(e));
-	pev(dd);
+//exit(1);
+	pev(e);
 	dd = Emul(einv(e), e);
 	pev(dd);
-	// exit(1);
+	//exit(1);
 
 	esem ee = vom();
 	esem cc;
@@ -3108,12 +3128,13 @@ int main(int argc, char *argv[])
 	srandom(29491919 + clock());
 	ve rr = vomx();
 	pev(rr);
-	ve s = Epow(rr, ZZ(random()));
+	ve s = Epow(rr, ZZ(random())%CRV.n);
 	pev(s);
 
+cout << "aaaa\n";
 	epp();
 	epm();
-	// exit(1);
+ exit(1);
 
 	ehw();
 	// exit(1);
