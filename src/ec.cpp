@@ -3055,7 +3055,7 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(256);
+	init_curve(16);
 	cout << primitive(to_ZZ("6"), CRV.n) << endl;
 	//exit(1);
 
