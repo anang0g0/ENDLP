@@ -724,7 +724,7 @@ equ(unsigned short a, unsigned short b)
 
 int irg(po x)
 {
-	if (CRV.b > 0 && x.x == 0 && x.y == 0)
+	if (x.x == 0 && x.y == 0)
 		return -1;
 	return 1;
 }
@@ -884,7 +884,7 @@ po edbl(ZZ x1, ZZ y1)
 	ZZ a = CRV.a;
 	po D;
 
-	if (y1 * y1 % CRV.p != (x1 * (x1 * x1 + CRV.a) + CRV.b) % CRV.p)
+	if (y1 * y1 % CRV.p != (x1 * x1 * x1 + CRV.a*x1 + CRV.b) % CRV.p)
 	{
 		printf("no point at edbl\n");
 		exit(1);
@@ -1069,12 +1069,28 @@ esem Qpow(ZZ x, esem e)
 	return e;
 }
 
+int neq(po x, po y)
+{
+	if (x.x == y.x && x.y == y.y)
+		return -1;
+	return 1;
+}
+
 esem esemi(esem a, esem b)
 {
 	esem n; // = {0};
 
-	n.u = eadd(Qmlt(b.u, a.v), a.u);
-	n.v = (a.v * b.v) % CRV.n;
+	n.u=Qmlt(b.u, a.v);
+	n.v=b.v;
+
+	if(irg(n.u)==-1 && neq(n.u,a.u)==-1){
+	cout << "aka\n";
+	exit(1);
+	}
+
+	if(irg(n.u)==1 && neq(n.u,a.u)==1)
+	n.u = eadd(n.u, a.u);
+	n.v = (a.v * b.v) % CRV.p;
 	// n.u = n.to_ZZ("23");
 
 	return n;
@@ -2623,8 +2639,9 @@ esem vom()
 		}
 	}
 	cout << "@." << x.u.x << "," << x.u.y << "," << x.v << endl;
-
+	if(irg(x.u)==1)
 	return x;
+	exit(1);
 }
 
 void ehw()
@@ -2744,12 +2761,6 @@ esem Qadd(esem a, esem b)
 	return c;
 }
 
-int neq(po x, po y)
-{
-	if (x.x == y.x && x.y == y.y)
-		return -1;
-	return 1;
-}
 
 
 void epp()
@@ -2789,6 +2800,9 @@ void epp()
 	} while (x - z <= 0 || y - w <= 0 || (x == 0 || y == 0 || z == 0 || w == 0 || t == 0 || r == 0 || s == 0));
 	printf("epp\n");
 
+	pesem(A);
+	pesem(B);
+	pesem(C);
 	esem D = Qadd(Qadd(Qpow(x, A), Qpow(t, B)), Qpow(y, C));
 	cout << "D\n";
 	pesem(D);
@@ -2796,6 +2810,10 @@ void epp()
 	cout << "E\n";
 	pesem(E);
 	// exit(1);
+	if(neq(A.u,B.u)!=1 || neq(B.u,C.u)!=1 || irg(A.u)!=1 || irg(B.u)!=1 && irg(C.u)!=1){
+	cout << "aka\n";
+	exit(1);
+	}
 
 	esem c1 = Qadd(Qadd(Qpow(r, A), D), Qpow(s, C));
 	esem c2 = Qadd(Qadd(Qpow(r, A), E), Qpow(s, C));
@@ -2814,15 +2832,25 @@ void epp()
 
 void epm()
 {
-	esem A = vom();
-	esem B = vom();
-	esem C = vom();
+	esem A;
+	esem B;
+	esem C;
+	while (1)
+	{
+		A = vom();
+		B = vom();
+		C = vom();
+		if (neq(A.u, B.u) == 1 && neq(B.u, C.u) == 1){
+		if(irg(A.u)==1 && irg(B.u)==1 && irg(C.u)==1)
+			break;
+			}
+	}
 
 	ZZ x;
 	ZZ y;
 	ZZ z;
 	ZZ w;
-	ZZ r, t;
+	ZZ r, t,s;
 
 	do
 	{
@@ -2830,10 +2858,20 @@ void epm()
 		y = ZZ(random()) % CRV.n;
 		z = ZZ(random()) % CRV.n;
 		w = ZZ(random()) % CRV.n;
-	} while (x - z <= 0 || y - w <= 0);
+		t = ZZ(random()) % CRV.n;
+		r = ZZ(random()) % CRV.n;
+		s = ZZ(random()) % CRV.n;
+	} while (x - z <= 0 || y - w <= 0 || (x == 0 || y == 0 || z == 0 || w == 0 || t == 0 || r == 0 || s == 0));
+
+/*
+	while(1){
 	t = ZZ(random()) % CRV.n;
 	r = ZZ(random()) % CRV.n;
 	ZZ s = ZZ(random()) % CRV.n;
+	if(t>0 && r>0 && s>0)
+	break;
+	}
+	*/
 	printf("epm\n");
 	B = Qpow(CRV.n - 1, A);
 	pesem(B);
@@ -3187,7 +3225,7 @@ int main(int argc, char *argv[])
 
 	cout << "aaaa\n";
 	epp();
-	// epm();
+	epm();
 	exit(1);
 
 	ehw();
