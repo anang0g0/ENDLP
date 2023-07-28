@@ -2017,8 +2017,8 @@ void alp()
   int flg=0;
   // set a half of bit size random number
 
-  ii=to_ZZ("3"); //91929493797357126777135769139716525652319754650249024631321344126610074238977");
-  ii*=2;
+  ii=to_ZZ("1"); //91929493797357126777135769139716525652319754650249024631321344126610074238977");
+  ii=(ii<<256)+1;
 
   
   //521-bit prime
@@ -2039,7 +2039,7 @@ void alp()
     {
       //
       label:
-      for (int u = 0; u < 7; u++)
+      for (int u = 0; u < 1024; u++)
       {
         uu = (ii * ii) + h[j] * uint16_prime[u] * uint16_prime[u];
         //cout << "ii=" << i << " " << j << " " << u << endl;
@@ -2062,7 +2062,7 @@ void alp()
           //if (((oo % 2) == 1) && ((4 * oo - ii * ii) == (h[j] * uint16_prime[u] * uint16_prime[u])))
           {
           //cout << "ii=" << i << " " << j << " " << u << " " << oo % 2 << " " << 4*oo-ii*ii  << " " << h[j]*uint16_prime[u]*uint16_prime[u] << endl;
-            k = k + 1;
+           k = k + 1;
             while (k<10)//uint16_prime[k] != 65521)
             {
               //           cout << k << " ";
@@ -2125,7 +2125,7 @@ void alp()
                   //}
                 }
               }
-               /*   //  if(flg==0){
+                 //  if(flg==0){
                 kk = (jj[j]) * inv(to_ZZ("1728") - jj[j], oo) % oo;
                 if (kk < 0)
                 {
@@ -2177,7 +2177,7 @@ void alp()
                           }
                         }
                   }
-                */
+                }
               
                 if(is_prime(oo+1-ii) && is_prime((oo-ii)/2))
                 {
