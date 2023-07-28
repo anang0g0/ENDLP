@@ -732,7 +732,7 @@ po eadd(po A, po B)
 	y2 = B.y;
 	po T;
 	ZZ mod = CRV.p;
-	if (y1 * y1 % mod != (x1 * (x1 * x1 + CRV.a) + CRV.b) % mod)
+	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a*x1 + CRV.b) % mod)
 	{
 		printf("no point X1\n");
 		cout << x1 << "\n";
@@ -762,6 +762,8 @@ po eadd(po A, po B)
 		// cout << x1 << "\n";
 		// V = 0;
 		e.f = 2;
+		e.x=x1;
+		e.y=y1;
 		return e;
 		// exit(1);
 		//  return 2;
@@ -2575,26 +2577,49 @@ esem sabun(ZZ a, ZZ b, esem X, esem Y)
 	return B;
 }
 
+int irg(po x)
+{
+	if (x.x == 0 && x.y == 0)
+		return -1;
+	return 1;
+}
+
 esem vom()
 {
 	esem x;
 	ZZ p;
 	cout << "in vom\n";
-	x.u = Qmlt(CRV.G, ZZ(random()));
 
 	while (1)
 	{
-		p = ZZ(random());
-		if (pow_mod(p, (CRV.n - ZZ(1)) / ZZ(2), CRV.n) != ZZ(1) && pow_mod(p, ZZ(2), CRV.n) != ZZ(1))
+		p = ZZ(random()) % CRV.n;
+		if (p > 0)
+			break;
+	}
+	x.u = Qmlt(CRV.G, p);
+	if ((x.u.y) == 0 && x.u.x == 0)
+	{
+		cout << CRV.a << "," << CRV.b << "," << CRV.p << "," << CRV.n << "," << x.u.x << "," << x.u.y << endl;
+		exit(1);
+	}
+
+	while (1)
+	{
+		p = ZZ(random()) % CRV.p;
+		if (pow_mod(p, (CRV.n - ZZ(1)) / ZZ(2), CRV.n) != ZZ(1) && pow_mod(p, ZZ(2), CRV.n) != ZZ(1) && p > 0)
 		{
 			x.v = p;
+
 			cout << "p=" << p << endl;
 			break;
 		}
 	}
-
+	cout << "@." << x.u.x << "," << x.u.y << "," << x.v << endl;
+	if(irg(x.u)==1)
 	return x;
+	exit(1);
 }
+
 
 void ehw()
 {
@@ -2815,13 +2840,14 @@ ve vomx()
 {
 	ve x;
 
-	x.e[0] = Qmlt(CRV.G, ZZ(random()));
-	x.e[1] = Qmlt(CRV.G, ZZ(random()));
-	x.v[0] = ZZ(random());
-	x.v[1] = ZZ(random());
+	x.e[0] = Qmlt(CRV.G, ZZ(random()) % CRV.n);
+	x.e[1] = Qmlt(CRV.G, ZZ(random()) % CRV.n);
+	x.v[0] = ZZ(random()) % CRV.p;
+	x.v[1] = ZZ(random()) % CRV.p;
 
 	return x;
 }
+
 
 void pev(ve a)
 {
@@ -3053,7 +3079,7 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(521);
+	init_curve(8);
 	cout << primitive(to_ZZ("6"), CRV.n) << endl;
 	// exit(1);
 
