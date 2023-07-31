@@ -623,6 +623,15 @@ void init_curve(int n)
 		CRV.G.x = to_ZZ("10");
 		CRV.G.y = to_ZZ("13");
 	}
+	if (n == 4)
+	{
+		CRV.a = to_ZZ("2");
+		CRV.b = to_ZZ("3");
+		CRV.n = to_ZZ("23");
+		CRV.p = to_ZZ("23");
+		CRV.G.x = to_ZZ("0");
+		CRV.G.y = to_ZZ("7");
+	}
 }
 ZZ PLO[2][2];
 void niji(ZZ ISR[2][2])
@@ -732,7 +741,7 @@ po eadd(po A, po B)
 	y2 = B.y;
 	po T;
 	ZZ mod = CRV.p;
-	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a*x1 + CRV.b) % mod)
+	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
 	{
 		printf("no point X1\n");
 		cout << x1 << "\n";
@@ -762,8 +771,8 @@ po eadd(po A, po B)
 		// cout << x1 << "\n";
 		// V = 0;
 		e.f = 2;
-		e.x=x1;
-		e.y=y1;
+		e.x = x2;
+		e.y = y1;
 		return e;
 		// exit(1);
 		//  return 2;
@@ -1286,7 +1295,7 @@ po ellip(ZZ k)
 
 /*=begin
 ECDSAsignatureenerationandverification
-Tosignameddahem,anentryAwithdomainparametersD=(q,FR,a,b,G,n,h)
+Tosignameddahem,anentryAwithdoparametersD=(q,FR,a,b,G,n,h)
 andassociatedkeypair(d,Q)doesthefollowing
 
 1.Selectarandomorpseudorandomintegerk,1<=k<=n-1
@@ -2445,6 +2454,7 @@ int kpk()
 	kem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 	a.u = 11;
 	a.v = 2;
+	//a=vomx();
 	b.u = 13;
 	b.v = 4;
 	c.u = 5;
@@ -2615,11 +2625,10 @@ esem vom()
 		}
 	}
 	cout << "@." << x.u.x << "," << x.u.y << "," << x.v << endl;
-	if(irg(x.u)==1)
-	return x;
+	if (irg(x.u) == 1)
+		return x;
 	exit(1);
 }
-
 
 void ehw()
 {
@@ -2630,10 +2639,12 @@ void ehw()
 	c = to_ZZ("789");
 	r = to_ZZ("517");
 	s = to_ZZ("17");
-	A.u = CRV.G;
-	A.v = to_ZZ("2");
-	X.u = Qmlt(CRV.G, a);
-	X.v = to_ZZ("25");
+	//A.u = CRV.G;
+	//A.v = to_ZZ("2");
+	A=vom();
+	//X.u = Qmlt(CRV.G, a);
+	//X.v = to_ZZ("25");
+	X=vom();
 	Qmlt(CRV.G, a);
 	// exit(1);
 	printf("ehw\n");
@@ -2784,16 +2795,25 @@ void epp()
 	return;
 }
 
+int is_eq(esem A, esem B)
+{
+	if (A.v == B.v && A.u.x == B.u.x && A.u.y == B.u.y)
+		return 1;
+	return 0;
+}
+
 void epm()
 {
 	esem A = vom();
 	esem B = vom();
 	esem C = vom();
+	esem tmp;
 
 	ZZ x;
 	ZZ y;
 	ZZ z;
 	ZZ w;
+	ZZ ss;
 	ZZ r, t;
 
 	do
@@ -2802,19 +2822,29 @@ void epm()
 		y = ZZ(random()) % CRV.n;
 		z = ZZ(random()) % CRV.n;
 		w = ZZ(random()) % CRV.n;
-	} while (x - z <= 0 || y - w <= 0);
+		ss=ZZ(random()) % CRV.n;
+	} while (x - z <= 0 || y - w <= 0 && x >0 && y>0 && z>0 && w>0 && ss>0);
 	t = ZZ(random()) % CRV.n;
 	r = ZZ(random()) % CRV.n;
 	ZZ s = ZZ(random()) % CRV.n;
 	printf("epm\n");
-	B = Qpow(CRV.n - 1, A);
+	B = vom(); //Qpow(CRV.n - 1, A);
 	pesem(B);
 	// exit(1);
 
-	esem D = esemi(esemi(Qpow(x, A), B), Qpow(y, C));
+	esem D = esemi(esemi(Qpow(x, A), Qpow(ss,B)), Qpow(y, C));
 	// D=esemi(Qpow(x,A),Qpow(y,B));
 	//
-	esem E = esemi(esemi(Qpow(z, A), B), Qpow(w, C));
+for(int i=0;i<41;i++){
+for(int j=0;j<41;j++){
+tmp=esemi(esemi(Qpow(ZZ(i), A),Qpow(ss,B)), Qpow(ZZ(j), C));
+if(is_eq(tmp,D)==1)
+printf("i=%d j=%d\n",i,j);
+//printf("ii=%d jj=%d\n",i,j);
+}
+}
+//exit(1);
+	esem E = esemi(esemi(Qpow(z, A), Qpow(ss,B)), Qpow(w, C));
 	// E=esemi(Qpow(y,B),Qpow(x,A));
 	pesem(D);
 	cout << " g0^x*g1^y\n";
@@ -2848,7 +2878,6 @@ ve vomx()
 	return x;
 }
 
-
 void pev(ve a)
 {
 	cout << a.v[0] << endl;
@@ -2858,6 +2887,7 @@ void pev(ve a)
 	cout << a.e[1].x << " ,";
 	cout << a.e[1].y << endl;
 }
+
 
 ve einv(ve e)
 {
@@ -2903,43 +2933,31 @@ int ekp()
 {
 	esem a, b, c, d, e, f, g, h, a1, a2, a3, b1, b2, b3, c1, c2, c3, d1, d2, d3, e1, f1, g1, h1;
 
-	a.u = Qmlt(CRV.G, to_ZZ("6"));
-	a.v = to_ZZ("26");
-	b.u = Qmlt(CRV.G, to_ZZ("15"));
-	b.v = to_ZZ("25");
-	c.u = Qmlt(CRV.G, to_ZZ("11"));
-	// c.u.y =to_ZZ("21"); //Qmlt(CRV.G, to_ZZ("15"));
-	c.v = to_ZZ("2");
-	d.u = Qmlt(CRV.G, to_ZZ("12"));
-	// d.u.y = to_ZZ("15"); //Qmlt(CRV.G, to_ZZ("15"));
-	d.v = to_ZZ("1");
+	a=vom();
+	b=vom();
+	c=vom();
+	d=vom();
 	g1.u = eadd(c.u, d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
 	// exit(1);
 
-	e.u = Qmlt(CRV.G, to_ZZ("5"));
-	e.v = to_ZZ("4");
-	f.u = Qmlt(CRV.G, to_ZZ("17"));
-	f.v = to_ZZ("12");
-	g.u = Qmlt(CRV.G, to_ZZ("13"));
-	g.v = to_ZZ("14");
-	h.u = Qmlt(CRV.G, to_ZZ("11"));
-	h.v = to_ZZ("16");
-
+	e=vom();
+	f=vom();
+	g=vom();
+	h=vom();
+	
 	printf("inv6=%d\n", inv2(6, 41));
 
 	esem x, y;
 	int p = 17;
 	esem key[4];
 
-	x.u = Qmlt(CRV.G, to_ZZ("12"));
-	x.v = to_ZZ("20");
-	y.u = Qmlt(CRV.G, to_ZZ("21"));
-	y.v = to_ZZ("22");
+	x=vom();
+	y=vom();
 
 	int r1 = 0b00, r2 = 0b11;
-	// alice's public key
 
+	// alice's public key
 	a1 = tdp(a, x, (b));
 	a2 = tdp(b, x, (c));
 	a3 = tdp(c, x, (d));
@@ -3080,6 +3098,11 @@ int main(int argc, char *argv[])
 	po T;
 	ZZ P;
 	init_curve(8);
+	// for(i=1;i<41;i++)
+	{
+		T = Qmlt(CRV.G, to_ZZ("2"));
+		cout << T.x << ",! " << T.y << endl;
+	}
 	cout << primitive(to_ZZ("6"), CRV.n) << endl;
 	// exit(1);
 
@@ -3105,7 +3128,7 @@ int main(int argc, char *argv[])
 		count++;
 	}
 	printf("n=%d\n", count);
-	//exit(1);
+	// exit(1);
 
 	ellmat J;
 	ZZ Za[2][2];
