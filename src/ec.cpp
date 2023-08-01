@@ -50,6 +50,7 @@ ZZ K;
 // Default modulus value by zebedee
 ZZ DFLT_MODULUS;
 
+
 /*
 =begin
 //...If you want to abandon man-in-the-middle-attack you must exchange
@@ -127,6 +128,8 @@ typedef struct
 } ellmat;
 
 cv CRV;
+
+po edbl(ZZ x,ZZ y);
 
 ZZ pow_mod(ZZ x, ZZ n, ZZ p)
 {
@@ -741,6 +744,12 @@ po eadd(po A, po B)
 	y2 = B.y;
 	po T;
 	ZZ mod = CRV.p;
+	if(A.f==2 && B.f!=2){
+	return A;
+	}
+	if(A.f!=2 && B.f==2){
+	return B;
+	}
 	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
 	{
 		printf("no point X1\n");
@@ -760,11 +769,11 @@ po eadd(po A, po B)
 		printf("infinity devide1\n");
 		cout << "Y1=" << y1 << "\n";
 		cout << "Y2=" << y2 << "\n";
-		if (y1 * y1 % mod == (x1 * (x1 * x1 + CRV.a) + CRV.b) % mod)
+		if (y1 * y1 % mod == (x1 * x1 * x1 + CRV.a*x1 + CRV.b) % mod)
 		{
 			cout << "X1 on Curve\n";
 		}
-		if (y2 * y2 % mod == (x2 * (x2 * x2 + CRV.a) + CRV.b) % mod)
+		if (y2 * y2 % mod == (x2 * x2 * x2 + CRV.a*x2 + CRV.b) % mod)
 		{
 			cout << "X2 on Curve\n";
 		}
@@ -772,10 +781,10 @@ po eadd(po A, po B)
 		// V = 0;
 		e.f = 2;
 		if(y1==y2 && x1==x2){
-		//return edbl(x1,y1);
+		return edbl(x1,y1);
 		printf("double\n");
 		}
-		exit(1);
+		//exit(1);
 		e.x = x1;
 		e.y = y1;
 		return e;
@@ -1010,6 +1019,10 @@ po Qmlt(po y, ZZ n)
 		if ((n & 1) == 1 && nn > 2)
 		{
 			ret = eadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+			if(ret.f==2){
+			cout << "Qmlt!\n";
+			//exit(1);
+			}
 								// ret = T;
 								//  if(n==1)
 								//  return ret;
@@ -1031,8 +1044,12 @@ po Qmlt(po y, ZZ n)
 		if (n == 2 && flg == 1)
 			return x;
 	}
-	Z.x = ret.x;
-	Z.y = ret.y;
+	if(n==0)
+	{
+	cout << "n is 0\n";
+	}
+	//Z.x = ret.x;
+	//Z.y = ret.y;
 	// Z.z = 1;
 	return ret;
 }
@@ -1074,6 +1091,10 @@ esem esemi(esem a, esem b)
 	esem n; // = {0};
 
 	n.u = eadd(Qmlt(b.u, a.v), a.u);
+	if(n.u.f==2){
+	cout << "esemi\n";
+	//exit(1);
+	}
 	n.v = (a.v * b.v) % CRV.n;
 	// n.u = n.to_ZZ("23");
 
@@ -1227,6 +1248,10 @@ po ellip(ZZ k)
 					{
 						//	    printf("doko3\n");
 						CNK = eadd(CNK, le[ki[i]]);
+						if(CNK.f==2){
+						cout << "ell\n";
+						//exit(1);
+						}
 						/*
 						CNK.x = tt1.x;
 						CNK.y = tt1.y;
@@ -2416,6 +2441,11 @@ esem Emul(esem X, esem Y)
 	esem c;
 
 	c.u = eadd(Qmlt(Y.u, X.v), X.u);
+	if(c.u.f==2)
+	{
+	cout << "Eml\n";
+	//exit(1);
+	}
 	c.v = Y.v * X.v % CRV.n;
 
 	return c;
@@ -2427,6 +2457,10 @@ esem cemi(esem a, esem b)
 	ten m = p2t(a.u);
 
 	n.u = eadd(Qmlt(a.u, b.v), b.u);
+	if(n.u.f==2){
+	cout << "cemi\n";
+	//exit(1);
+	}
 	n.v = (a.v * b.v) % CRV.n;
 	// n.u = n.to_ZZ("23");
 
@@ -2678,6 +2712,7 @@ esem vom()
 	cout << "@." << x.u.x << "," << x.u.y << "," << x.v << endl;
 	if (irg(x.u) == 1)
 		return x;
+		cout << "ee?\n";
 	exit(1);
 }
 
@@ -2731,6 +2766,10 @@ void csp()
 	c = vom();
 	d = vom();
 	g1.u = eadd(c.u, d.u);
+	if(g1.u.f==2){
+	cout << "csp\n";
+	//exit(1);
+	}
 	// cout << g1.u.x << "," << g1.u.y << endl;
 	//  exit(1);
 
@@ -2797,6 +2836,11 @@ esem Qadd(esem a, esem b)
 
 	c.v = (a.v + b.v) % CRV.n;
 	c.u = eadd(a.u, b.u);
+	if(c.u.f==2)
+	{
+	cout << "Qadd\n";
+	//exit(1);
+	}
 
 	return c;
 }
@@ -2968,10 +3012,16 @@ ve einv(ve e)
 ve Emul(ve v, ve x)
 {
 	ve e;
+	
 	// ve v=vomx();
 	// ve x=vomx();
 	e.e[0] = eadd(Qmlt(v.e[0], inv(CRV.n - x.v[0], CRV.n)), x.e[0]);
 	e.e[1] = eadd(Qmlt(v.e[1], inv(CRV.n - x.v[1], CRV.n)), x.e[1]);
+	if(e.e[0].f==2 || e.e[1].f==2)
+	{
+	cout << "Emul\n";
+	exit(1);
+	}
 	e.v[0] = (v.v[0] * x.v[0]) % CRV.n;
 	e.v[1] = (v.v[1] * x.v[1]) % CRV.n;
 
@@ -3005,6 +3055,11 @@ int ekp()
 	d=vom();
 	g1.u = eadd(c.u, d.u);
 	cout << g1.u.x << "," << g1.u.y << endl;
+	if(g1.u.f==2)
+	{
+	cout << "ekp\n";
+	//exit(1);
+	}
 	// exit(1);
 
 	e=vom();
@@ -3162,7 +3217,7 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(16);
+	init_curve(8);
 	//exit(1);
 	// for(i=1;i<41;i++)
 	{
