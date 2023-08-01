@@ -771,9 +771,14 @@ po eadd(po A, po B)
 		// cout << x1 << "\n";
 		// V = 0;
 		e.f = 2;
-		//e.x = x2;
-		//e.y = y1;
-		//return e;
+		if(y1==y2 && x1==x2){
+		//return edbl(x1,y1);
+		printf("double\n");
+		}
+		exit(1);
+		e.x = x1;
+		e.y = y1;
+		return e;
 		 exit(1);
 		//  return 2;
 	}
@@ -1045,7 +1050,7 @@ esem Qexp(ZZ x, esem e)
 }
 
 // 等比数列
-esem Qpowa(ZZ x, esem e)
+esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
 	if (x < 0)
@@ -1054,10 +1059,10 @@ esem Qpowa(ZZ x, esem e)
 		x = x % CRV.n;
 		cout << x << " foolie\n";
 		//x += CRV.n;
-		 exit(1);
+		 //exit(1);
 	}
 	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - 1, CRV.n)) % CRV.n;
-
+	
 	e.v = pow_mod(e.v, x, CRV.n);
 	e.u = Qmlt(e.u, i);
 
@@ -1275,8 +1280,10 @@ po ellip(ZZ k)
 	exit(1);
 }
 
-esem Qpow(ZZ x,esem e){
+esem elp3(ZZ x,esem e){
 	ZZ i;
+	if(x==0)
+	x=ZZ(rand())%CRV.n;
 	if (x < 0)
 	{
 		cout << x << " coolie\n";
@@ -1285,6 +1292,12 @@ esem Qpow(ZZ x,esem e){
 		// exit(1);
 	}
 	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - 1, CRV.n)) % CRV.n;
+	if(i==0)
+	{
+	cout << "AI\n";
+	return e;
+	//exit(1);
+	}
 	mktable(e.u.x,e.u.y);
 	e.v = pow_mod(e.v, x, CRV.n);
 	//e.u = Qmlt(e.u, i);
@@ -3149,7 +3162,7 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
-	init_curve(8);
+	init_curve(16);
 	//exit(1);
 	// for(i=1;i<41;i++)
 	{
