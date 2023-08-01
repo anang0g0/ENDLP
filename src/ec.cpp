@@ -747,9 +747,11 @@ po eadd(po A, po B)
 	if(A.f==2 && B.f==2)
 	exit(1);
 	if(A.f==2 && B.f!=2){
+	B.f==0;
 	return B;
 	}
 	if(A.f!=2 && B.f==2){
+	A.f==0;
 	return A;
 	}
 	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
@@ -787,11 +789,9 @@ po eadd(po A, po B)
 		return edbl(x1,y1);
 		}
 		//exit(1);
-		e.x = x1;
-		e.y = y1;
+		//e.x = x1;
+		//e.y = y1;
 		return e;
-		// exit(1);
-		//  return 2;
 	}
 
 	// lamda
