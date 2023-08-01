@@ -744,11 +744,13 @@ po eadd(po A, po B)
 	y2 = B.y;
 	po T;
 	ZZ mod = CRV.p;
+	if(A.f==2 && B.f==2)
+	exit(1);
 	if(A.f==2 && B.f!=2){
-	return A;
+	return B;
 	}
 	if(A.f!=2 && B.f==2){
-	return B;
+	return A;
 	}
 	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
 	{
@@ -781,14 +783,14 @@ po eadd(po A, po B)
 		// V = 0;
 		e.f = 2;
 		if(y1==y2 && x1==x2){
-		return edbl(x1,y1);
 		printf("double\n");
+		return edbl(x1,y1);
 		}
 		//exit(1);
 		e.x = x1;
 		e.y = y1;
 		return e;
-		 exit(1);
+		// exit(1);
 		//  return 2;
 	}
 
@@ -977,6 +979,8 @@ po Qmlt(po y, ZZ n)
 	ZZ nn;
 	po Z;
 
+	if(n==0 || y.f==2)
+	exit(1);
 	nn = n;
 	while (nn > 0)
 	{
@@ -1070,17 +1074,26 @@ esem Qexp(ZZ x, esem e)
 esem Qpow(ZZ x, esem e)
 {
 	ZZ i;
+	
+	if(x==0)
+	return e;
+
 	if (x < 0)
 	{
 		cout << x << " coolie\n";
 		x = x % CRV.n;
 		cout << x << " foolie\n";
 		//x += CRV.n;
-		 //exit(1);
+		 exit(1);
 	}
-	i = ((pow_mod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - 1, CRV.n)) % CRV.n;
-	
-	e.v = pow_mod(e.v, x, CRV.n);
+	i = ((PowerMod(e.v, x, CRV.n) - ZZ(1)) * inv(e.v - 1, CRV.n)) % CRV.n;
+	if(i==0){
+	cout << "('A`)\n";
+	e.u.f=2;
+	//exit(1);
+	}
+	e.v = PowerMod(e.v, x, CRV.n);
+	if(e.u.f!=2)
 	e.u = Qmlt(e.u, i);
 
 	return e;
@@ -1090,6 +1103,7 @@ esem esemi(esem a, esem b)
 {
 	esem n; // = {0};
 
+	
 	n.u = eadd(Qmlt(b.u, a.v), a.u);
 	if(n.u.f==2){
 	cout << "esemi\n";
@@ -2834,12 +2848,23 @@ esem Qadd(esem a, esem b)
 {
 	esem c;
 
+	if(a.u.f==2 && b.u.f==2){
+	cout << "baka\n";
+	exit(1);
+	}
+	if(a.u.f==2 && b.u.f==2)
+	exit(1);
+	if(a.u.f==2)
+	return b;
+	if(b.u.f==2)
+	return a;
+	
 	c.v = (a.v + b.v) % CRV.n;
 	c.u = eadd(a.u, b.u);
 	if(c.u.f==2)
 	{
 	cout << "Qadd\n";
-	//exit(1);
+	exit(1);
 	}
 
 	return c;
@@ -2862,7 +2887,7 @@ void epp()
 	ZZ y;
 	ZZ z;
 	ZZ w;
-	ZZ r, t;
+	ZZ r, t,s;
 
 	do
 	{
@@ -2870,10 +2895,10 @@ void epp()
 		y = ZZ(random()) % CRV.n;
 		z = ZZ(random()) % CRV.n;
 		w = ZZ(random()) % CRV.n;
-	} while (x - z <= 0 || y - w <= 0);
 	t = ZZ(random()) % CRV.n;
 	r = ZZ(random()) % CRV.n;
-	ZZ s = ZZ(random()) % CRV.n;
+	s = ZZ(random()) % CRV.n;
+	} while (x - z <= 0 || y - w <= 0|| x==0 || t==0 || y==0 || z==0 || w==0 || r==0);
 	printf("epp\n");
 
 
@@ -2904,23 +2929,24 @@ void epm()
 	ZZ z;
 	ZZ w;
 	ZZ ss;
-	ZZ r, t;
+	ZZ r, t,s;
 
 	do
 	{
-		x = ZZ(random()) % CRV.n -1;
-		y = ZZ(random()) % CRV.n -1;
-		z = ZZ(random()) % CRV.n-1;
-		w = ZZ(random()) % CRV.n-1;
-		ss=ZZ(random()) % CRV.n-1;
-	} while (x - z <= 0 || y - w <= 0 && x >0 && y>0 && z>0 && w>0 && ss>0);
-	t = ZZ(random()) % CRV.n-1;
-	r = ZZ(random()) % CRV.n-1;
-	ZZ s = ZZ(random()) % CRV.n-1;
+		x = ZZ(random()) % CRV.n;
+		y = ZZ(random()) % CRV.n;
+		z = ZZ(random()) % CRV.n;
+		w = ZZ(random()) % CRV.n;
+		ss=ZZ(random()) % CRV.n;
+	t = ZZ(random()) % CRV.n;
+	r = ZZ(random()) % CRV.n;
+	s = ZZ(random()) % CRV.n;
+	} while (x - z <= 0 || y - w <= 0 || x ==0 || y==0 || z==0 || w==0 || ss==0);
 	printf("epm\n");
 	B = vom(); //Qpow(CRV.n - 1, A);
 	pesem(B);
 	// exit(1);
+	esem a,b,c;
 
 	esem D = esemi(esemi(Qpow(x, A), Qpow(ss,B)), Qpow(y, C));
 	// D=esemi(Qpow(x,A),Qpow(y,B));
@@ -3217,9 +3243,21 @@ int main(int argc, char *argv[])
 	char file[32];
 	po T;
 	ZZ P;
+	po A, B;
+	po C, M;
+	ZZ a;
+	ZZ c = to_ZZ("6");
+	ZZ b = to_ZZ("22222222222222222222222222222222");
+	ZZ bb = CRV.n;
+	ellmat J;
+	ZZ Za[2][2];
+
+
+
 	init_curve(8);
 	//exit(1);
 	// for(i=1;i<41;i++)
+	/*
 	{
 		T = Qmlt(CRV.G, to_ZZ("2"));
 		cout << T.x << ",! " << T.y << endl;
@@ -3242,7 +3280,7 @@ int main(int argc, char *argv[])
 	printf("%d %d\n", qq.u, qq.v);
 	// exit(1);
 	int count = 0;
-	ZZ bb = CRV.n;
+
 	while (bb > 0)
 	{
 		bb = (bb >> 1);
@@ -3251,19 +3289,14 @@ int main(int argc, char *argv[])
 	printf("n=%d\n", count);
 	// exit(1);
 
-	ellmat J;
-	ZZ Za[2][2];
 	// mp_init(4096);
 	P = to_ZZ("340282366920938463463374607431768211283");
 	a = to_ZZ("143864072772599444046778416709082679388");
-	ZZ c = to_ZZ("6");
-	ZZ b = to_ZZ("22222222222222222222222222222222");
-	po A, B;
-	po C, M;
 
 	po cho;
 	cho.x = to_ZZ("10");
 	cho.y = to_ZZ("13");
+	*/
 /*
 	ve e = vomx();
 	ve dd = Emul(e, einv(e));
@@ -3492,3 +3525,4 @@ int main(int argc, char *argv[])
 
 	return 0;
 }
+
