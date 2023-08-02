@@ -980,7 +980,14 @@ po Qmlt(po y, ZZ n)
 	po Z;
 
 	if(n==0 || y.f==2)
-	exit(1);
+	{
+	cout << "n is 0\n";
+	ret.x=0;
+	ret.y=0;
+	ret.f=2;
+	return ret;
+	}
+
 	nn = n;
 	while (nn > 0)
 	{
@@ -1047,10 +1054,6 @@ po Qmlt(po y, ZZ n)
 		// cout << n << "," << flg << "," << x.x << "," << x.y << endl;
 		if (n == 2 && flg == 1)
 			return x;
-	}
-	if(n==0)
-	{
-	cout << "n is 0\n";
 	}
 	//Z.x = ret.x;
 	//Z.y = ret.y;
@@ -2705,6 +2708,9 @@ esem vom()
 		if (p > 0)
 			break;
 	}
+cout << "111\n";
+if(p==0)
+p=to_ZZ("11");
 	x.u = Qmlt(CRV.G, p);
 	if ((x.u.y) == 0 && x.u.x == 0)
 	{
