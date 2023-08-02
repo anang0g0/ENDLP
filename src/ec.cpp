@@ -1032,6 +1032,9 @@ po Qmlt(po y, ZZ n)
 			ret = eadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
 			if(ret.f==2){
 			cout << "Qmlt!\n";
+			ret.x=0;
+			ret.y=0;
+			return ret;
 			//exit(1);
 			}
 								// ret = T;
@@ -1110,6 +1113,10 @@ esem esemi(esem a, esem b)
 	n.u = eadd(Qmlt(b.u, a.v), a.u);
 	if(n.u.f==2){
 	cout << "esemi\n";
+	n.u.x=0;
+	n.u.y=0;
+	n.v = (a.v * b.v) % CRV.n;
+	return n;
 	//exit(1);
 	}
 	n.v = (a.v * b.v) % CRV.n;
@@ -2870,6 +2877,9 @@ esem Qadd(esem a, esem b)
 	if(c.u.f==2)
 	{
 	cout << "Qadd\n";
+	c.u.x=0;
+	c.u.y=0;
+	return c;
 	exit(1);
 	}
 
