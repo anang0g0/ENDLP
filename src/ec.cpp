@@ -1096,6 +1096,10 @@ esem Qpow(ZZ x, esem e)
 	if(i==0){
 	cout << "('A`)\n";
 	e.u.f=2;
+	e.v = PowerMod(e.v, x, CRV.n);
+	e.u.x=0;
+	e.u.y=0;
+	return e;
 	//exit(1);
 	}
 	e.v = PowerMod(e.v, x, CRV.n);
@@ -1274,6 +1278,9 @@ po ellip(ZZ k)
 						CNK = eadd(CNK, le[ki[i]]);
 						if(CNK.f==2){
 						cout << "ell\n";
+						CNK.x=0;
+						CNK.y=0;
+						return CNK;
 						//exit(1);
 						}
 						/*
@@ -2468,7 +2475,11 @@ esem Emul(esem X, esem Y)
 	if(c.u.f==2)
 	{
 	cout << "Eml\n";
-	//exit(1);
+	c.v = Y.v * X.v % CRV.n;
+	c.u.x=0;
+	c.u.y=0;
+	return c;
+		//exit(1);
 	}
 	c.v = Y.v * X.v % CRV.n;
 
@@ -2483,6 +2494,10 @@ esem cemi(esem a, esem b)
 	n.u = eadd(Qmlt(a.u, b.v), b.u);
 	if(n.u.f==2){
 	cout << "cemi\n";
+	n.v = (a.v * b.v) % CRV.n;
+	n.u.x=0;
+	n.u.y=0;
+	return n;
 	//exit(1);
 	}
 	n.v = (a.v * b.v) % CRV.n;
@@ -2795,7 +2810,11 @@ void csp()
 	g1.u = eadd(c.u, d.u);
 	if(g1.u.f==2){
 	cout << "csp\n";
-	//exit(1);
+	g1.v = (a.v * b.v) % CRV.n;
+	g1.u.x=0;
+	g1.u.y=0;
+	return;
+	exit(1);
 	}
 	// cout << g1.u.x << "," << g1.u.y << endl;
 	//  exit(1);
@@ -2865,8 +2884,6 @@ esem Qadd(esem a, esem b)
 	cout << "baka\n";
 	exit(1);
 	}
-	if(a.u.f==2 && b.u.f==2)
-	exit(1);
 	if(a.u.f==2)
 	return b;
 	if(b.u.f==2)
@@ -3059,10 +3076,16 @@ ve Emul(ve v, ve x)
 	// ve x=vomx();
 	e.e[0] = eadd(Qmlt(v.e[0], inv(CRV.n - x.v[0], CRV.n)), x.e[0]);
 	e.e[1] = eadd(Qmlt(v.e[1], inv(CRV.n - x.v[1], CRV.n)), x.e[1]);
-	if(e.e[0].f==2 || e.e[1].f==2)
+	if(e.e[0].f==2)
 	{
 	cout << "Emul\n";
-	exit(1);
+	e.e[0].x=0;
+	e.e[0].y=0;
+	//exit(1);
+	}
+	if(e.e[1].f==2){
+	e.e[1].x=0;
+	e.e[1].y=0;
 	}
 	e.v[0] = (v.v[0] * x.v[0]) % CRV.n;
 	e.v[1] = (v.v[1] * x.v[1]) % CRV.n;
@@ -3100,6 +3123,9 @@ int ekp()
 	if(g1.u.f==2)
 	{
 	cout << "ekp\n";
+	g1.u.x=0;
+	g1.u.y=0;
+	return 0;
 	//exit(1);
 	}
 	// exit(1);
