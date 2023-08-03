@@ -787,8 +787,74 @@ ten jadd(ten G1, ten G2)
 	return P;
 }
 
+ten jdbl(ten T)
+{
+	ZZ s, m, t, x, y, z;
+	ten Q;
 
-ten jadd2(ten O,ten P){
+	x = T.x;
+	y = T.y;
+	z = T.z;
+
+	s = 4 * x * y * y;
+	m = 3 * x * x + CRV.a * (z * z * z * z);
+	t = -2 * s + m * m;
+	Q.x = t % CRV.p;
+	Q.y = (-8 * (y * y * y * y) + m * (s - t)) % CRV.p;
+	Q.z = 2 * y * z % CRV.p;
+
+	if (Q.y * Q.y % CRV.p != (Q.x * Q.x * Q.x + CRV.a * Q.x * Q.z * Q.z * Q.z * Q.z + CRV.b * Q.z * Q.z * Q.z * Q.z * Q.z * Q.z) % CRV.p)
+	{
+		cout << "errjdbl\n";
+		exit(1);
+	}
+
+	return Q;
+}
+
+
+ten jadd2(ten p1,ten p2){
+ZZ u,v,A;
+ten q;
+po r;
+
+if(p1.x==0 && p1.y==0 && p1.z==0)
+return p2;
+if(p2.x==0 && p2.y==0 && p2.z==0)
+return p1;
+
+u=p2.y*p1.z-p1.y*p2.z;
+v=p2.x*p1.z-p1.x*p2.z;
+A=u*u*p1.z*p2.z-v*v*v-2*p1.x*p2.z;
+
+q.x=(v*A)%CRV.p;
+q.y=(u*(v*v*p1.x*p2.z-A)-v*v*v*p1.y*p2.z)%CRV.p;
+q.z=(v*v*v*p1.z*p2.z)%CRV.p;
+r.x=q.x*inv(q.z,CRV.p)%CRV.p;
+r.y=q.y*inv(q.y,CRV.p)%CRV.p;
+return q;
+}
+
+ten jdbl2(ten p){
+ZZ w,s,B,h;
+ten q;
+po r;
+
+w=CRV.a*p.z*p.z+3*p.x*p.x;
+s=p.y*p.z;
+B=s*p.x*p.y;
+h=w*w-8*B;
+
+q.x=(2*h*s)%CRV.p;
+q.y=(w*(4*B-h)-8*p.y*s*s)%CRV.p;
+q.z=(8*s*s)%CRV.p;
+r.x=q.x*inv(q.z,CRV.p)%CRV.p;
+r.y=q.y*inv(q.z,CRV.p)%CRV.p;
+
+return q;
+}
+
+ten jadd3(ten O,ten P){
 //ZZ x1,ZZ x2,ZZ y1,ZZ y2,ZZ z1,ZZ z2,ZZ mod){
 ZZ u1,u2,s1,s2,h,r,rev,reb,re6;
 ZZ x1, x2, y1, y2, z1, z2, mod;
@@ -836,33 +902,8 @@ if(P.y*P.y%CRV.p != (P.x*P.x*P.x+CRV.a*P.x*P.z*P.z*P.z*P.z+CRV.b*P.z*P.z*P.z*P.z
 return P;
 }
 
-ten jdbl(ten T)
-{
-	ZZ s, m, t, x, y, z;
-	ten Q;
 
-	x = T.x;
-	y = T.y;
-	z = T.z;
-
-	s = 4 * x * y * y;
-	m = 3 * x * x + CRV.a * (z * z * z * z);
-	t = -2 * s + m * m;
-	Q.x = t % CRV.p;
-	Q.y = (-8 * (y * y * y * y) + m * (s - t)) % CRV.p;
-	Q.z = 2 * y * z % CRV.p;
-
-	if (Q.y * Q.y % CRV.p != (Q.x * Q.x * Q.x + CRV.a * Q.x * Q.z * Q.z * Q.z * Q.z + CRV.b * Q.z * Q.z * Q.z * Q.z * Q.z * Q.z) % CRV.p)
-	{
-		cout << "errjdbl\n";
-		exit(1);
-	}
-
-	return Q;
-}
-
-
-ten jdbl2(ten P){
+ten jdbl3(ten P){
 ZZ s,m,t,x,y,z,mod;
 ten Q;
 
