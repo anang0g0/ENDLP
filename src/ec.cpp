@@ -825,7 +825,7 @@ return p1;
 
 u=p2.y*p1.z-p1.y*p2.z;
 v=p2.x*p1.z-p1.x*p2.z;
-A=u*u*p1.z*p2.z-v*v*v-2*p1.x*p2.z;
+A=u*u*p1.z*p2.z-v*v*v-2*v*v*p1.x*p2.z;
 
 q.x=(v*A)%CRV.p;
 q.y=(u*(v*v*p1.x*p2.z-A)-v*v*v*p1.y*p2.z)%CRV.p;
@@ -846,8 +846,8 @@ B=s*p.x*p.y;
 h=w*w-8*B;
 
 q.x=(2*h*s)%CRV.p;
-q.y=(w*(4*B-h)-8*p.y*s*s)%CRV.p;
-q.z=(8*s*s)%CRV.p;
+q.y=(w*(4*B-h)-8*p.y*p.y*s*s)%CRV.p;
+q.z=(8*s*s*s)%CRV.p;
 r.x=q.x*inv(q.z,CRV.p)%CRV.p;
 r.y=q.y*inv(q.z,CRV.p)%CRV.p;
 
