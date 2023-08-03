@@ -739,6 +739,8 @@ int echeki(ten p)
 	return 0;
 }
 
+// Efficient Elliptic Curve Exponentiation Using Mixed Coordinates Henri Cohen1, Atsuko Miyaji2, and Takatoshi Ono
+//https://link.springer.com/content/pdf/10.1007/3-540-49649-1_6.pdf
 ten jadd(ten G1, ten G2)
 {
 	ZZ u1, u2, s1, s2, h, r, rev, reb, re6;
