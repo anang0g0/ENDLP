@@ -732,9 +732,9 @@ equ(unsigned short a, unsigned short b)
 	return i;
 }
 
-int echeki(ten p)
+int echeki(ten P)
 {
-	if ((p.y * p.y * p.z) % CRV.p == (p.x * p.x * p.x + CRV.a * p.x * p.z * p.z + CRV.b * p.z * p.z * p.z) % CRV.p)
+	if (P.y * P.y % CRV.p == (P.x * P.x * P.x + CRV.a * P.x * P.z * P.z * P.z * P.z + CRV.b * P.z * P.z * P.z * P.z * P.z * P.z) % CRV.p)
 		return 1;
 	return 0;
 }
@@ -787,7 +787,8 @@ ten jadd(ten G1, ten G2)
 	P.z = rev * P.z % mod;
 
 	cout << "test " << echeki(P) << endl;
-	if (P.y * P.y % CRV.p != (P.x * P.x * P.x + CRV.a * P.x * P.z * P.z * P.z * P.z + CRV.b * P.z * P.z * P.z * P.z * P.z * P.z) % CRV.p)
+
+	if (echeki(P)==0)
 	{
 		cout << "errjadd\n";
 		exit(1);
@@ -798,7 +799,7 @@ ten jadd(ten G1, ten G2)
 
 ten jdbl(ten T)
 {
-	ZZ s, m, t, x, y, z;
+	ZZ s, m, t, x, y, z,u;
 	ten Q;
 
 	x = T.x;
@@ -812,9 +813,8 @@ ten jdbl(ten T)
 	Q.y = (-8 * (y * y * y * y) + m * (s - t)) % CRV.p;
 	Q.z = 2 * y * z % CRV.p;
 
-	if (Q.y * Q.y % CRV.p != (Q.x * Q.x * Q.x + CRV.a * Q.x * Q.z * Q.z * Q.z * Q.z + CRV.b * Q.z * Q.z * Q.z * Q.z * Q.z * Q.z) % CRV.p)
-	{
-		cout << "errjdbl\n";
+	if(echeki(Q)==0){
+		cout << "baka dbl\n";
 		exit(1);
 	}
 
@@ -932,7 +932,7 @@ ten elp3(ZZ k)
 	int ki[256];
 	ZZ L;
 	po s;
-	int j, l, i, ii, jj, count = 0, cnp = 0;
+	int j, l, i, ii, jj, count = 0, cnp = 0,flag=0,cnt=0;
 	ten P, Q;
 
 	cout << k << endl;
@@ -942,15 +942,24 @@ ten elp3(ZZ k)
 	cout << k << " =k\n";
 	while (L > 0)
 	{
-		if (L % 2 == 0)
+		if (L % 2 == 0){
+
 			count++;
+		}
+		if(L%2==1)
+		cnt++;
+		
 		cnp++;
 		L = (L >> 1);
 	}
+	if(cnt>1)
+		flag=1;
 	cout << count << " =count , cnp= " << cnp << endl;
 	if (count == cnp - 1)
 	{
 		P = ll[count];
+		if(flag==0)
+		return P;
 		for (i = 0; i < count + 1; i++)
 			P = jdbl(P);
 		cout << P.x << endl;
@@ -1477,7 +1486,7 @@ ten p2t(po a)
 po t2p(ten x)
 {
 	po z;
-	ZZ k = inv(x.z, CRV.p);
+	ZZ k = inv(x.z*x.z, CRV.p);
 	ZZ s = inv(x.z * x.z * x.z, CRV.p);
 
 	z.x = x.x * k % CRV.p;
@@ -1529,15 +1538,109 @@ po Qmlt(po y, ZZ n)
 
 	if (n == 1)
 	{
-		Z.x = ret.x;
-		Z.y = ret.y;
+		//Z.x = ret.x;
+		//Z.y = ret.y;
 		// Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
-		Z.x = x.x;
-		Z.y = x.y;
+		//Z.x = x.x;
+		//Z.y = x.y;
+		// Z.z = 1;
+		return x;
+	}
+	// n>>=1;
+	while (n > 0 && nn > 1)
+	{
+		// ret=x;
+
+		n >>= 1;
+		if ((n & 1) == 1 && nn > 2)
+		{
+			ret = eadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+			if (ret.f == 2)
+			{
+				cout << "Qmlt!\n";
+				ret.x = 0;
+				ret.y = 0;
+				return ret;
+				// exit(1);
+			}
+			// ret = T;
+			//  if(n==1)
+			//  return ret;
+		}
+		// break;
+		// cout << "n================ " << n << endl;
+		// n>>=1;
+		if (first == 0 && n % 2 == 1 && nn % 2 == 0)
+		{
+			ret = x;
+			first = 1;
+		}
+
+		x = edbl(x.x, x.y);
+		// x = D;
+
+		// n >>= 1; // n を1bit 左にずらす
+		// cout << n << "," << flg << "," << x.x << "," << x.y << endl;
+		if (n == 2 && flg == 1)
+			return x;
+	}
+	// Z.x = ret.x;
+	// Z.y = ret.y;
+	//  Z.z = 1;
+	return ret;
+}
+
+po Qmlt2(po y, ZZ n)
+{
+	po ret, tmp1, x;
+	int flg = 0, count = 0, first = 0;
+	unsigned char bin[640] = {0};
+	ZZ nn;
+	po Z;
+
+	if (n == 0 || y.f == 2)
+	{
+		cout << "n is 0\n";
+		ret.x = 0;
+		ret.y = 0;
+		ret.f = 2;
+		return ret;
+	}
+
+	nn = n;
+	while (nn > 0)
+	{
+		if (nn % 2 == 1)
+			flg++;
+		// printf("%d", nn % 2);
+		count++;
+		nn >>= 1;
+	}
+	// printf("\n");
+	nn = n;
+	// exit(1);
+	x.x = y.x;
+	x.y = y.y;
+
+	ret = x;
+	x = edbl(x.x, x.y);
+	// x = D;
+
+	if (n == 1)
+	{
+		//Z.x = ret.x;
+		//Z.y = ret.y;
+		// Z.z = 1;
+		return ret;
+	}
+	if (n == 2)
+	{
+		//Z.x = x.x;
+		//Z.y = x.y;
 		// Z.z = 1;
 		return x;
 	}
@@ -1599,7 +1702,6 @@ ten Jmlt(ten y, ZZ n)
 		ret.x = 0;
 		ret.y = 0;
 		ret.z = 0;
-		// ret.f = 2;
 		return ret;
 	}
 
@@ -1617,56 +1719,34 @@ ten Jmlt(ten y, ZZ n)
 	// exit(1);
 	x.x = y.x;
 	x.y = y.y;
-	x.z = 1;
+	x.z=1;
 
 	ret = x;
-	cout << "part1\n";
-
 	x = jdbl(x);
-	if (n == 2)
-		return x;
-
 	// x = D;
 
 	if (n == 1)
 	{
-		Z.x = ret.x;
-		Z.y = ret.y;
-		ret.z = 1;
+		//Z.x = ret.x;
+		//Z.y = ret.y;
+		// Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
-		Z.x = x.x;
-		Z.y = x.y;
-		x.z = 1;
+		//Z.x = x.x;
+		//Z.y = x.y;
+		// Z.z = 1;
 		return x;
 	}
 	// n>>=1;
 	while (n > 0 && nn > 1)
 	{
-		// ret=x;
-
 		n >>= 1;
 		if ((n & 1) == 1 && nn > 2)
 		{
 			ret = jadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
-			if (ret.x == 0 && ret.y == 0 && ret.z == 0)
-			{
-				cout << "Qmlt!\n";
-				ret.x = 0;
-				ret.y = 0;
-				ret.z = 0;
-				return ret;
-				// exit(1);
-			}
-			// ret = T;
-			//  if(n==1)
-			//  return ret;
 		}
-		// break;
-		// cout << "n================ " << n << endl;
-		// n>>=1;
 		if (first == 0 && n % 2 == 1 && nn % 2 == 0)
 		{
 			ret = x;
@@ -1674,16 +1754,9 @@ ten Jmlt(ten y, ZZ n)
 		}
 
 		x = jdbl(x);
-		// x = D;
-
-		// n >>= 1; // n を1bit 左にずらす
-		// cout << n << "," << flg << "," << x.x << "," << x.y << endl;
 		if (n == 2 && flg == 1)
 			return x;
 	}
-	// Z.x = ret.x;
-	// Z.y = ret.y;
-	//  Z.z = 1;
 	return ret;
 }
 
@@ -1717,10 +1790,11 @@ ten jmlt(ten y, ZZ n)
 	// printf("\n");
 	nn = n;
 	// exit(1);
-	x.x = y.x;
-	x.y = y.y;
+	x = y;
+	//x.y = y.y;
 
 	ret = x;
+	cout << "debug1\n";
 	ret = jdbl(x);
 	// x = D;
 
@@ -1753,7 +1827,7 @@ ten jmlt(ten y, ZZ n)
 			ret = x;
 			first = 1;
 		}
-
+		cout << "dbg2\n";
 		x = jdbl(x);
 		// x = D;
 
@@ -4106,17 +4180,17 @@ int main(int argc, char *argv[])
 	init_curve(8);
 	// mktbl3(p2t(CRV.G));
 	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
-	ppa(Qmlt(CRV.G, to_ZZ("7")));
+	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";
 	// for(int i=0;i<32;i++)
-	ppa(t2p(jdbl(p2t(CRV.G))));
+	ppa(t2p(Jmlt(p2t(CRV.G),ZZ(16))));
 	cout << "core2\n";
 	mktbl3(p2t(CRV.G));
-	pta(elp3(ZZ(7)));
+	ppa(t2p(elp3(ZZ(16))));
 	cout << "kabe\n";
 	// exit(1);
 	mktable(CRV.G.x, CRV.G.y);
-	ppa(ellip(to_ZZ("7")));
+	ppa(ellip(to_ZZ("16")));
 	exit(1);
 
 	//  for(i=1;i<41;i++)
