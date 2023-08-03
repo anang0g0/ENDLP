@@ -404,7 +404,8 @@ typedef struct
 } kem;
 
 po le[640];
-po ll[640];
+ten ll[640];
+ten Pubkey;
 po Pub_key;
 // po T; // eadd
 // po D; // edbl
@@ -731,6 +732,272 @@ equ(unsigned short a, unsigned short b)
 	return i;
 }
 
+ten jadd(ten G1, ten G2)
+{
+	ZZ u1, u2, s1, s2, h, r, rev, reb, re6;
+	ZZ x1, x2, y1, y2, z1, z2, mod;
+	ten P;
+
+	x1 = G1.x;
+	x2 = G2.x;
+	y1 = G1.y;
+	y2 = G2.y;
+	z1 = G1.z;
+	z2 = G2.z;
+	mod = CRV.p;
+
+	if (x1 == x2 && y1 == y2 && z1 == z2)
+	{
+		cout << "infinitydevide1\n";
+		cout << "Y1=" << y1 << "\n";
+		cout << "Y2=" << y2 << "\n";
+		exit(1);
+	}
+
+	u1 = x1 * z2 * z2;
+	u2 = x2 * z1 * z1;
+	s1 = y1 * z2 * z2 * z2;
+	s2 = y2 * z1 * z1 * z1;
+	h = u2 - u1;
+	r = s2 - s1;
+	P.x = (-h * -h * -h - 2 * u1 * h * h + r * r) % mod;
+	P.y = (-s1 * h * h * h + r * (u1 * h * h - P.x)) % mod;
+	P.z = (z1 * z2 * h) % mod;
+
+	//=begin
+	rev = inv(P.z, mod);
+	reb = inv(P.z * P.z, mod);
+	re6 = inv(P.z * P.z * P.z, mod);
+	P.x = reb * P.x % mod;
+	P.y = re6 * P.y % mod;
+	P.z = rev * P.z % mod;
+
+	if (P.y * P.y % CRV.p != (P.x * P.x * P.x + CRV.a * P.x * P.z * P.z * P.z * P.z + CRV.b * P.z * P.z * P.z * P.z * P.z * P.z) % CRV.p)
+	{
+		cout << "errjadd\n";
+		exit(1);
+	}
+
+	return P;
+}
+
+ten jdbl(ten T)
+{
+	ZZ s, m, t, x, y, z;
+	ten Q;
+
+	x = T.x;
+	y = T.y;
+	z = T.z;
+
+	s = 4 * x * y * y;
+	m = 3 * x * x + CRV.a * (z * z * z * z);
+	t = -2 * s + m * m;
+	Q.x = t % CRV.p;
+	Q.y = (-8 * (y * y * y * y) + m * (s - t)) % CRV.p;
+	Q.z = 2 * y * z % CRV.p;
+
+	if (Q.y * Q.y % CRV.p != (Q.x * Q.x * Q.x + CRV.a * Q.x * Q.z * Q.z * Q.z * Q.z + CRV.b * Q.z * Q.z * Q.z * Q.z * Q.z * Q.z) % CRV.p)
+	{
+		cout << "errjdbl\n";
+		exit(1);
+	}
+
+	return Q;
+}
+
+// make a calcrationtablefrombasepointQ
+ten mktbl3(ten T)
+{
+	ZZ pp, xx, yy, zz, a;
+	int i;
+	ten O, Q;
+
+	// cout<<"in_mktbl3\n";
+
+	// printCRV_name,"\n"
+	pp = CRV.p;
+	// printpp,"\n"
+	xx = T.x;
+	// printxx,"\n"
+	yy = T.y;
+	// print"y=",yy,"\n"
+	zz = T.z;
+	// print"z!=",zz,"\n"
+	a = CRV.a;
+	// printa,"\n"
+	// printCRV_b,"\n"
+
+	// enzantable
+	ll[0].x = xx;
+	ll[0].y = yy;
+	ll[0].z = zz;
+	O.x = xx;
+	O.y = yy;
+	O.z = zz;
+	for (i = 1; i < 256; i++)
+	{ // beginPub_keyatplain
+		if (yy == 0)
+		{
+			cout << "Yga" << i << "\n";
+			// exit()
+		}
+
+		Q = jdbl(O);
+		ll[i].x = Q.x;
+		ll[i].y = Q.y;
+		ll[i].z = Q.z;
+
+		O.x = ll[i].x;
+		O.y = ll[i].y;
+		O.z = ll[i].z;
+	}
+	// offor
+	// cout<<"endofmktbl3\n";
+	return O;
+}
+
+// ComputeQ=mG
+ten elp3(ZZ k)
+{
+	int ki[256];
+	ZZ L;
+	po s;
+	int j, l, i, ii, jj, count = 0, cnp = 0;
+	ten P, Q;
+
+	cout << k << endl;
+	// exit(1);
+
+	L = k;
+	cout << k << " =k\n";
+	while (L > 0)
+	{
+		if (L % 2 == 0)
+			count++;
+		cnp++;
+		L = (L >> 1);
+	}
+	cout << count << " =count , cnp= " << cnp << endl;
+	if (count == cnp - 1)
+	{
+		P = ll[count];
+		for (i = 0; i < count + 1; i++)
+			P = jdbl(P);
+		cout << P.x << endl;
+		// exit(1);
+		return P;
+	}
+
+	L = k;
+	j = 0;
+	l = 0;
+	if (k < 0)
+	{
+		cout << "obsenseK\n";
+		cout << k << "\n";
+		exit(1);
+	}
+
+	if (k == 0)
+	{
+		cout << "infinitydevide2\n";
+		s.x = 0;
+		s.y = 0;
+		exit(1);
+	}
+
+	if (k > CRV.n)
+	{
+		k = k % CRV.n;
+	}
+
+	for (j = 0; j < 256; j++)
+	{
+		ki[j] = 0;
+	}
+
+	L = k;
+	while (L > 0)
+	{
+		L = (L >> 1);
+		l = l + 1;
+	}
+
+	L = k;
+	if (j != 0)
+	{
+		j = 0;
+	}
+	// cout<<L<<endl;
+	// if(((KK^(1<<i))>>i)%2==0)//testbit(KK,i)<-shippai
+	for (i = 0; i < l; i++)
+	{
+		if (L % 2 == 1)
+		{
+			ki[j] = i;
+
+			j = j + 1;
+		}
+		L = (L >> 1);
+	}
+	// cout<<j<<endl;
+	// exit(1);
+	Pubkey.x = ll[ki[0]].x;
+	Pubkey.y = ll[ki[0]].y;
+	Pubkey.z = ll[ki[0]].z;
+	// cout<<Pub_key.x<<endl;
+	// print"j=",j,"\n"
+
+	L = k;
+
+	if (k > 0)
+	{
+		for (i = 1; i < j; i++)
+		{
+			if (Pubkey.x != ll[ki[i]].x || Pubkey.y != ll[ki[i]].y || Pubkey.z != ll[ki[i]].z)
+			{
+
+				if (Pubkey.y * Pubkey.y % CRV.p == (Pubkey.x * Pubkey.x * Pubkey.x + CRV.a * Pubkey.x * (Pubkey.z * Pubkey.z * Pubkey.z * Pubkey.z) + CRV.b * (Pubkey.z * Pubkey.z * Pubkey.z * Pubkey.z * Pubkey.z * Pubkey.z)) % CRV.p)
+				{
+					// cout<<"doko2\n";
+					if (ll[ki[i]].y * ll[ki[i]].y % CRV.p == (ll[ki[i]].x * ll[ki[i]].x * ll[ki[i]].x + CRV.a * ll[ki[i]].x * (ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z) + CRV.b * (ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z)) % CRV.p)
+					{
+						// cout<<"doko3\n";
+						P = jadd(Pubkey, ll[ki[i]]);
+						Pubkey.x = P.x;
+						Pubkey.y = P.y;
+						Pubkey.z = P.z;
+						if (Pubkey.x == 0 && Pubkey.y == 0 && Pubkey.z == 0)
+						{
+							//	if(Pubkey_z==0)
+							cout << Pubkey.x << "," << Pubkey.y << "," << Pubkey.z << "\n";
+							cout << "infinitydevide3\n";
+							exit(1);
+						}
+						// print"doko4\n"
+					}
+
+					// print"end1\n"
+				}
+				// print"end2\n"
+			}
+			// print"end3\n"
+			if (Pubkey.x == ll[ki[i]].x && Pubkey.y == ll[ki[i]].y && Pubkey.z == ll[ki[i]].z)
+			{
+
+				// print"ecole\n"
+				jdbl(Pubkey);
+				cout << "edb2(" << Pubkey.x << Pubkey.y << Pubkey.z << ")\n";
+				exit(1);
+			}
+			// print"inforloop",i,"";
+		}
+	}
+
+	// noreturn--print"afterreturn\n"
+	return P;
+}
 
 po eadd(po A, po B)
 {
@@ -743,21 +1010,26 @@ po eadd(po A, po B)
 	y2 = B.y;
 	po T;
 	ZZ mod = CRV.p;
-	if(A.f==2 && B.f==2)
-	exit(1);
-	if(A.f==2 && B.f!=2){
-	B.f==0;
-	return B;
+	if (A.f == 2 && B.f == 2)
+		exit(1);
+	if (A.f == 2 && B.f != 2)
+	{
+		cout << "B!\n";
+		B.f == 0;
+		return B;
 	}
-	if(A.f!=2 && B.f==2){
-	A.f==0;
-	return A;
+	if (A.f != 2 && B.f == 2)
+	{
+		cout << "A!\n";
+		A.f == 0;
+		return A;
 	}
 	if (y1 * y1 % mod != (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
 	{
 		printf("no point X1\n");
 		cout << x1 << "\n";
 		cout << y1 << "\n";
+
 		exit(1);
 	}
 
@@ -772,24 +1044,24 @@ po eadd(po A, po B)
 		printf("infinity devide1\n");
 		cout << "Y1=" << y1 << "\n";
 		cout << "Y2=" << y2 << "\n";
-		if (y1 * y1 % mod == (x1 * x1 * x1 + CRV.a*x1 + CRV.b) % mod)
+		if (y1 * y1 % mod == (x1 * x1 * x1 + CRV.a * x1 + CRV.b) % mod)
 		{
 			cout << "X1 on Curve\n";
 		}
-		if (y2 * y2 % mod == (x2 * x2 * x2 + CRV.a*x2 + CRV.b) % mod)
+		if (y2 * y2 % mod == (x2 * x2 * x2 + CRV.a * x2 + CRV.b) % mod)
 		{
 			cout << "X2 on Curve\n";
 		}
 		// cout << x1 << "\n";
 		// V = 0;
 		e.f = 2;
-		if(y1==y2 && x1==x2){
-		printf("double\n");
-		return edbl(x1,y1);
+		if (y1 == y2 && x1 == x2)
+		{
+			printf("double\n");
+			return edbl(x1, y1);
 		}
-		//exit(1);
-		//e.x = x1;
-		//e.y = y1;
+		e.x = 0;
+		e.y = 0;
 		return e;
 	}
 
@@ -877,7 +1149,7 @@ po eadd(po A, po B)
 		cout << y2 << "\n";
 		exit(1);
 	}
-
+	T.f = 0;
 	T.x = x3 % mod;
 	T.y = y3 % mod;
 
@@ -1132,6 +1404,16 @@ ten p2t(po a)
 	return b;
 }
 
+po t2p(ten x)
+{
+	po z;
+
+	z.x = x.x;
+	z.y = x.y;
+
+	return z;
+}
+
 po Qmlt(po y, ZZ n)
 {
 	po ret, tmp1, x;
@@ -1260,8 +1542,8 @@ esem Qpow(ZZ x, esem e)
 		cout << "('A`)\n";
 		e.u.f = 2;
 		e.v = PowerMod(e.v, x, CRV.n);
-		e.u.x = 0;
-		e.u.y = 0;
+		// e.u.x = 0;
+		// e.u.y = 0;
 		return e;
 		// exit(1);
 	}
@@ -2916,6 +3198,7 @@ esem vom()
 		}
 	}
 	cout << "@." << x.u.x << "," << x.u.y << "," << x.v << endl;
+	x.u.f = 0;
 	if (irg(x.u) == 1)
 		return x;
 	cout << "ee?\n";
@@ -3041,6 +3324,7 @@ typedef struct
 	ZZ v[2];
 } ve;
 
+int ccnt = 0;
 esem Qadd(esem a, esem b)
 {
 	esem c;
@@ -3054,24 +3338,88 @@ esem Qadd(esem a, esem b)
 		exit(1);
 	}
 	if (a.u.f == 2 && b.u.f != 2)
+	{
+		b.u.f = 0;
 		return b;
+	}
 	if (b.u.f == 2 && a.u.f != 2)
+	{
+		a.u.f = 0;
 		return a;
-
+	}
+	// if(a.u.x!=b.u.x && a.u.f!=2 &&){
 	c.v = (a.v + b.v) % CRV.n;
+	if (a.u.x == b.u.x)
+	{
+		if (a.u.y == b.u.y)
+		{
+			c.u = edbl(a.u.x, a.u.y);
+			if (c.u.f != 2)
+				return c;
+		}
+		cout << a.u.x << "," << b.u.x;
+		cout << " baka!\n";
+		// c.u.x=0;
+		// c.u.y=0;
+		c.u = b.u;
+		// return c;
+		pesem(a);
+		pesem(b);
+		exit(1);
+	}
 	c.u = eadd(a.u, b.u);
-	//cout << "right\n";
-
+	// c.u.f=0;
+	if (c.u.f == 2)
+	{
+		cout << "saru\n";
+		exit(1);
+	}
+	return c;
+	//}
+	// cout << "right\n";
+	ZZ tmp;
 	if (c.u.f == 2)
 	{
 		cout << "Qadd\n";
-
-		//pesem(c);
-		//return c;
+		// c.u.x=0;
+		// c.u.y=0;
+		// c.v=0;
+		if (a.u.f != 2)
+		{
+			pesem(a);
+			cout << " A\n";
+		}
+		if (a.u.f != 2)
+		{
+			pesem(b);
+			cout << " B\n";
+		}
+		// c.v=(a.v+b.v)%CRV.n;
+		pesem(c);
+		cout << " C\n";
+		// return c;
+		// c.u=eadd(a.u,b.u);
+		printf("たせないわ〜\n");
 		exit(1);
+		c.u.x = 0;
+		c.u.y = 0;
+		c.u.f = 2;
+		return c;
+		// exit(1);
 	}
-	cout << "world\n";
-	return c;
+	// c.v=(c.v-tmp)%CRV.n;
+
+	if (c.u.f != 2)
+	{
+		pesem(c);
+		// ccnt++;
+		c.u.f = 0;
+		cout << "good\n";
+		// if(ccnt==2)
+		return c;
+	}
+
+	exit(1);
 }
 
 int is_eq(esem A, esem B)
@@ -3093,6 +3441,7 @@ void epp()
 	ZZ w;
 	ZZ r, t, s;
 
+	C.u.f = 0;
 	do
 	{
 		x = ZZ(random()) % CRV.n;
@@ -3104,6 +3453,20 @@ void epp()
 		s = ZZ(random()) % CRV.n;
 	} while (x - z <= 0 || y - w <= 0 || x == 0 || t == 0 || y == 0 || z == 0 || w == 0 || r == 0);
 	printf("epp\n");
+	/*
+		pesem(A);
+		for(int i=0;i<41;i++){
+		cout << "numb\n";
+		C.u.f=0;
+		C=Qpow(ZZ(i),B);
+		if(C.u.f==2){
+		cout << C.u.f << " i= "<< i <<endl;
+		pesem(C);
+		exit(1);
+		}
+		}
+		exit(1);
+		*/
 
 	esem D = Qadd(Qadd(Qpow(x, A), Qpow(t, B)), Qpow(y, C));
 	esem E = Qadd(Qadd(Qadd(Qpow(z, A), Qpow(x, A)), Qpow(t, B)), Qadd(Qpow(y, C), Qpow(w, C)));
@@ -3113,6 +3476,8 @@ void epp()
 
 	esem X = Qadd(Qadd(Qpow(z, A), c1), Qpow(w, C));
 	pesem(c2);
+	cout << "world\n";
+
 	// pesem(c2);
 	pesem(X);
 
@@ -3195,6 +3560,11 @@ pesem(A);
 	esem c2 = esemi(esemi(Qpow(r, A), E), Qpow(r, C));
 	// exit(1);
 	esem X = esemi(esemi(Qpow(x - z, A), c2), Qpow(y - w, C));
+	if (is_eq(c1, X) == 0)
+	{
+		cout << "baka\n";
+		exit(1);
+	}
 
 	pesem(c1);
 	// pesem(c2);
