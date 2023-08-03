@@ -732,6 +732,12 @@ equ(unsigned short a, unsigned short b)
 	return i;
 }
 
+int echeki(ten p)
+{
+	if ((p.y * p.y * p.z) % CRV.p == (p.x * p.x * p.x + CRV.a * p.x * p.z * p.z + CRV.b * p.z * p.z * p.z) % CRV.p)
+		return 1;
+	return 0;
+}
 
 ten jadd(ten G1, ten G2)
 {
@@ -748,9 +754,9 @@ ten jadd(ten G1, ten G2)
 	mod = CRV.p;
 
 	if (x1 == 0 && y1 == 0 && z1 == 0)
-	return G2;
+		return G2;
 	if (x2 == 0 && y2 == 0 && z2 == 0)
-	return G1;
+		return G1;
 
 	if (x1 == x2 && y1 == y2 && z1 == z2)
 	{
@@ -778,6 +784,7 @@ ten jadd(ten G1, ten G2)
 	P.y = re6 * P.y % mod;
 	P.z = rev * P.z % mod;
 
+	cout << "test " << echeki(P) << endl;
 	if (P.y * P.y % CRV.p != (P.x * P.x * P.x + CRV.a * P.x * P.z * P.z * P.z * P.z + CRV.b * P.z * P.z * P.z * P.z * P.z * P.z) % CRV.p)
 	{
 		cout << "errjadd\n";
@@ -812,123 +819,58 @@ ten jdbl(ten T)
 	return Q;
 }
 
+ten jadd2(ten p1, ten p2)
+{
+	ZZ u, v, A;
+	ten q;
+	po r;
 
-ten jadd2(ten p1,ten p2){
-ZZ u,v,A;
-ten q;
-po r;
+	if (p1.x == 0 && p1.y == 0 && p1.z == 0)
+		return p2;
+	if (p2.x == 0 && p2.y == 0 && p2.z == 0)
+		return p1;
 
-if(p1.x==0 && p1.y==0 && p1.z==0)
-return p2;
-if(p2.x==0 && p2.y==0 && p2.z==0)
-return p1;
+	u = p2.y * p1.z - p1.y * p2.z;
+	v = p2.x * p1.z - p1.x * p2.z;
+	A = u * u * p1.z * p2.z - v * v * v - 2 * v * v * p1.x * p2.z;
 
-u=p2.y*p1.z-p1.y*p2.z;
-v=p2.x*p1.z-p1.x*p2.z;
-A=u*u*p1.z*p2.z-v*v*v-2*v*v*p1.x*p2.z;
+	q.x = (v * A) % CRV.p;
+	q.y = (u * (v * v * p1.x * p2.z - A) - v * v * v * p1.y * p2.z) % CRV.p;
+	q.z = (v * v * v * p1.z * p2.z) % CRV.p;
+	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
+	r.y = q.y * inv(q.y, CRV.p) % CRV.p;
+	if(echeki(q)==0){
+		cout << "bakae2\n";
+		exit(1);
+	}
 
-q.x=(v*A)%CRV.p;
-q.y=(u*(v*v*p1.x*p2.z-A)-v*v*v*p1.y*p2.z)%CRV.p;
-q.z=(v*v*v*p1.z*p2.z)%CRV.p;
-r.x=q.x*inv(q.z,CRV.p)%CRV.p;
-r.y=q.y*inv(q.y,CRV.p)%CRV.p;
-return q;
+	return q;
 }
 
-ten jdbl2(ten p){
-ZZ w,s,B,h;
-ten q;
-po r;
+ten jdbl2(ten p)
+{
+	ZZ w, s, B, h;
+	ten q;
+	po r;
 
-w=CRV.a*p.z*p.z+3*p.x*p.x;
-s=p.y*p.z;
-B=s*p.x*p.y;
-h=w*w-8*B;
+	w = CRV.a * p.z * p.z + 3 * p.x * p.x;
+	s = p.y * p.z;
+	B = s * p.x * p.y;
+	h = w * w - 8 * B;
 
-q.x=(2*h*s)%CRV.p;
-q.y=(w*(4*B-h)-8*p.y*p.y*s*s)%CRV.p;
-q.z=(8*s*s*s)%CRV.p;
-r.x=q.x*inv(q.z,CRV.p)%CRV.p;
-r.y=q.y*inv(q.z,CRV.p)%CRV.p;
+	q.x = (2 * h * s) % CRV.p;
+	q.y = (w * (4 * B - h) - 8 * p.y * p.y * s * s) % CRV.p;
+	q.z = (8 * s * s * s) % CRV.p;
+	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
+	r.y = q.y * inv(q.z, CRV.p) % CRV.p;
 
-return q;
+	if(echeki(q)==0){
+		cout << "bakae2d\n";
+		exit(1);
+	}
+
+	return q;
 }
-
-ten jadd3(ten O,ten P){
-//ZZ x1,ZZ x2,ZZ y1,ZZ y2,ZZ z1,ZZ z2,ZZ mod){
-ZZ u1,u2,s1,s2,h,r,rev,reb,re6;
-ZZ x1, x2, y1, y2, z1, z2, mod;
-x1= O.x;
-y1=O.y;
-z1=O.z;
-x2=P.x;
-y2=P.y;
-z2=P.z;
-mod=CRV.p;
-
-if(x1==x2 && y1==y2 && z1==z2){
-    cout <<"infinity devide1\n";
-    cout << "Y1=" <<  y1 << "\n";
-    cout << "Y2=" << y2 << "\n";
-exit(1);
-}
-u1=x1*z2*z2;
-u2=x2*z1*z1;
-s1=y1*z2*z2*z2;
-s2=y2*z1*z1*z1;
-h=u2-u1;
-r=s2-s1;
-P.x= (-h*-h*-h-2*u1*h*h+r*r)%mod;
-P.y= (-s1*h*h*h+r*(u1*h*h-P.x))%mod;
-P.z= (z1*z2*h)%mod;
-
-//=begin
-rev=inv(P.z,mod);
-reb=inv(P.z*P.z,mod);
-re6=inv(P.z*P.z*P.z,mod);
-P.x=reb*P.x%mod;
-P.y=re6*P.y%mod;
-P.z=rev*P.z%mod;
-//=end
-//exit()
-//cout <<  P.x << "\n";
-//cout <<  P.y << "\n";
-//cout <<  P.z << "\n";
-if(P.y*P.y%CRV.p != (P.x*P.x*P.x+CRV.a*P.x*P.z*P.z*P.z*P.z+CRV.b*P.z*P.z*P.z*P.z*P.z*P.z)%CRV.p){
-  cout << "err jadd\n";
-  exit(1);
-}
-
-return P;
-}
-
-
-ten jdbl3(ten P){
-ZZ s,m,t,x,y,z,mod;
-ten Q;
-
-x=P.x;
-y=P.y;
-z=P.z;
-s=4*x*y*y;
-m=3*x*x+CRV.a*(z*z*z*z);
-t= -2*s+m*m;
-Q.x= t%mod;
-Q.y= (-8*(y*y*y*y)+m*(s-t))%mod;
-Q.z= 2*y*z%mod;
-
-//cout << Q.x << endl;
-//cout << Q.y << endl;
-//cout << Q.z << endl;
-
-if(Q.y*Q.y%CRV.p != (Q.x*Q.x*Q.x+CRV.a*Q.x*Q.z*Q.z*Q.z*Q.z+CRV.b*Q.z*Q.z*Q.z*Q.z*Q.z*Q.z)%CRV.p){
-  cout << "err jdbl\n";
-  exit(1);
-}
-
-return Q;
-}
-
 
 
 // make a calcrationtablefrombasepointQ
@@ -1099,7 +1041,7 @@ ten elp3(ZZ k)
 							cout << Pubkey.x << "," << Pubkey.y << "," << Pubkey.z << "\n";
 							cout << "infinitydevide3\n";
 							return Pubkey;
-							//exit(1);
+							// exit(1);
 						}
 						// print"doko4\n"
 					}
@@ -1533,16 +1475,17 @@ ten p2t(po a)
 po t2p(ten x)
 {
 	po z;
-	ZZ k=inv(x.z,CRV.p);
-	ZZ s=inv(x.z*x.z*x.z,CRV.p);
+	ZZ k = inv(x.z, CRV.p);
+	ZZ s = inv(x.z * x.z * x.z, CRV.p);
 
-	z.x = x.x*k%CRV.p;
-	z.y = x.y*s%CRV.p;
-	if(x.z>0){
-	cout << "heee\n";
-	exit(1);
+	z.x = x.x * k % CRV.p;
+	z.y = x.y * s % CRV.p;
+	if (x.z > 0)
+	{
+		cout << "heee\n";
+		//exit(1);
 	}
-	
+
 	return z;
 }
 
@@ -1653,8 +1596,8 @@ ten Jmlt(ten y, ZZ n)
 		cout << "n is 0\n";
 		ret.x = 0;
 		ret.y = 0;
-		ret.z=0;
-		//ret.f = 2;
+		ret.z = 0;
+		// ret.f = 2;
 		return ret;
 	}
 
@@ -1672,14 +1615,14 @@ ten Jmlt(ten y, ZZ n)
 	// exit(1);
 	x.x = y.x;
 	x.y = y.y;
-	x.z=1;
+	x.z = 1;
 
 	ret = x;
 	cout << "part1\n";
 
 	x = jdbl(x);
-	if(n==2)
-	return x;
+	if (n == 2)
+		return x;
 
 	// x = D;
 
@@ -1706,12 +1649,12 @@ ten Jmlt(ten y, ZZ n)
 		if ((n & 1) == 1 && nn > 2)
 		{
 			ret = jadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
-			if (ret.x==0 && ret.y == 0 && ret.z==0)
+			if (ret.x == 0 && ret.y == 0 && ret.z == 0)
 			{
 				cout << "Qmlt!\n";
 				ret.x = 0;
 				ret.y = 0;
-				ret.z=0;
+				ret.z = 0;
 				return ret;
 				// exit(1);
 			}
@@ -1741,7 +1684,6 @@ ten Jmlt(ten y, ZZ n)
 	//  Z.z = 1;
 	return ret;
 }
-
 
 ten jmlt(ten y, ZZ n)
 {
@@ -4160,21 +4102,20 @@ int main(int argc, char *argv[])
 	ZZ Za[2][2];
 
 	init_curve(8);
-	//mktbl3(p2t(CRV.G));
-	//pta((jadd(p2t(CRV.G),elp3(CRV.n))));
-	ppa(Qmlt(CRV.G,to_ZZ("3")));
+	// mktbl3(p2t(CRV.G));
+	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
+	ppa(Qmlt(CRV.G, to_ZZ("7")));
 	cout << "core\n";
-	//for(int i=0;i<32;i++)
-	//ppa(t2p(jdbl(p2t(CRV.G))));
+	// for(int i=0;i<32;i++)
+	ppa(t2p(jdbl(p2t(CRV.G))));
 	cout << "core2\n";
 	mktbl3(p2t(CRV.G));
-	pta(elp3(ZZ(3)));
+	pta(elp3(ZZ(7)));
 	cout << "kabe\n";
-	//exit(1);
-	mktable(CRV.G.x,CRV.G.y);
-	ppa(ellip(to_ZZ("3")));
+	// exit(1);
+	mktable(CRV.G.x, CRV.G.y);
+	ppa(ellip(to_ZZ("7")));
 	exit(1);
-
 
 	//  for(i=1;i<41;i++)
 	/*
