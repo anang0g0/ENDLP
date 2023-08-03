@@ -746,6 +746,11 @@ ten jadd(ten G1, ten G2)
 	z2 = G2.z;
 	mod = CRV.p;
 
+	if (x1 == 0 && y1 == 0 && z1 == 0)
+	return G2;
+	if (x2 == 0 && y2 == 0 && z2 == 0)
+	return G1;
+
 	if (x1 == x2 && y1 == y2 && z1 == z2)
 	{
 		cout << "infinitydevide1\n";
@@ -973,7 +978,8 @@ ten elp3(ZZ k)
 							//	if(Pubkey_z==0)
 							cout << Pubkey.x << "," << Pubkey.y << "," << Pubkey.z << "\n";
 							cout << "infinitydevide3\n";
-							exit(1);
+							return Pubkey;
+							//exit(1);
 						}
 						// print"doko4\n"
 					}
@@ -1410,7 +1416,11 @@ po t2p(ten x)
 
 	z.x = x.x;
 	z.y = x.y;
-
+	if(x.z>0){
+	cout << "heee\n";
+	exit(1);
+	}
+	
 	return z;
 }
 
@@ -1506,6 +1516,139 @@ po Qmlt(po y, ZZ n)
 	// Z.y = ret.y;
 	//  Z.z = 1;
 	return ret;
+}
+
+ten Jmlt(ten x, ZZ n)
+{
+	ten ret;
+	ZZ nn;
+	int flg = 0, count = 0;
+
+	if (n == 0)
+	{
+		cout << "n ga 0\n";
+		// return x;
+		exit(1);
+	}
+	nn = n;
+	while (nn > 0)
+	{
+		if (nn % 2 == 1)
+			flg++;
+		// bin[count]=nn%2;
+		// printf("%d",bin[count]);
+		count++;
+		nn >>= 1;
+	}
+
+	if ((n & 1) == 1)
+	{
+		n = (n >> 1);
+		ret = x;
+		x = jdbl(x);
+	}
+	else
+	{
+		ret = jdbl(x);
+		n = (n >> 1);
+		cout << n << endl;
+		cout << x.x << "a,b" << x.y << endl;
+	}
+	while (n > 0)
+	{
+		if (n == 1 && flg == 1)
+			return x;
+
+		if ((n & 1) == 1)
+		{
+			ret = jadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+		}
+		x = jdbl(x);
+		n >>= 1; // n を1bit 左にずらす
+	}
+
+	return ret;
+}
+
+ten jmlt(ten y, ZZ n)
+{
+	ten ret, tmp1, x;
+	int flg = 0, count = 0, first = 0;
+	unsigned char bin[640] = {0};
+	ZZ nn;
+	// po Z;
+
+	if (n == 0)
+	{
+		cout << "n is 0\n";
+		ret.x = 0;
+		ret.y = 0;
+		ret.z = 0;
+		// ret.f = 2;
+		return (ret);
+	}
+
+	nn = n;
+	while (nn > 0)
+	{
+		if (nn % 2 == 1)
+			flg++;
+		// printf("%d", nn % 2);
+		count++;
+		nn >>= 1;
+	}
+	// printf("\n");
+	nn = n;
+	// exit(1);
+	x.x = y.x;
+	x.y = y.y;
+
+	ret = x;
+	ret = jdbl(x);
+	// x = D;
+
+	if (n == 1)
+	{
+		return (ret);
+	}
+	if (n == 2)
+	{
+		return (x);
+	}
+	// n>>=1;
+	while (n > 0 && nn > 1)
+	{
+		// ret=x;
+
+		n >>= 1;
+		if ((n & 1) == 1 && nn > 2)
+		{
+			ret = jadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+								// ret = T;
+			if (n == 1)
+				return (ret);
+		}
+		// break;
+		// cout << "n================ " << n << endl;
+		// n>>=1;
+		if (first == 0 && n % 2 == 1 && nn % 2 == 0)
+		{
+			ret = x;
+			first = 1;
+		}
+
+		x = jdbl(x);
+		// x = D;
+
+		// n >>= 1; // n を1bit 左にずらす
+		// cout << n << "," << flg << "," << x.x << "," << x.y << endl;
+		if (n == 2 && flg == 1)
+			return (x);
+	}
+	// Z.x = ret.x;
+	// Z.y = ret.y;
+	//  Z.z = 1;
+	return (ret);
 }
 
 // 等差数列
@@ -1781,7 +1924,7 @@ po ellip(ZZ k)
 	exit(1);
 }
 
-esem elp3(ZZ x, esem e)
+esem elp4(ZZ x, esem e)
 {
 	ZZ i;
 	if (x == 0)
@@ -3813,6 +3956,16 @@ int primitive(ZZ x, ZZ p)
 	return 0;
 }
 
+void ppa(po a)
+{
+	cout << a.x << " , " << a.y << " f= " << a.f << endl;
+}
+
+void pta(ten a)
+{
+	cout << a.x << " , " << a.y << " , " << a.z << endl;
+}
+
 int main(int argc, char *argv[])
 {
 	ZZ z, r, d, I, salt;
@@ -3834,7 +3987,18 @@ int main(int argc, char *argv[])
 	ZZ Za[2][2];
 
 	init_curve(8);
-	// exit(1);
+	mktbl3(p2t(CRV.G));
+	pta((jadd(p2t(CRV.G),elp3(CRV.n))));
+	ppa(Qmlt(CRV.G,to_ZZ("10")));
+	cout << "core\n";
+	pta((Jmlt(p2t(CRV.G),to_ZZ("10"))));
+	cout << "core2\n";
+	exit(1);
+	mktable(CRV.G.x,CRV.G.y);
+	ppa(ellip(to_ZZ("16")));
+	exit(1);
+
+
 	//  for(i=1;i<41;i++)
 	/*
 	{
@@ -3894,6 +4058,14 @@ int main(int argc, char *argv[])
 	*/
 	cout << "Uh! " << inv2(6, 41) << "\n";
 	srandom(clock());
+	po aq = vom().u;
+	po oo = Qmlt(aq, to_ZZ("10"));
+	ppa(oo);
+	mktbl3(p2t(aq));
+	ppa(t2p(elp3(to_ZZ("10"))));
+	pta(Jmlt(p2t(aq), to_ZZ("10")));
+	exit(1);
+
 	/*
 		ve rr = vomx();
 		pev(rr);
