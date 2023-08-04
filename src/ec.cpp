@@ -1913,8 +1913,8 @@ esem Qpow(ZZ x, esem e)
 		cout << "('A`)\n";
 		e.u.f = 2;
 		e.v = PowerMod(e.v, x, CRV.n);
-		// e.u.x = 0;
-		// e.u.y = 0;
+		e.u.x = 0;
+		e.u.y = 0;
 		return e;
 		// exit(1);
 	}
@@ -3286,17 +3286,17 @@ esem Emul(esem X, esem Y)
 {
 	esem c;
 
-	c.u = eadd(Qmlt(Y.u, X.v), X.u);
+	c.u = t2p(jadd(p2t(Qmlt(Y.u, X.v)), p2t(X.u)));
+	c.v = Y.v * X.v % CRV.n;
 	if (c.u.f == 2)
 	{
 		cout << "Eml\n";
-		c.v = Y.v * X.v % CRV.n;
 		c.u.x = 0;
 		c.u.y = 0;
 		return c;
 		// exit(1);
 	}
-	c.v = Y.v * X.v % CRV.n;
+
 
 	return c;
 }
@@ -4037,7 +4037,8 @@ esem ekp()
 	b = vom();
 	c = vom();
 	d = vom();
-	g1.u = eadd(c.u, d.u);
+	g1.u = t2p(jadd(p2t(c.u),p2t(d.u)));
+	g1.v=(c.v*d.v)%CRV.n;
 	cout << g1.u.x << "," << g1.u.y << endl;
 	if (g1.u.f == 2)
 	{
