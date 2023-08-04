@@ -746,6 +746,8 @@ ten jdbl(ten a);
 
 // Efficient Elliptic Curve Exponentiation Using Mixed Coordinates Henri Cohen, Atsuko Miyaji, and Takatoshi Ono
 // https://link.springer.com/content/pdf/10.1007/3-540-49649-1_6.pdf
+
+// modified jacobian addition formulae
 ten jadd2(ten G1, ten G2)
 {
 	ZZ u1, u2, s1, s2, h, r, rev, reb, re6;
@@ -793,7 +795,7 @@ ten jadd2(ten G1, ten G2)
 	s2 = y2 * z1 * z1 * z1;
 	h = u2 - u1;
 	r = s2 - s1;
-	P.x = (-h * -h * -h - 2 * u1 * h * h + r * r) % mod;
+	P.x = (-h * h * h - 2 * u1 * h * h + r * r) % mod;
 	P.y = (-s1 * h * h * h + r * (u1 * h * h - P.x)) % mod;
 	P.z = (z1 * z2 * h) % mod;
 
@@ -846,7 +848,7 @@ int jcheki(ten p)
 	return 1;
 	return 0;
 }
-
+// projective coordinate addition formlae
 ten jadd(ten p1, ten p2)
 {
 	ZZ u, v, A;
@@ -875,6 +877,7 @@ ten jadd(ten p1, ten p2)
 	return q;
 }
 
+// projective coordinate addition formulae
 ten jdbl(ten p)
 {
 	ZZ w, s, B, h;
