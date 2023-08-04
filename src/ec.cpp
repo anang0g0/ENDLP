@@ -392,10 +392,13 @@ typedef struct
 	ZZ z;
 } ten;
 
+void pta(ten a);
+
 typedef struct
 {
 	ZZ v;
 	po u;
+	ten w;
 } esem;
 typedef struct
 {
@@ -739,14 +742,27 @@ int echeki(ten P)
 	return 0;
 }
 
+ten jdbl(ten a);
+
 // Efficient Elliptic Curve Exponentiation Using Mixed Coordinates Henri Cohen1, Atsuko Miyaji2, and Takatoshi Ono
-//https://link.springer.com/content/pdf/10.1007/3-540-49649-1_6.pdf
+// https://link.springer.com/content/pdf/10.1007/3-540-49649-1_6.pdf
 ten jadd(ten G1, ten G2)
 {
 	ZZ u1, u2, s1, s2, h, r, rev, reb, re6;
 	ZZ x1, x2, y1, y2, z1, z2, mod;
 	ten P;
 
+	if (echeki(G1) == 0)
+	{
+		pta(G1);
+		cout << "dameee\n";
+	}
+	if (echeki(G2) == 0)
+	{
+		cout << "iyaaa\n";
+		pta(G2);
+		exit(1);
+	}
 	x1 = G1.x;
 	x2 = G2.x;
 	y1 = G1.y;
@@ -755,17 +771,20 @@ ten jadd(ten G1, ten G2)
 	z2 = G2.z;
 	mod = CRV.p;
 
-	if (x1 == 0 && y1 == 0 && z1 == 0)
+	if (x1 == 0 && y1 == 0 && z1 == 0 && x2 > 0 && y2 > 0 && z2 > 0)
 		return G2;
-	if (x2 == 0 && y2 == 0 && z2 == 0)
+	if (x2 == 0 && y2 == 0 && z2 == 0 && x1 > 0 && y1 > 0 && z1 > 0)
 		return G1;
-
-	if (x1 == x2 && y1 == y2 && z1 == z2)
+	if (x2 == x1 && y2 == y1 && z2 == z1 && x1 == 0 && y1 == 0 && z1 == 0)
+		return G1;
+	if (x1 == x2 && y1 == y2 && z1 == z2 && x1 > 0 && y1 > 0 && z1 > 0)
 	{
 		cout << "infinitydevide1\n";
 		cout << "Y1=" << y1 << "\n";
 		cout << "Y2=" << y2 << "\n";
-		exit(1);
+		P = jdbl(G1);
+		return P;
+		// exit(1);
 	}
 
 	u1 = x1 * z2 * z2;
@@ -786,10 +805,11 @@ ten jadd(ten G1, ten G2)
 	P.y = re6 * P.y % mod;
 	P.z = rev * P.z % mod;
 
-	cout << "test " << echeki(P) << endl;
+	//cout << "test " << echeki(P) << endl;
 
-	if (echeki(P)==0)
+	if (echeki(P) == 0)
 	{
+		pta(P);
 		cout << "errjadd\n";
 		exit(1);
 	}
@@ -799,9 +819,14 @@ ten jadd(ten G1, ten G2)
 
 ten jdbl(ten T)
 {
-	ZZ s, m, t, x, y, z,u;
+	ZZ s, m, t, x, y, z, u;
 	ten Q;
 
+	if (echeki(T) == 0)
+	{
+		cout << "jdbl dame\n";
+		exit(1);
+	}
 	x = T.x;
 	y = T.y;
 	z = T.z;
@@ -813,7 +838,8 @@ ten jdbl(ten T)
 	Q.y = (-8 * (y * y * y * y) + m * (s - t)) % CRV.p;
 	Q.z = 2 * y * z % CRV.p;
 
-	if(echeki(Q)==0){
+	if (echeki(Q) == 0)
+	{
 		cout << "baka dbl\n";
 		exit(1);
 	}
@@ -841,7 +867,8 @@ ten jadd2(ten p1, ten p2)
 	q.z = (v * v * v * p1.z * p2.z) % CRV.p;
 	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
 	r.y = q.y * inv(q.y, CRV.p) % CRV.p;
-	if(echeki(q)==0){
+	if (echeki(q) == 0)
+	{
 		cout << "bakae2\n";
 		exit(1);
 	}
@@ -866,14 +893,14 @@ ten jdbl2(ten p)
 	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
 	r.y = q.y * inv(q.z, CRV.p) % CRV.p;
 
-	if(echeki(q)==0){
+	if (echeki(q) == 0)
+	{
 		cout << "bakae2d\n";
 		exit(1);
 	}
 
 	return q;
 }
-
 
 // make a calcrationtablefrombasepointQ
 ten mktbl3(ten T)
@@ -932,7 +959,7 @@ ten elp3(ZZ k)
 	int ki[256];
 	ZZ L;
 	po s;
-	int j, l, i, ii, jj, count = 0, cnp = 0,flag=0,cnt=0;
+	int j, l, i, ii, jj, count = 0, cnp = 0, flag = 0, cnt = 0;
 	ten P, Q;
 
 	cout << k << endl;
@@ -942,24 +969,25 @@ ten elp3(ZZ k)
 	cout << k << " =k\n";
 	while (L > 0)
 	{
-		if (L % 2 == 0){
+		if (L % 2 == 0)
+		{
 
 			count++;
 		}
-		if(L%2==1)
-		cnt++;
-		
+		if (L % 2 == 1)
+			cnt++;
+
 		cnp++;
 		L = (L >> 1);
 	}
-	if(cnt>1)
-		flag=1;
+	if (cnt > 1)
+		flag = 1;
 	cout << count << " =count , cnp= " << cnp << endl;
 	if (count == cnp - 1)
 	{
 		P = ll[count];
-		if(flag==0)
-		return P;
+		if (flag == 0)
+			return P;
 		for (i = 0; i < count + 1; i++)
 			P = jdbl(P);
 		cout << P.x << endl;
@@ -1041,7 +1069,7 @@ ten elp3(ZZ k)
 					// cout<<"doko2\n";
 					if (ll[ki[i]].y * ll[ki[i]].y % CRV.p == (ll[ki[i]].x * ll[ki[i]].x * ll[ki[i]].x + CRV.a * ll[ki[i]].x * (ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z) + CRV.b * (ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z * ll[ki[i]].z)) % CRV.p)
 					{
-						// cout<<"doko3\n";
+						cout << "doko3\n";
 						P = jadd(Pubkey, ll[ki[i]]);
 						Pubkey.x = P.x;
 						Pubkey.y = P.y;
@@ -1473,12 +1501,26 @@ po edbl(ZZ x1, ZZ y1)
 	return D;
 }
 
+int cheki(po p)
+{
+	if (p.x * p.x % CRV.p == (p.x * p.x * p.x + CRV.a * p.x + CRV.b) % CRV.p)
+		return 1;
+	return 0;
+}
+
 ten p2t(po a)
 {
 	ten b;
 	b.x = a.x;
 	b.y = a.y;
-	b.z = to_ZZ("1");
+	if (a.x == 0 && a.y == 0)
+	{
+		b.z = 0;
+	}
+	if (a.x > 0 || a.y > 0)
+	{
+		b.z = to_ZZ("1");
+	}
 
 	return b;
 }
@@ -1486,16 +1528,11 @@ ten p2t(po a)
 po t2p(ten x)
 {
 	po z;
-	ZZ k = inv(x.z*x.z, CRV.p);
+	ZZ k = inv(x.z * x.z, CRV.p);
 	ZZ s = inv(x.z * x.z * x.z, CRV.p);
 
 	z.x = x.x * k % CRV.p;
 	z.y = x.y * s % CRV.p;
-	if (x.z > 0)
-	{
-		cout << "heee\n";
-		//exit(1);
-	}
 
 	return z;
 }
@@ -1533,21 +1570,21 @@ po Qmlt(po y, ZZ n)
 	x.y = y.y;
 
 	ret = x;
-	x = edbl(x.x, x.y);
+	x = t2p(jdbl(p2t(x)));
 	// x = D;
 
 	if (n == 1)
 	{
-		//Z.x = ret.x;
-		//Z.y = ret.y;
-		// Z.z = 1;
+		// Z.x = ret.x;
+		// Z.y = ret.y;
+		//  Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
-		//Z.x = x.x;
-		//Z.y = x.y;
-		// Z.z = 1;
+		// Z.x = x.x;
+		// Z.y = x.y;
+		//  Z.z = 1;
 		return x;
 	}
 	// n>>=1;
@@ -1558,7 +1595,7 @@ po Qmlt(po y, ZZ n)
 		n >>= 1;
 		if ((n & 1) == 1 && nn > 2)
 		{
-			ret = eadd(ret, x); // n の最下位bitが 1 ならば x^(2^i) をかける
+			ret = t2p(jadd(p2t(ret), p2t(x))); // n の最下位bitが 1 ならば x^(2^i) をかける
 			if (ret.f == 2)
 			{
 				cout << "Qmlt!\n";
@@ -1580,7 +1617,7 @@ po Qmlt(po y, ZZ n)
 			first = 1;
 		}
 
-		x = edbl(x.x, x.y);
+		x = t2p(jdbl(p2t(x)));
 		// x = D;
 
 		// n >>= 1; // n を1bit 左にずらす
@@ -1632,16 +1669,16 @@ po Qmlt2(po y, ZZ n)
 
 	if (n == 1)
 	{
-		//Z.x = ret.x;
-		//Z.y = ret.y;
-		// Z.z = 1;
+		// Z.x = ret.x;
+		// Z.y = ret.y;
+		//  Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
-		//Z.x = x.x;
-		//Z.y = x.y;
-		// Z.z = 1;
+		// Z.x = x.x;
+		// Z.y = x.y;
+		//  Z.z = 1;
 		return x;
 	}
 	// n>>=1;
@@ -1719,7 +1756,7 @@ ten Jmlt(ten y, ZZ n)
 	// exit(1);
 	x.x = y.x;
 	x.y = y.y;
-	x.z=1;
+	x.z = 1;
 
 	ret = x;
 	x = jdbl(x);
@@ -1727,16 +1764,16 @@ ten Jmlt(ten y, ZZ n)
 
 	if (n == 1)
 	{
-		//Z.x = ret.x;
-		//Z.y = ret.y;
-		// Z.z = 1;
+		// Z.x = ret.x;
+		// Z.y = ret.y;
+		//  Z.z = 1;
 		return ret;
 	}
 	if (n == 2)
 	{
-		//Z.x = x.x;
-		//Z.y = x.y;
-		// Z.z = 1;
+		// Z.x = x.x;
+		// Z.y = x.y;
+		//  Z.z = 1;
 		return x;
 	}
 	// n>>=1;
@@ -1791,7 +1828,7 @@ ten jmlt(ten y, ZZ n)
 	nn = n;
 	// exit(1);
 	x = y;
-	//x.y = y.y;
+	// x.y = y.y;
 
 	ret = x;
 	cout << "debug1\n";
@@ -3334,6 +3371,8 @@ esem tbc(esem a, esem b, esem c)
 void pesem(esem a)
 {
 	cout << "((" << a.u.x << "," << a.u.y << ")," << a.v << ")" << endl;
+	// pta(a.w);
+	// cout << a.v << end;
 }
 
 kem wow()
@@ -3658,6 +3697,8 @@ typedef struct
 	ZZ v[2];
 } ve;
 
+void ppa(po a);
+
 int ccnt = 0;
 esem Qadd(esem a, esem b)
 {
@@ -3687,21 +3728,26 @@ esem Qadd(esem a, esem b)
 	{
 		if (a.u.y == b.u.y)
 		{
-			c.u = edbl(a.u.x, a.u.y);
-			if (c.u.f != 2)
-				return c;
+			cout << "double\n";
+			c.u = t2p(jdbl(p2t(a.u)));
+			// if (c.u.f != 2)
+			return c;
 		}
-		cout << a.u.x << "," << b.u.x;
-		cout << " baka!\n";
+		ppa(a.u);
+		ppa(b.u);
+		cout << "baka!\n";
+		c.w = (jadd((a.w), (b.w)));
+		if (echeki(c.w) == 0)
+			cout << c.u.x << "," << c.u.x << " aho!\n";
+		return c;
+
 		// c.u.x=0;
 		// c.u.y=0;
-		c.u = b.u;
-		// return c;
 		pesem(a);
 		pesem(b);
-		exit(1);
+		// exit(1);
 	}
-	c.u = eadd(a.u, b.u);
+	c.u = t2p(jadd(p2t(a.u), p2t(b.u)));
 	// c.u.f=0;
 	if (c.u.f == 2)
 	{
@@ -4183,7 +4229,7 @@ int main(int argc, char *argv[])
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";
 	// for(int i=0;i<32;i++)
-	ppa(t2p(Jmlt(p2t(CRV.G),ZZ(16))));
+	ppa(t2p(Jmlt(p2t(CRV.G), ZZ(16))));
 	cout << "core2\n";
 	mktbl3(p2t(CRV.G));
 	ppa(t2p(elp3(ZZ(16))));
@@ -4191,7 +4237,7 @@ int main(int argc, char *argv[])
 	// exit(1);
 	mktable(CRV.G.x, CRV.G.y);
 	ppa(ellip(to_ZZ("16")));
-	exit(1);
+	// exit(1);
 
 	//  for(i=1;i<41;i++)
 	/*
@@ -4258,7 +4304,7 @@ int main(int argc, char *argv[])
 	mktbl3(p2t(aq));
 	ppa(t2p(elp3(to_ZZ("10"))));
 	pta(Jmlt(p2t(aq), to_ZZ("10")));
-	exit(1);
+	// exit(1);
 
 	/*
 		ve rr = vomx();
@@ -4267,8 +4313,9 @@ int main(int argc, char *argv[])
 		pev(s);
 	*/
 	epp();
-	// epm();
-	exit(1);
+	 epm();
+	 cout << "!!a\n";
+	//exit(1);
 
 	ehw();
 	// exit(1);
