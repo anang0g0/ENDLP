@@ -744,9 +744,9 @@ int echeki(ten P)
 
 ten jdbl(ten a);
 
-// Efficient Elliptic Curve Exponentiation Using Mixed Coordinates Henri Cohen1, Atsuko Miyaji2, and Takatoshi Ono
+// Efficient Elliptic Curve Exponentiation Using Mixed Coordinates Henri Cohen, Atsuko Miyaji, and Takatoshi Ono
 // https://link.springer.com/content/pdf/10.1007/3-540-49649-1_6.pdf
-ten jadd(ten G1, ten G2)
+ten jadd2(ten G1, ten G2)
 {
 	ZZ u1, u2, s1, s2, h, r, rev, reb, re6;
 	ZZ x1, x2, y1, y2, z1, z2, mod;
@@ -797,14 +797,6 @@ ten jadd(ten G1, ten G2)
 	P.y = (-s1 * h * h * h + r * (u1 * h * h - P.x)) % mod;
 	P.z = (z1 * z2 * h) % mod;
 
-	//=begin
-	rev = inv(P.z, mod);
-	reb = inv(P.z * P.z, mod);
-	re6 = inv(P.z * P.z * P.z, mod);
-	P.x = reb * P.x % mod;
-	P.y = re6 * P.y % mod;
-	P.z = rev * P.z % mod;
-
 	//cout << "test " << echeki(P) << endl;
 
 	if (echeki(P) == 0)
@@ -817,7 +809,7 @@ ten jadd(ten G1, ten G2)
 	return P;
 }
 
-ten jdbl(ten T)
+ten jdbl2(ten T)
 {
 	ZZ s, m, t, x, y, z, u;
 	ten Q;
@@ -847,7 +839,15 @@ ten jdbl(ten T)
 	return Q;
 }
 
-ten jadd2(ten p1, ten p2)
+
+int jcheki(ten p)
+{
+	if(p.y*p.y*p.z%CRV.p==(p.x*p.x*p.x+CRV.a*p.x*p.z*p.z+CRV.b*p.z*p.z*p.z)%CRV.p)
+	return 1;
+	return 0;
+}
+
+ten jadd(ten p1, ten p2)
 {
 	ZZ u, v, A;
 	ten q;
@@ -865,9 +865,8 @@ ten jadd2(ten p1, ten p2)
 	q.x = (v * A) % CRV.p;
 	q.y = (u * (v * v * p1.x * p2.z - A) - v * v * v * p1.y * p2.z) % CRV.p;
 	q.z = (v * v * v * p1.z * p2.z) % CRV.p;
-	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
-	r.y = q.y * inv(q.y, CRV.p) % CRV.p;
-	if (echeki(q) == 0)
+
+	if (jcheki(q) == 0)
 	{
 		cout << "bakae2\n";
 		exit(1);
@@ -876,7 +875,7 @@ ten jadd2(ten p1, ten p2)
 	return q;
 }
 
-ten jdbl2(ten p)
+ten jdbl(ten p)
 {
 	ZZ w, s, B, h;
 	ten q;
@@ -890,10 +889,8 @@ ten jdbl2(ten p)
 	q.x = (2 * h * s) % CRV.p;
 	q.y = (w * (4 * B - h) - 8 * p.y * p.y * s * s) % CRV.p;
 	q.z = (8 * s * s * s) % CRV.p;
-	r.x = q.x * inv(q.z, CRV.p) % CRV.p;
-	r.y = q.y * inv(q.z, CRV.p) % CRV.p;
 
-	if (echeki(q) == 0)
+	if (jcheki(q) == 0)
 	{
 		cout << "bakae2d\n";
 		exit(1);
@@ -1508,6 +1505,7 @@ int cheki(po p)
 	return 0;
 }
 
+
 ten p2t(po a)
 {
 	ten b;
@@ -1525,7 +1523,7 @@ ten p2t(po a)
 	return b;
 }
 
-po t2p(ten x)
+po t3p(ten x)
 {
 	po z;
 	ZZ k = inv(x.z * x.z, CRV.p);
@@ -1533,6 +1531,17 @@ po t2p(ten x)
 
 	z.x = x.x * k % CRV.p;
 	z.y = x.y * s % CRV.p;
+
+	return z;
+}
+
+po t2p(ten x)
+{
+	po z;
+	ZZ k = inv(x.z , CRV.p);
+
+	z.x = x.x * k % CRV.p;
+	z.y = x.y * k % CRV.p;
 
 	return z;
 }
@@ -3550,8 +3559,6 @@ esem vom()
 			break;
 	}
 	cout << "111\n";
-	if (p == 0)
-		p = to_ZZ("11");
 	x.u = Qmlt(CRV.G, p);
 	if ((x.u.y) == 0 && x.u.x == 0)
 	{
@@ -4225,8 +4232,15 @@ int main(int argc, char *argv[])
 	ZZ Za[2][2];
 
 	init_curve(8);
+	ten tt=p2t(CRV.G);
+	ten ss=p2t(vom().u);
 	// mktbl3(p2t(CRV.G));
 	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
+	//for(int i=0;i<10000000;i++)
+	//jdbl2(tt);
+	//jadd(tt,ss);
+	//exit(1);
+
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";
 	// for(int i=0;i<32;i++)
