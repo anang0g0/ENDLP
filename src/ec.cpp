@@ -1604,6 +1604,7 @@ po Qmlt(po y, ZZ n)
 		n >>= 1;
 		if ((n & 1) == 1 && nn > 2)
 		{
+			ret.f=0;
 			ret = t2p(jadd(p2t(ret), p2t(x))); // n の最下位bitが 1 ならば x^(2^i) をかける
 			if (ret.f == 2)
 			{
@@ -4236,10 +4237,10 @@ int main(int argc, char *argv[])
 	ten ss=p2t(vom().u);
 	// mktbl3(p2t(CRV.G));
 	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
-	for(int i=0;i<10000000;i++)
-	jdbl(tt);
+	//for(int i=0;i<10000000;i++)
 	//jadd(tt,ss);
-	exit(1);
+	//jadd(tt,ss);
+	//exit(1);
 
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";

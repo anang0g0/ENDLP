@@ -1,5 +1,5 @@
 all:
-	g++ ec.cpp -g -O3 -lntl -lgmp -pthread
+	g++ ec.cpp -g -mtune=native -march=native -lntl -lgmp -pthread
 ec:
 	g++ ec3.cpp -lntl -lgmp -pthread
 zc:
