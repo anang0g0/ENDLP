@@ -4240,7 +4240,8 @@ int main(int argc, char *argv[])
 	for(int i=0;i<10000000;i++)
 	jdbl(tt);
 	//jadd(tt,ss);
-	exit(1);
+	//jdbl(tt);
+	//exit(1);
 
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";
