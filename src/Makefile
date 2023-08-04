@@ -1,5 +1,5 @@
 all:
-	g++ ec.cpp -g -lntl -lgmp -pthread
+	g++ ec.cpp -g -O3 -lntl -lgmp -pthread
 ec:
 	g++ ec3.cpp -lntl -lgmp -pthread
 zc:
