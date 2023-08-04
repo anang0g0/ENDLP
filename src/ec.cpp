@@ -4239,7 +4239,7 @@ int main(int argc, char *argv[])
 	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
 	//for(int i=0;i<10000000;i++)
 	//jadd(tt,ss);
-	//jadd(tt,ss);
+	//jdbl(tt);
 	//exit(1);
 
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
