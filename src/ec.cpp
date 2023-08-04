@@ -4237,10 +4237,10 @@ int main(int argc, char *argv[])
 	ten ss=p2t(vom().u);
 	// mktbl3(p2t(CRV.G));
 	// pta((jadd(p2t(CRV.G),elp3(CRV.n))));
-	//for(int i=0;i<10000000;i++)
+	for(int i=0;i<10000000;i++)
+	jdbl(tt);
 	//jadd(tt,ss);
-	//jadd(tt,ss);
-	//exit(1);
+	exit(1);
 
 	ppa(Qmlt(CRV.G, to_ZZ("16")));
 	cout << "core\n";
