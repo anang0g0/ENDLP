@@ -1765,9 +1765,9 @@ vec mkpol()
 
   } while (j == 0);
 
-  // printpol(o2v(w));
-  // printf(" ==g\n");
-  // exit(1);
+   printpol((w));
+   printf(" ==g\n");
+   //exit(1);
 
   return w;
 }

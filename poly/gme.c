@@ -5,6 +5,8 @@
 #include "mkmf.c"
 #include "vc3000.c"
 
+#define MOD 1129
+
 typedef struct
 {
 	int u;
@@ -20,9 +22,9 @@ typedef struct
 sem semi(sem a, sem b)
 {
 	sem n = {0};
-	n.v = ((a.v * b.u) % 23 + b.v);
-	n.u = (a.u * b.u) % 23;
-	n.v %= 23;
+	n.v = ((a.v * b.u) % MOD + b.v);
+	n.u = (a.u * b.u) % MOD;
+	n.v %= MOD;
 
 	return n;
 }
@@ -30,11 +32,19 @@ sem semi(sem a, sem b)
 ham hami(ham a, ham b)
 {
 	ham n = {0};
-	n.v = (xtrace(b.u, a.v) + b.v) % 23;
+	n.v = (xtrace(b.u, a.v) + b.v) % MOD;
 	n.u = vadd(a.u,b.u); //vmul_2(a.u, b.u);
-	n.v %= 23;
+	n.v %= MOD;
 
 	return n;
+}
+
+ham wow(){
+	ham aa;
+	aa.u=mkpol();
+	aa.v=random();
+
+	return aa;
 }
 
 // invert of integer
@@ -63,14 +73,14 @@ int inv(int a, int n)
 vec minus(vec t)
 {
 	for (int i = 0; i < deg(t) + 1; i++)
-		t.x[i] = 23 - t.x[i];
+		t.x[i] = MOD - t.x[i];
 
 	return t;
 }
 
 vec koef(unsigned short a,vec u){
 for(int i=0;i<deg(u)+1;i++)
-u.x[i]=a*u.x[i]%23;
+u.x[i]=a*u.x[i]%MOD;
 
 return u;
 }
@@ -78,9 +88,9 @@ return u;
 ham invs(ham a)
 {
 	ham s = {0};
-	s.u = (koef(inv(a.v, 23) , minus(a.u)));
-	s.v = inv(a.v, 23);
-	// s.u%=23;
+	s.u = (koef(inv(a.v, MOD) , minus(a.u)));
+	s.v = inv(a.v, MOD);
+	// s.u%=MOD;
 
 	return s;
 }
@@ -117,49 +127,40 @@ ham aniky(int n)
 	if (n == 3)
 		return hami(hami(d2[0], d2[1]), d2[2]);
 }
+
+void pham(ham a){
+	printpol(a.u);
+	printf(", ");
+	printf(",%d\n",a.v);
+}
+
 int main()
 {
 
 	ham a, b, c, d, e, f, g, h, a1, b1, c1, d1, e1, f1, g1, h1;
-	a.v = 1;
-	a.u = mkpol();
-	b.v = 3;
-	b.u = mkpol();
-	c.v = 5;
-	c.u = mkpol();
-	d.v = 7;
-	d.u = mkpol();
-	a1.v = 1;
-	a1.u = mkpol();
-	b1.v = 3;
-	b1.u = mkpol();
-	c1.v = 5;
-	c1.u = mkpol();
-	d1.v = 7;
-	d1.u = mkpol();
-	// b=invs(a);
-	// c=hami(a,b);
-	// printf("%d %d\n",c.u,c.v);
-	// exit(1);
+	a=wow();
+	b=wow();
+	c=wow();
+	d=wow();
+	a1=wow();
+	b1=wow();
+	c1=wow();
+	d1=wow();
+	 b=invs(a);
+	 c=hami(a,b);
+	 pham(c);
 
-	e.v = 9;
-	e.u = mkpol();
-	printpol(e.u);
+	e=wow();
+	pham(e);
 	//exit(1);
-	f.v = 11;
-	f.u = mkpol();
+	f=wow();
 	g=hami(e,f);
-	printpol(g.u);
-	printf(",%d\n",g.v);
+	pham(g);
 	//exit(1);
-	g.v = 13;
-	g.u = mkpol();
-	h.v = 15;
-	h.u = mkpol();
-	e1.v = 17;
-	e1.u = mkpol();
-	f1.v = 19;
-	f1.u = mkpol();
+	g=wow();
+	h=wow();
+	e1=wow();
+	f1=wow();
 	//g1.v = 21;
 	//g1.u = 22;
 	//h1.v = 1;
@@ -172,17 +173,14 @@ int main()
 	int p = 17;
 	ham key[4];
 	ham tmp1;
-	tmp1.v = 7;
-	tmp1.u = mkpol();
+	tmp1=wow();
 
 	ham aa[4];
 	ham tt[3];
 	ham a2, a3, b2, b3, c2, c3, d2, d3;
 
-	x.v = 9;
-	x.u = mkpol();
-	y.v = 11;
-	y.u = mkpol();
+	x=wow();
+	y=wow();
 	int r1 = 0b00, r2 = 0b11;
 	// alice's public key
 	a1 = hami(hami(a, x), invs(b));
@@ -206,12 +204,9 @@ int main()
 	//sem kb1=semi(semi(b,x),invs(b));
 	//sem kb2=semi(semi(b,y),invs(b));
 	// for(int i=0;i<2;i++)
-	printpol(a1.u);
-	printf(" %d\n", a1.v);
-	printpol(a2.u);
-	printf(" %d\n", a2.v);
-	printpol(a3.u);
-	printf(" %d\n", a3.v);
+	pham(a1);
+	pham(a2);
+	pham(a3);
 	//exit(1);
 
 	ham tmp[16];
@@ -220,12 +215,16 @@ int main()
 	tmp[2] = hami(hami(c1, c2), c3);
 	tmp[3] = hami(hami(d1, d2), d3);
 	printf("a1a2a3=%d %d\n", tmp[0].u, tmp[0].v);
+	pham(tmp[0]);
 	tmp[4] = hami(hami(x, x), x);
-	printf("x^3=%d %d\n", tmp[4].u, tmp[4].v);
+	printf("x^3= ");
+	pham(tmp[4]);
 	tmp[5] = hami(hami(invs(a), tmp[0]), d);
-	printf("ans=%d %d\n", tmp[5].u, tmp[5].v);
+	printf("ans= ");
+	pham(tmp[5]);
 	tmp[6] = hami(hami(invs(e), tmp[2]), h);
-	printf("ans2=%d %d\n", tmp[6].u, tmp[6].v);
+	printf("ans2= ");
+	pham(tmp[6]);
 	//mkmf();
 	//makefg();
 	//de();
