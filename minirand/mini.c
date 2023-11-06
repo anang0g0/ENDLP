@@ -128,7 +128,7 @@ unsigned char slf(unsigned char l)
 		lfs = p0w(lfs, (period) + 1); // s=(A^2r^2)^n
 		// exit(1);
 		lfs ^= Dot(lfs, (loo(m) ^ be(m) ^ c)); // s^n(A^2t+u) = s^n(A^2t+(At+c))
-		lfs=s_box[lfs%16+(lfs>>4)];
+		lfs=s_box[lfs%16+16*(lfs>>4)];
 		++period;
 		printf("%d %d\n", lfs, period);
 	}
